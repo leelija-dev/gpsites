@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Actions\Action;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -42,6 +43,18 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            ->userMenuItems([            //lakshman
+                'profile' => Action::make('profile')
+                    ->label('Profile')
+                    ->icon('heroicon-o-user')
+                    ->url(''),
+
+                // 'website' => Action::make('website')
+                //     ->label('Go to Website')
+                //     ->icon('heroicon-o-globe-alt')
+                //     ->url('/')
+                //     ->openUrlInNewTab(),
+            ]) //end
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
