@@ -29,16 +29,19 @@ class EditPassword extends Page
             TextInput::make('current_password')
                 ->label('Current Password')
                 ->password()
+                ->revealable() 
                 ->required(),
 
             TextInput::make('new_password')
                 ->label('New Password')
                 ->password()
+                ->revealable() 
                 ->required(),
 
             TextInput::make('new_password_confirmation')
-                ->label('Confirm New Password')
+                ->label('Confirm Password')
                 ->password()
+                ->revealable() 
                 ->same('new_password')
                 ->required(),
         ];
@@ -58,7 +61,7 @@ class EditPassword extends Page
         }
 
         // Update password
-        $user->password = Hash::make($this->form->getState()['new_password']);
+        $user->password = $this->form->getState()['new_password'];
         $user->save();
 
         Notification::make()

@@ -25,6 +25,7 @@ class AdminsForm
                 TextInput::make('password')
                     ->password()
                     ->required()
+                    ->revealable()
                     ->columnSpanFull(),
 
                 // Toggle::make('status')

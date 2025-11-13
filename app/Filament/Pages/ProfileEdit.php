@@ -7,7 +7,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
-
 class ProfileEdit extends Page
 {
     use InteractsWithForms;
@@ -18,7 +17,7 @@ class ProfileEdit extends Page
     protected static bool $shouldRegisterNavigation = false; 
     protected  static ?string $slug = 'profile/edit'; 
 
-    //  public array $formData = [];
+     public array $formData = [];
      public $name='';
      public $email='';
     public function mount(): void
@@ -36,18 +35,18 @@ class ProfileEdit extends Page
     protected function getFormSchema(): array
     {
         $admin = Auth::guard('admin')->user();
+        
         return [
             TextInput::make('name')
-                ->label('Names')
+                ->label('Name')
                 ->required()
-                ->reactive(),
-                
-                
+                ->reactive(),               
 
             TextInput::make('email')
                 ->label('Email')
                 ->required()
-                ->reactive(),
+                ->reactive()
+                ->email(),         
                 
             ];
     }

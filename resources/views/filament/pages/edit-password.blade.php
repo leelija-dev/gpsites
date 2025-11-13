@@ -6,7 +6,7 @@
         <x-filament::button wire:click="save">Update Password</x-filament::button>
 
         <a href="{{ url('admin/update-profile') }}">
-            <x-filament::button color="secondary">Cancel</x-filament::button>
+            <x-filament::button color="danger">Cancel</x-filament::button>
         </a>
     </div>
 </x-filament::page>

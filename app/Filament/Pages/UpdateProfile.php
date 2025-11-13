@@ -11,6 +11,7 @@ class UpdateProfile extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
     protected string $view = 'filament.pages.update-profile';
     protected static ?string $title = 'Profile';
+     protected static bool $shouldRegisterNavigation = false;
 }
 
 
