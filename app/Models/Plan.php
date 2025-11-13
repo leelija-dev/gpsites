@@ -19,4 +19,9 @@ class Plan extends Model
         'mail_available',
         'is_active',
     ];
+
+    public function features()
+    {
+        return $this->hasMany(\App\Models\PlansFeature::class, 'plan_id', 'id');
+    }
 }

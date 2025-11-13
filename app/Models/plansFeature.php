@@ -26,6 +26,8 @@ class PlansFeature extends Model
     /**
      * Define relationship with Plan model.
      */
+
+    
     public function plan()
     {
         return $this->belongsTo(Plan::class, 'plan_id');

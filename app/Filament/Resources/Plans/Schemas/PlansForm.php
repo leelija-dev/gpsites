@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Plans\Schemas;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Repeater;
 
 class PlansForm
 {
@@ -20,6 +21,28 @@ class PlansForm
                 TextInput::make('duration')->required(),
                 TextInput::make('mail_available')->required(),
                 // TextInput::make('is_active')->required(),
+                // Repeater::make('features')
+                //     ->label('Plan Features')
+                //     ->schema([
+                //         TextInput::make('feature')
+                //             ->label('Feature Name')
+                //             ->required(),
+                //     ])
+                //     ->createItemButtonLabel('Add More Feature')
+                //     ->columns(1)
+                //     ->minItems(1)
+                //     ->required(),
+
+                Repeater::make('features')
+                    ->label('Plan Features')
+                    ->schema([
+                        \Filament\Forms\Components\Hidden::make('id'),
+                        \Filament\Forms\Components\TextInput::make('feature')
+                            ->label('Feature Name'),
+                    ])
+                    ->createItemButtonLabel('Add More Feature')
+                    ->columns(1)
+                  
 
             ]);
     }
