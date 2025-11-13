@@ -19,6 +19,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+// use App\Filament\Pages\UpdateProfile;
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -43,18 +45,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
-            ->userMenuItems([            //lakshman
-                'profile' => Action::make('profile')
-                    ->label('Profile')
-                    ->icon('heroicon-o-user')
-                    ->url(''),
-
-                // 'website' => Action::make('website')
-                //     ->label('Go to Website')
-                //     ->icon('heroicon-o-globe-alt')
-                //     ->url('/')
-                //     ->openUrlInNewTab(),
-            ]) //end
+            
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
