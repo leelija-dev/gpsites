@@ -21,7 +21,7 @@ class UsersTable
                 ->searchable()
                 ->sortable(),
                 TextColumn::make('email')->searchable()->sortable(),
-                TextColumn::make('created_at'),
+                TextColumn::make('created_at')->dateTime('M d,Y H:i a'),
                 ToggleColumn::make('status')
                 // ->beforeStateUpdated(function ($record, $state) {
                 //     // Runs before the state is saved to the database.

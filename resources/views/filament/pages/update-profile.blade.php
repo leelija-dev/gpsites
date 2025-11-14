@@ -4,6 +4,8 @@
     <div class="mb-6">
         <p><strong>Name:</strong> {{ Auth::guard('admin')->user()->name }}</p>
         <p><strong>Email:</strong> {{ Auth::guard('admin')->user()->email }}</p>
+        <p><strong>Joining Date:</strong> {{ Auth::guard('admin')->user()->created_at->format('d.m.Y,H:i a')  }}</p>
+        
     </div>
 
     <div class="flex space-x-4">
