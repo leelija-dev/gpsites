@@ -14,7 +14,7 @@ class PermissionsTable
                 TextColumn::make('id')->sortable(),
                 TextColumn::make('name')->label('Permission'),
                 TextColumn::make('created_at')
-                    ->date()
+                    ->dateTime('M d,Y H:i a')
                     ->sortable(),
             ]);
     }

@@ -22,7 +22,20 @@ class UsersTable
                 ->sortable(),
                 TextColumn::make('email')->searchable()->sortable(),
                 TextColumn::make('created_at')->dateTime('M d,Y H:i a'),
+                //ToggleColumn::make('status')
                 ToggleColumn::make('status')
+                ->afterStateUpdated(function ($record, $state) {
+                    // Save updated status
+                    $record->status = $state;
+                    $record->save();
+
+                    // Filament Alert Notification
+                    \Filament\Notifications\Notification::make()
+                        ->title($state ? 'User Activated' : 'User Deactivated')
+                        ->body('Status updated successfully.')
+                        ->success()
+                        ->send();
+                }),
                 // ->beforeStateUpdated(function ($record, $state) {
                 //     // Runs before the state is saved to the database.
                 // })

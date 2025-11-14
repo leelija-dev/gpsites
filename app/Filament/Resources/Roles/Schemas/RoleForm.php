@@ -14,7 +14,12 @@ class RoleForm
     {
         return $schema->columns(1)->components([
             TextInput::make('name')
-                ->required()
+                //->required()
+                ->rules(['required','unique:roles,name'])
+                ->validationMessages([
+                    'required' => 'Role name can not be blank!',
+                    'unique' => 'This role name is already taken!',
+                ])
                 ->unique(ignoreRecord: true),
 
             CheckboxList::make('permissions')
@@ -29,7 +34,11 @@ class RoleForm
                     'admin' => 'Admin (Filament Admins)',
                 ])
                 ->default('admin') // or 'web'
-                ->required()
+                //->required()
+                ->rules(['required'])
+                ->validationMessages([
+                    'required' => 'Guard name can not be blank!',
+                ])
         ]);
     }
 }

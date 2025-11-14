@@ -41,5 +41,8 @@ class EditUsers extends EditRecord
     // {
     //     return $this->record; // this is automatically the User being edited
     // }
-
+protected function getRedirectUrl(): string
+{
+    return $this->getResource()::getUrl('index');
+}
 }

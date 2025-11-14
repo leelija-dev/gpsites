@@ -6,6 +6,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Repeater;
+use Illuminate\Support\HtmlString;
 
 class PlansForm
 {
@@ -15,6 +16,7 @@ class PlansForm
             ->components([
                 //
                 TextInput::make('name')
+                ->label(fn () => new HtmlString('Name<sup style="color:red">*</sup>'))
                 //->required()
                 ->rules([
                     'required'
@@ -23,6 +25,7 @@ class PlansForm
                     'required' => 'Plan name can not be blank!',
                 ]),
                 TextInput::make('slug')//->required(),
+                 ->label(fn () => new HtmlString('Slug<sup style="color:red">*</sup>'))
                 ->rules([
                     'required'
                 ])
@@ -31,6 +34,7 @@ class PlansForm
                 ]),
 
                 TextInput::make('price')//->required(),
+                    ->label(fn () => new HtmlString('Price<sup style="color:red">*</sup>'))
                     ->rules(['required'])
                     ->validationMessages([
                         'required' => 'Price can not be blank!',
@@ -39,12 +43,14 @@ class PlansForm
                 TextInput::make('description'),
 
                 TextInput::make('duration')//->required(),
+                    ->label(fn () => new HtmlString('Duration<sup style="color:red">*</sup>'))
                     ->rules(['required'])
                     ->validationMessages([
                         'required' => 'Duration can not be blank!',
                     ]),
                 
                 TextInput::make('mail_available')//->required(),
+                    ->label(fn () => new HtmlString('Mail Available<sup style="color:red">*</sup>'))
                     ->rules(['required'])
                     ->validationMessages([
                         'required' => 'Mail Available can not be blank!',

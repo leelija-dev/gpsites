@@ -14,8 +14,13 @@ class PermissionForm
             ->components([
                 TextInput::make('name')
                     ->unique(ignoreRecord: true)
-                    ->required()
-                    ->label('Permission Name'),
+                    //->required()
+                    ->label('Permission Name')
+                    ->rules(['required','unique:permissions,name'])
+                    ->validationMessages([
+                        'required' => 'Permission name can not be blank!',
+                        'unique' => 'This permission name is already taken!',
+                    ])
             ]);
     }
 }

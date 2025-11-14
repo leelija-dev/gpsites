@@ -8,4 +8,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAdmins extends CreateRecord
 {
     protected static string $resource = AdminsResource::class;
+    protected function getRedirectUrl(): string
+{
+    return $this->getResource()::getUrl('index');
+}
 }

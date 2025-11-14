@@ -78,4 +78,8 @@ class EditPlans extends EditRecord
             \App\Models\PlansFeature::whereIn('id', $featuresToDelete)->delete();
         }
     }
+    protected function getRedirectUrl(): string
+{
+    return $this->getResource()::getUrl('index');
+}
 }

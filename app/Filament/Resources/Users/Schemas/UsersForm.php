@@ -22,12 +22,12 @@ class UsersForm
                  TextInput::make('email')->label('Email')->rules([
                         'required',
                         'email',
-                        'unique:users,email',
+                        //'unique:users,email',
                     ])
                     ->validationMessages([
                         'required' => 'The email can not be blank.',
                         'email' => 'Please enter a valid email address.',
-                        'unique' => 'This email is already registered.',
+                        //'unique' => 'This email is already registered.',
                     ]),
             ]);
     }
