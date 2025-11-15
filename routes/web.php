@@ -6,6 +6,16 @@ Route::get('/', function () {
     return view('web.home');
 });
 
+Route::get('/about', function () {
+    return view('web.about');
+});
+Route::get('/contact', function () {
+    return view('web.contact');
+});
+Route::get('/checkout', function () {
+    return view('web.checkout');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
