@@ -13,6 +13,7 @@ class UsersForm
                  TextInput::make('name')
                  //->label('User Name')
                  ->label(fn () => new HtmlString('User Name<sup style="color:red">*</sup>'))
+                 ->placeholder('Enter user name')
                  ->rules([
                          'required'
                      ])
@@ -23,6 +24,7 @@ class UsersForm
                  TextInput::make('email')
                     ->label(fn () => new HtmlString('Email<sup style="color:red">*</sup>'))
                      //->label('Email')
+                     ->placeholder('Enter email address')
                      ->rules([
                         'required',
                         'email',
