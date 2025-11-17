@@ -425,7 +425,7 @@
             <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
  font-bold leading-tight">
                 Build Websites Rapidly With<br>
-                <span class="text-indigo-400">Trendkit Interface Blocks</span>.
+                <span class="text-secondary">Trendkit Interface Blocks</span>.
             </h2>
         </div>
 
@@ -448,33 +448,18 @@
         <div class="flex flex-col lg:flex-row">
 
             <!-- Left Section - Images -->
-            <div class="w-full lg:w-1/2 p-8 space-y-4">
-                <!-- Top Row -->
-                <div class="flex gap-4">
-                    <div class="flex-1">
-                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-48 flex items-center justify-center">
-                            <span class="text-gray-500 text-sm">Image 1</span>
-                        </div>
+            <div class="w-full lg:w-1/2 p-8 smxl:block hidden">
+                <div class="block-contaning-wrapper relative w-full lg:h-full h-[390px] max-w-[600px] mx-auto">
+                    <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[45%] lg:h-[36%] h-[53%] absolute bottom-[46%] left-0">
+                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}"  alt="">
                     </div>
-                    <div class="flex-1">
-                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-48 flex items-center justify-center">
-                            <span class="text-gray-500 text-sm">Image 2</span>
-                        </div>
+                    <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[45%] lg:h-[36%] h-[53%] absolute bottom-[40%] right-0">
+                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}"  alt="">
                     </div>
-                </div>
+                    <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[70%] lg:h-[50%] h-[64%] absolute bottom-0 left-[16%] border-white border-[4px]">
+                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}"  alt="">
+                    </div>
 
-                <!-- Bottom Row -->
-                <div class="flex gap-4">
-                    <div class="flex-1">
-                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-56 flex items-center justify-center">
-                            <span class="text-gray-500 text-sm">Image 3</span>
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-56 flex items-center justify-center">
-                            <span class="text-gray-500 text-sm">Image 4</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -502,37 +487,37 @@
                 </p>
 
                 <!-- Progress Bars -->
-                <div class="space-y-6">
+                <div class="space-y-3">
                     <!-- Business Security -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-medium text-gray-700">Business Security</span>
-                            <span class="text-sm font-semibold text-indigo-600">65%</span>
+                            <span class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg font-semibold text-gray-700">Business Security</span>
+                            <span class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg font-semibold text-indigo-600">65%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-700" style="width: 65%"></div>
+                        <div class="w-full bg-white rounded-full h-4 p-[4px] border-gray-300 border-[1px]">
+                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full transition-all duration-700" style="width: 49%"></div>
                         </div>
                     </div>
 
                     <!-- Career Development -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-medium text-gray-700">Career Development</span>
-                            <span class="text-sm font-semibold text-indigo-600">88%</span>
+                            <span class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg font-semibold text-gray-700">Career Development</span>
+                            <span class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg font-semibold text-indigo-600">88%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-700" style="width: 88%"></div>
+                        <div class="w-full bg-white rounded-full h-4 p-[4px] border-gray-300 border-[1px]">
+                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full transition-all duration-700" style="width: 88%"></div>
                         </div>
                     </div>
 
                     <!-- Business Innovation -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-medium text-gray-700">Business Innovation</span>
-                            <span class="text-sm font-semibold text-indigo-600">90%</span>
+                            <span class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg font-semibold text-gray-700">Business Innovation</span>
+                            <span class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg font-semibold text-indigo-600">90%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-700" style="width: 90%"></div>
+                        <div class="w-full bg-white rounded-full h-4 p-[4px] border-gray-300 border-[1px]">
+                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full transition-all duration-700" style="width: 67%"></div>
                         </div>
                     </div>
                 </div>
