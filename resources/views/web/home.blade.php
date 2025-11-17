@@ -4,54 +4,114 @@
 
 @section('content')
 <style>
-    input[type="range"]::-webkit-slider-thumb {
+    .range-slider {
+        position: relative;
+        height: 40px;
+    }
+
+    input[type="range"] {
         -webkit-appearance: none;
-        @apply h-5 w-5 rounded-full bg-white border-4 border-primary shadow-md pointer-events-auto cursor-pointer z-10;
-    }
-
-    input[type="range"]::-moz-range-thumb {
-        @apply h-5 w-5 rounded-full bg-white border-4 border-primary shadow-md pointer-events-auto cursor-pointer;
-    }
-
-    .slider-thumb {
+        appearance: none;
+        background: transparent;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        pointer-events: none;
         z-index: 2;
     }
 
-    .slider-thumb-right {
-        z-index: 3;
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 22px;
+        width: 22px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #471396;
+        box-shadow: 0 4px 15px rgba(106, 54, 255, 0.4);
+        cursor: pointer;
+        pointer-events: auto !important;
+        z-index: 10;
     }
 
-    /* Custom range thumbs */
-.slider-thumb::-webkit-slider-thumb,
-.slider-thumb-right::-webkit-slider-thumb {
-    appearance: none;
-    height: 18px;
-    width: 18px;
-    background: #6a36ff;   /* primary */
-    border-radius: 50%;
-    cursor: pointer;
-    pointer-events: auto;
-}
+    input[type="range"]::-moz-range-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #471396;
+        /* Keep this */
+        box-shadow: 0 4px 15px rgba(106, 54, 255, 0.4);
+        cursor: pointer;
+        pointer-events: auto;
 
-.slider-thumb::-moz-range-thumb,
-.slider-thumb-right::-moz-range-thumb {
-    height: 18px;
-    width: 18px;
-    background: #6a36ff;
-    border-radius: 50%;
-    cursor: pointer;
-    pointer-events: auto;
-}
+        /* Remove this line → border: none; */
+        /* Or if you really need to reset something else, be specific */
+        outline: none;
+        /* Usually safe to add */
+        -moz-appearance: none;
+        /* Important: removes default Firefox styling */
+    }
 
-/* To allow thumbs to be clickable */
-input[type="range"] {
-    pointer-events: auto !important;
-}
+    .track {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 9999px;
+        width: 100%;
+        z-index: 1;
+    }
 
+    .fill {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 8px;
+        background: #9049DB;
+        border: 1px solid #5b5b5b;
+        border-radius: 9999px;
+        z-index: 1;
+        transition: all 0.1s ease;
+    }
+
+    .tooltip {
+        position: absolute;
+        top: -32px;
+        background: white;
+        filter: drop-shadow(0px 1px 5px #bdb8b8d4);
+        color: #867E7E;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+        z-index: 50;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    .tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -6px;
+        border: 6px solid transparent;
+        border-top-color: white;
+    }
+
+    /* Show only when dragging */
+    .tooltip.active {
+        opacity: 1;
+    }
 </style>
 
 <!-- hero section  -->
-<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden lg:py-16 py-12 px-6">
     <!-- Background decorative circles -->
     <div class="w-full h-full absolute top-0 left-0 overflow-hidden z-[-1]">
         <div class="absolute w-[300px] h-[300px] border-secondary border-[40px] rounded-full opacity-[0.1] top-[10%] right-[29%] "></div>
@@ -59,10 +119,10 @@ input[type="range"] {
         <div class="absolute w-[600px] h-[600px] border-secondary border-[80px] rounded-full opacity-[0.1] bottom-[10%] left-0 transform translate-x-[-50%]"></div>
     </div>
 
-    <div class="container mx-auto px-6 lg:px-12  flex items-center justify-center relative z-10">
+    <div class="container mx-auto   flex items-center justify-center relative z-10 lg:flex-nowrap flex-wrap">
 
         <!-- Left Section -->
-        <div class=" lg:w-1/2 w-full space-y-8">
+        <div class=" lg:w-1/2 w-full space-y-8 lg:text-left text-center">
             <h1 class="text-h1-xs sm:text-h1-sm md:text-h1-md lg:text-h1-lg lgg:text-h1-lgg xl:text-h1-xl 2xl:text-h1-2xl font-bold text-gray-900 leading-tight">
                 Don’t Miss<br />
                 <span class="text-primary">Amazing Grocery</span><br />
@@ -74,7 +134,7 @@ input[type="range"] {
                 sourced with the greatest care from farmer.
             </p>
 
-            <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex flex-col sm:flex-row gap-4 lg:justify-start sm:justify-center items-center">
                 <button class="btn-primary">
                     See Pricing
                 </button>
@@ -84,7 +144,7 @@ input[type="range"] {
             </div>
 
             <!-- Stats -->
-            <div class="flex flex-wrap gap-8 mt-12 text-center">
+            <div class="flex flex-wrap gap-8 mt-12 text-center lg:justify-start justify-center">
                 <div>
                     <div class="text-4xl font-bold text-gray-900">10+</div>
                     <div class="text-sm text-gray-500">Years Experience</div>
@@ -101,7 +161,7 @@ input[type="range"] {
         </div>
 
         <!-- Right Section - Card -->
-        <div class=" lg:w-1/2 w-full flex justify-center ">
+        <div class=" lg:w-1/2 w-full flex justify-center lg:mt-0 mt-4">
             <div class="backdrop-blur-[9px]  bg-white/0  rounded-3xl shadow-2xl p-8 w-full max-w-[500px] border-t-0 border-b-0 border-l-[3px] border-r-[3px] border-primary">
 
                 <!-- Search Bar -->
@@ -116,51 +176,64 @@ input[type="range"] {
                 </div>
 
                 <!-- Sliders -->
-                <div class="space-y-10">
+                <div class="">
+
+
                     <!-- DA Slider -->
-                    <div>
-                        <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
+                    <div class="mb-3">
+                        <div class="flex justify-between text-2xl font-bold  text-darkPrimary mb-3">
                             <span>DA</span>
-                            <span class="text-primary">15</span>
-                            <span>90</span>
+                            <span class="text-purple-600 font-bold hidden" id="da-values">25 – 70</span>
                         </div>
-                        <div class="relative">
-                            <div class="absolute inset-0 h-2 bg-gray-200 rounded-full"></div>
-                            <div class="absolute inset-0 h-2 bg-gradient-to-r from-primary to-primary-light rounded-full" style="width: 20%"></div>
-                            <input type="range" min="15" max="90" value="25" class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none slider-thumb" />
-                            <input type="range" min="15" max="90" value="90" class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none slider-thumb-right" />
+                        <div class="range-slider">
+                            <div class="track"></div>
+                            <div class="fill" id="da-fill"></div>
+                            <!-- Tooltip for left thumb -->
+                            <span class="tooltip left-tooltip" id="da-min-tooltip">25</span>
+                            <!-- Tooltip for right thumb -->
+                            <span class="tooltip right-tooltip" id="da-max-tooltip">70</span>
+
+                            <!-- Right thumb (higher value) - MUST BE FIRST -->
+                            <input type="range" min="15" max="90" value="70" class="thumb-right" id="da-max">
+                            <!-- Left thumb (lower value) -->
+                            <input type="range" min="15" max="90" value="25" class="thumb-left" id="da-min">
                         </div>
                     </div>
-
-                    <!-- DR Slider -->
-                    <div>
-                        <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
+                    <div class="mb-3">
+                        <div class="flex justify-between text-2xl font-bold  text-darkPrimary mb-3">
                             <span>DR</span>
-                            <span class="text-primary">12</span>
-                            <span>85</span>
+                            <span class="text-purple-600 font-bold hidden" id="dr-values">12 – 70</span>
                         </div>
-                        <div class="relative">
-                            <div class="absolute inset-0 h-2 bg-gray-200 rounded-full"></div>
-                            <div class="absolute inset-0 h-2 bg-gradient-to-r from-primary to-primary-light rounded-full" style="width: 75%"></div>
-                            <input type="range" min="12" max="85" value="12" class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none slider-thumb" />
-                            <input type="range" min="12" max="85" value="70" class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none slider-thumb-right" />
+                        <div class="range-slider">
+                            <div class="track"></div>
+                            <div class="fill" id="dr-fill"></div>
+
+                            <!-- Tooltip for left thumb -->
+                            <span class="tooltip left-tooltip" id="dr-min-tooltip">25</span>
+                            <!-- Tooltip for right thumb -->
+                            <span class="tooltip right-tooltip" id="dr-max-tooltip">70</span>
+
+                            <input type="range" min="12" max="85" value="70" class="thumb-right" id="dr-max">
+                            <input type="range" min="12" max="85" value="12" class="thumb-left" id="dr-min">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-2xl font-bold  text-darkPrimary mb-3">
+                            <span>Traffic</span>
+                            <span class="text-purple-600 font-bold hidden" id="tar-values">12 – 70</span>
+                        </div>
+                        <div class="range-slider">
+                            <div class="track"></div>
+                            <div class="fill" id="tar-fill"></div>
+                            <!-- Tooltip for left thumb -->
+                            <span class="tooltip left-tooltip" id="tar-min-tooltip">25</span>
+                            <!-- Tooltip for right thumb -->
+                            <span class="tooltip right-tooltip" id="tar-max-tooltip">70</span>
+                            <input type="range" min="12" max="85" value="70" class="thumb-right" id="tar-max">
+                            <input type="range" min="12" max="85" value="12" class="thumb-left" id="tar-min">
                         </div>
                     </div>
 
-                    <!-- Traffic Slider -->
-                    <div>
-                        <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
-                            <span>Traffic</span>
-                            <span class="text-primary">10K</span>
-                            <span>80K</span>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute inset-0 h-2 bg-gray-200 rounded-full"></div>
-                            <div class="absolute inset-0 h-2 bg-gradient-to-r from-primary to-primary-light rounded-full" style="width: 50%"></div>
-                            <input type="range" min="10000" max="80000" value="10000" class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none slider-thumb" />
-                            <input type="range" min="10000" max="80000" value="50000" class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none slider-thumb-right" />
-                        </div>
-                    </div>
                 </div>
 
                 <!-- CTA Button -->
@@ -687,50 +760,96 @@ input[type="range"] {
 </section>
 
 <x-web.faq />
-
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const sliders = document.querySelectorAll(".slider-container");
+    function initDualSlider(minId, maxId, displayId, fillId, minTooltipId, maxTooltipId) {
+        const minThumb = document.getElementById(minId);
+        const maxThumb = document.getElementById(maxId);
+        const display = document.getElementById(displayId);
+        const fill = document.getElementById(fillId);
+        const minTooltip = document.getElementById(minTooltipId);
+        const maxTooltip = document.getElementById(maxTooltipId);
 
-    sliders.forEach(container => {
-        const minSlider = container.querySelector(".slider-thumb");
-        const maxSlider = container.querySelector(".slider-thumb-right");
-        const fill = container.querySelector(".slider-fill");
-        const minText = container.querySelector(".min-value");
-        const maxText = container.querySelector(".max-value");
+        const updateSlider = () => {
+            let minVal = parseInt(minThumb.value);
+            let maxVal = parseInt(maxThumb.value);
 
-        function updateSlider() {
-            let minVal = parseInt(minSlider.value);
-            let maxVal = parseInt(maxSlider.value);
-
+            // Prevent crossing
             if (minVal > maxVal) {
-                // Swap values
-                [minSlider.value, maxSlider.value] = [maxVal, minVal];
-                minVal = parseInt(minSlider.value);
-                maxVal = parseInt(maxSlider.value);
+                if (document.activeElement === minThumb) {
+                    maxVal = minVal;
+                    maxThumb.value = minVal;
+                } else {
+                    minVal = maxVal;
+                    minThumb.value = maxVal;
+                }
             }
 
-            const minRange = minSlider.min;
-            const maxRange = minSlider.max;
+            // Update main display
+            display.textContent = `${minVal} – ${maxVal}`;
 
-            const percent1 = ((minVal - minRange) / (maxRange - minRange)) * 100;
-            const percent2 = ((maxVal - minRange) / (maxRange - minRange)) * 100;
+            // Update tooltips text
+            minTooltip.textContent = minVal;
+            maxTooltip.textContent = maxVal;
 
-            fill.style.left = percent1 + "%";
-            fill.style.width = (percent2 - percent1) + "%";
+            // Position tooltips exactly above thumbs
+            const minPercent = ((minVal - minThumb.min) / (minThumb.max - minThumb.min)) * 100;
+            const maxPercent = ((maxVal - maxThumb.min) / (maxThumb.max - maxThumb.min)) * 100;
 
-            minText.textContent = minVal >= 1000 ? Math.round(minVal/1000)+"K" : minVal;
-            maxText.textContent = maxVal >= 1000 ? Math.round(maxVal/1000)+"K" : maxVal;
-        }
+            minTooltip.style.left = minPercent + '%';
+            maxTooltip.style.left = maxPercent + '%';
 
-        minSlider.addEventListener("input", updateSlider);
-        maxSlider.addEventListener("input", updateSlider);
+            // Update fill bar
+            fill.style.left = minPercent + '%';
+            fill.style.width = (maxPercent - minPercent) + '%';
+        };
 
-        updateSlider(); // initialize
-    });
-});
+        // Show/hide tooltip on interaction
+        const showTooltip = (tooltip) => tooltip.classList.add('active');
+        const hideTooltip = (tooltip) => tooltip.classList.remove('active');
 
+        minThumb.addEventListener('input', () => {
+            updateSlider();
+            showTooltip(minTooltip);
+            hideTooltip(maxTooltip);
+        });
+        maxThumb.addEventListener('input', () => {
+            updateSlider();
+            showTooltip(maxTooltip);
+            hideTooltip(minTooltip);
+        });
+
+        // Hide tooltip when mouse leaves or touch ends
+        minThumb.addEventListener('mouseup', () => hideTooltip(minTooltip));
+        minThumb.addEventListener('touchend', () => hideTooltip(minTooltip));
+        maxThumb.addEventListener('mouseup', () => hideTooltip(maxTooltip));
+        maxThumb.addEventListener('touchend', () => hideTooltip(maxTooltip));
+
+        // Also hide when mouse leaves the slider area
+        minThumb.closest('.range-slider').addEventListener('mouseleave', () => {
+            hideTooltip(minTooltip);
+            hideTooltip(maxTooltip);
+        });
+
+        // Initial update
+        updateSlider();
+    }
+
+    // Initialize both sliders with tooltips
+    initDualSlider(
+        'da-min', 'da-max', 'da-values', 'da-fill',
+        'da-min-tooltip', 'da-max-tooltip'
+    );
+
+    initDualSlider(
+        'dr-min', 'dr-max', 'dr-values', 'dr-fill',
+        'dr-min-tooltip', 'dr-max-tooltip'
+    );
+    initDualSlider(
+        'tar-min', 'tar-max', 'tar-values', 'tar-fill',
+        'tar-min-tooltip', 'tar-max-tooltip'
+    );
 </script>
+
 @endsection
 @section('scripts')
 
