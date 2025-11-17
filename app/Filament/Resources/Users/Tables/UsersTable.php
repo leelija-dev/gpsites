@@ -9,6 +9,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use App\Filament\Pages\UserMail;
+
 class UsersTable
 {
     public static function configure(Table $table): Table
@@ -20,7 +22,10 @@ class UsersTable
                 ->label('User Name')
                 ->searchable()
                 ->sortable(),
-                TextColumn::make('email')->searchable()->sortable(),
+                TextColumn::make('email')->searchable()->sortable()
+                 //->url(fn ($record) => url('admin/user-mail')) // optional route
+                 ->url(fn ($record) => UserMail::getUrl(['email' => $record->email]))
+                , // optional,
                 TextColumn::make('created_at')->dateTime('M d,Y H:i a'),
                 //ToggleColumn::make('status')
                 ToggleColumn::make('status')
