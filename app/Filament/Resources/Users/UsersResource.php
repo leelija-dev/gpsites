@@ -16,13 +16,18 @@ use Filament\Tables\Table;
 
 class UsersResource extends Resource
 {
+    protected static ?int $navigationSort = 1;
+
     
     protected static ?string $model = User::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     protected static ?string $recordTitleAttribute = 'name';
-
+   public static function getNavigationGroup(): ?string
+    {
+        return 'User Management';
+    }
     public static function form(Schema $schema): Schema
     {
         return UsersForm::configure($schema);

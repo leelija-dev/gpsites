@@ -19,7 +19,7 @@ class MailHistory extends Page
     }
     public function getLogs()
     {
-        return MailHistories::get();
+        return MailHistories::where('sent_at','promotional mail')->get();
     }
 
 
