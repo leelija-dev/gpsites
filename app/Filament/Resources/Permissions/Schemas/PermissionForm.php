@@ -17,6 +17,7 @@ class PermissionForm
                     //->required()
                     //->label('Permission Name')
                     ->label(fn () => new HtmlString('Permission Name<sup style="color:red">*</sup>'))
+                    ->placeholder('Enter permission name')
                     ->rules(['required','unique:permissions,name'])
                     ->validationMessages([
                         'required' => 'Permission name can not be blank!',

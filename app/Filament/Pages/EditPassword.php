@@ -28,18 +28,21 @@ class EditPassword extends Page
         return [
             TextInput::make('current_password')
                 ->label('Current Password')
+                ->placeholder('Enter current password')
                 ->password()
                 ->revealable() 
                 ->required(),
 
             TextInput::make('new_password')
                 ->label('New Password')
+                ->placeholder('Enter new password')
                 ->password()
                 ->revealable() 
                 ->required(),
 
             TextInput::make('new_password_confirmation')
                 ->label('Confirm Password')
+                ->placeholder('Enter Confirm password')
                 ->password()
                 ->revealable() 
                 ->same('new_password')

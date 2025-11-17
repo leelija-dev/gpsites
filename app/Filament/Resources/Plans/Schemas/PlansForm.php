@@ -17,6 +17,7 @@ class PlansForm
                 //
                 TextInput::make('name')
                 ->label(fn () => new HtmlString('Name<sup style="color:red">*</sup>'))
+                ->placeholder('Enter plan name')
                 //->required()
                 ->rules([
                     'required'
@@ -25,7 +26,8 @@ class PlansForm
                     'required' => 'Plan name can not be blank!',
                 ]),
                 TextInput::make('slug')//->required(),
-                 ->label(fn () => new HtmlString('Slug<sup style="color:red">*</sup>'))
+                ->placeholder('Enter plan slug')
+                ->label(fn () => new HtmlString('Slug<sup style="color:red">*</sup>'))
                 ->rules([
                     'required'
                 ])
@@ -35,15 +37,18 @@ class PlansForm
 
                 TextInput::make('price')//->required(),
                     ->label(fn () => new HtmlString('Price<sup style="color:red">*</sup>'))
+                    ->placeholder('Enter plan price')
                     ->rules(['required'])
                     ->validationMessages([
                         'required' => 'Price can not be blank!',
                     ]),
 
-                TextInput::make('description'),
+                TextInput::make('description')->placeholder('Enter plan description')
+                    ->label('Description'),
 
                 TextInput::make('duration')//->required(),
                     ->label(fn () => new HtmlString('Duration<sup style="color:red">*</sup>'))
+                    ->placeholder('Enter plan duration')
                     ->rules(['required'])
                     ->validationMessages([
                         'required' => 'Duration can not be blank!',
@@ -51,6 +56,7 @@ class PlansForm
                 
                 TextInput::make('mail_available')//->required(),
                     ->label(fn () => new HtmlString('Mail Available<sup style="color:red">*</sup>'))
+                    ->placeholder('Enter mail available')
                     ->rules(['required'])
                     ->validationMessages([
                         'required' => 'Mail Available can not be blank!',

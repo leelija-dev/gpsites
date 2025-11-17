@@ -16,6 +16,7 @@ class AdminsForm
             ->components([
                 TextInput::make('name')
                 ->label(fn () => new HtmlString('Name<sup style="color:red">*</sup>'))
+                ->placeholder('Enter admin name')
                     ->rules(['required']) // server-side validation
                     ->validationMessages([
                         'required' => 'Name can not be blank!',
@@ -24,6 +25,7 @@ class AdminsForm
 
                 TextInput::make('email')
                     ->label(fn () => new HtmlString('Email<sup style="color:red">*</sup>'))
+                    ->placeholder('Enter email address')
                     ->rules([
                         'required',
                         'email',
@@ -37,6 +39,7 @@ class AdminsForm
 
                 TextInput::make('password')
                     ->label(fn () => new HtmlString('Password<sup style="color:red">*</sup>'))
+                    ->placeholder('Enter password')
                     ->password()
                     ->rules(['required'])
                     ->validationMessages([

@@ -16,6 +16,7 @@ class RoleForm
             TextInput::make('name')
                 //->required()
                 ->label(fn () => new HtmlString('Name<sup style="color:red">*</sup>'))
+                ->placeholder('Enter role name')
                 ->rules(['required','unique:roles,name'])
                 ->validationMessages([
                     'required' => 'Role name can not be blank!',
