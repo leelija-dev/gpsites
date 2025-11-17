@@ -146,7 +146,7 @@
 
 
 <!-- scores section  -->
-<section class="w-full bg-gradient-to-r from-primary to-secondary lg:py-16 py-12">
+<section class="w-full bg-gradient-to-r from-primary to-secondary lg:py-16 py-12 px-6">
     <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-3 text-center text-white gap-10">
 
@@ -176,7 +176,7 @@
 
 
 <!-- feature section -->
-<section class="lg:py-16 py-12">
+<section class="lg:py-16 py-12 px-6">
     <div class="container mx-auto">
         <div class="max-w-7xl w-full mx-auto">
             <!-- Header -->
@@ -292,7 +292,7 @@
 
 
 <!-- pricing plan section  -->
-<section class="lg:py-16 py-12">
+<section class="lg:py-16 py-12 px-6">
     <div class="container mx-auto">
         <!-- Header -->
         <div class="w-full text-center mb-12">
@@ -307,7 +307,7 @@
         </div>
 
         <!-- Pricing Cards Wrapper -->
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 pb-16">
+        <div class="max-w-7xl mx-auto lg:px-6 px-0 grid grid-cols-1 md:grid-cols-3 gap-8 pb-16">
 
             <!-- Basic Plan -->
             <div class="bg-white rounded-2xl shadow-md px-8 pb-8 pt-0 border border-gray-100 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
@@ -418,7 +418,7 @@
     </div>
 </section>
 
-<section class="bg-black min-h-[250px] flex justify-center items-center lg:py-16 py-12">
+<section class="bg-darkPrimary min-h-[250px] flex justify-center items-center lg:py-16 py-12 px-6 ">
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between text-white">
         <!-- Left Section: Text -->
         <div class="mb-6 md:mb-0 text-center md:text-left">
@@ -431,10 +431,10 @@
 
         <!-- Right Section: Buttons -->
         <div class="flex flex-col sm:flex-row gap-4">
-            <button class="px-6 py-3 border border-white text-white rounded-lg hover:bg-white hover:text-gray-900 transition duration-300 whitespace-nowrap">
+            <button class="btn-secondary">
                 Check more
             </button>
-            <button class="px-6 py-3 text-white rounded-lg btn-gradient hover:opacity-90 transition duration-300 whitespace-nowrap shadow-lg">
+            <button class="btn-primary">
                 Get trendkit
             </button>
         </div>
@@ -443,7 +443,7 @@
 
 
 <!-- about us  -->
-<section class="lg:py-16 py-12">
+<section class="lg:py-16 py-12 px-6">
     <div class="container mx-auto ">
         <div class="flex flex-col lg:flex-row">
 
@@ -479,7 +479,7 @@
             </div>
 
             <!-- Right Section - Content -->
-            <div class="w-full lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center space-y-8 ">
+            <div class="w-full lg:w-1/2 p-0 lg:p-16 flex flex-col justify-center space-y-8 ">
                 <div>
                     <!-- Badge -->
                     <div class="inline-flex items-center gap-2 bg-indigo-100 text-primary text-p-xs sm:text-p-sm md:text-p-md  font-semibold px-3 py-1 rounded-full w-fit">
@@ -544,7 +544,7 @@
 
 <!-- contact us  -->
 <!-- TITLE -->
-<section class="lg:py-16 py-12">
+<section class="lg:py-16 py-12 px-6">
     <div class="container mx-auto">
         <h2 class="text-4xl font-bold text-center">Contact Us</h2>
         <p class="text-gray-500 text-center mt-2 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">
@@ -552,27 +552,29 @@
         </p>
 
         <!-- MAIN WRAPPER -->
-        <div class="max-w-6xl mx-auto mt-10 bg-white shadow-xl rounded-xl   flex flex-col lg:flex-row gap-8">
+        <div class="max-w-6xl mx-auto mt-10 bg-white shadow-[3px_1px_22px_#0000003d] rounded-xl   flex flex-col lg:flex-row p-3">
 
             <!-- LEFT SECTION -->
-            <div class="bg-black text-white rounded-xl p-8 w-full lg:w-1/3 relative overflow-hidden">
-                <h3 class="text-2xl font-semibold">Contact Information</h3>
-                <p class="text-gray-300 mt-2">Say something to start a live chat!</p>
+            <div class="bg-gradient-to-br from-black to-primary text-white rounded-xl p-8 w-full lg:w-1/3 relative overflow-hidden flex flex-col justify-between">
+                <div>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg font-semibold">Contact Information</h3>
+                    <p class="text-gray-300 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg mt-2">Say something to start a live chat!</p>
+                </div>
 
                 <!-- CONTACT DETAILS -->
                 <div class="mt-8 space-y-6">
-                    <div class="flex items-center gap-3">
-                        <span class="text-lg">📞</span>
+                    <div class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg flex items-center gap-3">
+                        <span class="">📞</span>
                         <p>+1012 3456 789</p>
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <span class="text-lg">✉️</span>
+                    <div class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg flex items-center gap-3">
+                        <span class="">✉️</span>
                         <p>demo@gmail.com</p>
                     </div>
 
-                    <div class="flex items-start gap-3">
-                        <span class="text-lg mt-1">📍</span>
+                    <div class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg flex items-start gap-3">
+                        <span class=" mt-1">📍</span>
                         <p>
                             132 Dartmouth Street Boston, <br />
                             Massachusetts 02156 United States
@@ -589,12 +591,13 @@
 
                 <!-- DECOR CIRCLE -->
                 <div class="absolute bottom-0 right-0 translate-y-1/3 translate-x-1/3 opacity-20">
+                    <div class="w-20 h-20 bg-[#ffffff87] rounded-full absolute top-[-21px] left-[-26px]"></div>
                     <div class="w-40 h-40 bg-gray-600 rounded-full"></div>
                 </div>
             </div>
 
             <!-- RIGHT FORM -->
-            <div class="w-full lg:w-2/3 py-8 pe-6">
+            <div class="w-full lg:w-2/3 lg:p-6 p-4">
                 <form class="space-y-6">
 
                     <!-- NAME ROW -->
@@ -654,12 +657,12 @@
                     <div>
                         <label class="block text-gray-700">Message</label>
                         <textarea placeholder="Write your message..."
-                            class="mt-1 w-full border-t-0 border-l-0  border-r-0 border-gray-300 form-input-cus outline-none py-2 h-24"></textarea>
+                            class="mt-1 w-full border-t-0 border-l-0 min-h-[150px] border-r-0 border-gray-300 form-input-cus outline-none py-2 h-24"></textarea>
                     </div>
 
                     <!-- BUTTON -->
                     <button
-                        class="bg-black text-white px-8 py-3 rounded-lg shadow-md hover:bg-gray-800 transition">
+                        class="btn-primary mt-2">
                         Send Message
                     </button>
 
