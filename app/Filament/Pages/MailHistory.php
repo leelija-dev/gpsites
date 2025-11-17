@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Filament\Pages;
+use Filament\Support\Icons\Heroicon;
+use Filament\Pages\Page;
+use BackedEnum;
+use App\Models\MailHistories;
+
+class MailHistory extends Page
+{
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
+    protected string $view = 'filament.pages.mail-history';
+    protected static ?string $title = 'Promotion Mail History';
+    // protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 2;
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Promotion';
+    }
+    public function getLogs()
+    {
+        return MailHistories::get();
+    }
+
+
+
+
+
+}

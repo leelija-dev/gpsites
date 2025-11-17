@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\MailHistories;
 use Filament\Pages\Page;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -14,6 +15,7 @@ use App\Models\User;
 use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\DB;
 
 use BackedEnum;
 
@@ -22,15 +24,22 @@ class Promotion extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
+    
     protected string $view = 'filament.pages.promotion';
     protected static ?string $title = 'Promotion';
-    protected static ?int $navigationSort = 98;
+    // protected static ?int $navigationSort = 98;
     protected  static ?string $slug = 'mail'; 
+    protected static ?int $navigationSort = 1;
+
 
     public ?string $send_to = null;
     public ?string $email = null;
     public ?array $message = null;
     public ?string $subject = null;
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Promotion';
+    }
 
     protected function getFormSchema(): array
     {
@@ -115,6 +124,16 @@ class Promotion extends Page implements HasForms
             Mail::html($data['message'], function ($mail) use ($email,$data) {
                 $mail->to($email)->subject($data['subject']);
             });
+              // Store success history
+            MailHistories::create([
+                'email' => $email,
+                'subject' => $data['subject'],
+                'message' => $data['message'],
+                'status' => 1, //sent 
+                'sent_at' => 'promotional mail',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
 
         Notification::make()
