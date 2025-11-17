@@ -90,7 +90,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->authGuard('admin')
             ->login()
-            ->passwordReset()
+            ->passwordReset(
+                \App\Filament\Pages\Auth\AdminPasswordResetRequest::class,
+                \App\Filament\Pages\Auth\AdminPasswordReset::class
+            )
 
             ->colors([
                 'primary' => Color::Amber,

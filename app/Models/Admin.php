@@ -57,6 +57,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use App\Notifications\AdminResetPassword;
 
 class Admin extends Authenticatable implements CanResetPassword
 {
@@ -92,5 +93,16 @@ class Admin extends Authenticatable implements CanResetPassword
         return Attribute::make(
             set: fn(string $value) => Hash::make($value),
         );
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new AdminResetPassword($token));
     }
 }

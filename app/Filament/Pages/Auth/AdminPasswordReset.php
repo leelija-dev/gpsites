@@ -2,17 +2,21 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Hidden;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class AdminPasswordReset extends Page
 {
-    protected string $view = 'filament-panels::pages.auth.password-reset.reset';
+    use InteractsWithForms;
+
+    protected string $view = 'filament.pages.auth.password-reset';
     protected static bool $shouldRegisterNavigation = false;
 
     public ?string $token = null;
@@ -20,40 +24,38 @@ class AdminPasswordReset extends Page
     public ?string $password = null;
     public ?string $password_confirmation = null;
 
-    public function mount(?string $token = null, ?string $email = null): void
+    public function mount(Request $request): void
     {
-        $this->token = $token;
-        $this->email = $email;
+        $this->token = $request->query('token');
+        $this->email = $request->query('email');
     }
 
-    public function form(Form $form): Form
+    protected function getFormSchema(): array
     {
-        return $form
-            ->schema([
-                TextInput::make('token')
-                    ->label('Reset Token')
-                    ->required()
-                    ->default($this->token),
-                
-                TextInput::make('email')
-                    ->label('Email Address')
-                    ->email()
-                    ->required()
-                    ->default($this->email)
-                    ->autocomplete('email'),
-                
-                TextInput::make('password')
-                    ->label('New Password')
-                    ->password()
-                    ->required()
-                    ->confirmed()
-                    ->minLength(8),
-                
-                TextInput::make('password_confirmation')
-                    ->label('Confirm New Password')
-                    ->password()
-                    ->required(),
-            ]);
+        return [
+            // Remove the visible token field and use a hidden field instead
+            Hidden::make('token')
+                ->default($this->token),
+            
+            TextInput::make('email')
+                ->label('Email Address')
+                ->email()
+                ->required()
+                ->default($this->email)
+                ->autocomplete('email'),
+            
+            TextInput::make('password')
+                ->label('New Password')
+                ->password()
+                ->required()
+                ->confirmed()
+                ->minLength(8),
+            
+            TextInput::make('password_confirmation')
+                ->label('Confirm New Password')
+                ->password()
+                ->required(),
+        ];
     }
 
     public function resetPassword(): void
@@ -69,7 +71,7 @@ class AdminPasswordReset extends Page
             ],
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password),
+                    'password' => $password,
                     'remember_token' => Str::random(60),
                 ])->save();
             }

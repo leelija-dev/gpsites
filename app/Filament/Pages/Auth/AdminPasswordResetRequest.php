@@ -2,15 +2,17 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Password;
 
 class AdminPasswordResetRequest extends Page
 {
-    protected string $view = 'filament-panels::pages.auth.password-reset.request';
+    use InteractsWithForms;
+
+    protected string $view = 'filament.pages.auth.password-reset-request';
     protected static bool $shouldRegisterNavigation = false;
 
     public ?string $email = null;
@@ -22,16 +24,15 @@ class AdminPasswordResetRequest extends Page
         }
     }
 
-    public function form(Form $form): Form
+    protected function getFormSchema(): array
     {
-        return $form
-            ->schema([
-                TextInput::make('email')
-                    ->label('Email Address')
-                    ->email()
-                    ->required()
-                    ->autocomplete('email'),
-            ]);
+        return [
+            TextInput::make('email')
+                ->label('Email Address')
+                ->email()
+                ->required()
+                ->autocomplete('email'),
+        ];
     }
 
     public function request(): void
