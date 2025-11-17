@@ -33,16 +33,7 @@ export default {
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
-            components: {
-                ".btn-primary": {
-                    "@apply px-5 py-1 rounded-md text-white hover:text-black border border-white bg-primary hover:bg-white hover:border-black transition-all duration-300 ease-in-out":
-                        "",
-                },
-                ".btn-secondary": {
-                    "@apply px-5 py-1 rounded-md border border-black bg-white hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 ease-in-out":
-                        "",
-                },
-            },
+           
             fontSize: {
                 // Heading 1
                 "h1-xs": ["1.75rem", { lineHeight: "1.2" }],
@@ -104,6 +95,12 @@ export default {
                 "a-md": ["1.125rem", { lineHeight: "1.5" }],
                 // ... continue pattern as needed
             },
+            colors: {
+                primary: "#471396", // purple-700
+                secondary: "#B13BFF", // purple-700
+                darkPrimary:"#090040",
+                "primary-light": "#A78BFA", // purple-400
+            },
         },
     },
 
@@ -111,11 +108,11 @@ export default {
         function ({ addComponents }) {
             addComponents({
                 ".btn-primary": {
-                    "@apply px-5 py-2 rounded-[12px] text-white hover:text-black border border-white bg-primary hover:bg-white hover:border-primary transition-all duration-300 ease-in-out":
+                    "@apply bg-primary lg:text-[20px] text-[16px] hover:bg-white hover:text-primary hover:border-primary border-secondary border-[1px] text-white font-semibold py-3 px-8 rounded-[15px] transition-all duration-300":
                         "",
                 },
                 ".btn-secondary": {
-                    "@apply px-5 py-2 rounded-[12px] border border-primary bg-white hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 ease-in-out":
+                    "@apply bg-white lg:text-[20px] text-[16px] hover:bg-primary hover:text-white text-primary hover:border-secondary border-primary border-[1px]  font-semibold py-3 px-8 rounded-[15px] transition-all duration-300":
                         "",
                 },
             });

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* ===========================================
    BEAUTIFUL CUSTOM SCROLLBAR FOR ENTIRE PAGE
    Works on WebKit (Chrome, Edge, Safari) & Firefox
@@ -10,12 +9,12 @@
 
 /* WebKit Browsers (Chrome, Edge, Safari, Opera) */
 ::-webkit-scrollbar {
-    width: 12px;           /* Width for vertical scrollbar */
-    height: 12px;          /* Height for horizontal scrollbar */
+    width: 12px; /* Width for vertical scrollbar */
+    height: 12px; /* Height for horizontal scrollbar */
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;   /* Track color */
+    background: #f1f1f1; /* Track color */
     border-radius: 10px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -49,12 +48,13 @@ html {
 }
 
 /* Bonus: Apply to all scrollable elements */
-div, textarea, pre, code {
+div,
+textarea,
+pre,
+code {
     scrollbar-width: thin;
     scrollbar-color: #764ba2 #f1f1f1;
 }
-
-
 
 /* navbar css  */
 /* Custom animation for sidebar */
@@ -83,30 +83,48 @@ div, textarea, pre, code {
     opacity: 1;
 }
 
+/* feature block css  */
 
+.pricing-card {
+    transition: all 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+}
+
+.badge {
+    @apply absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 text-xs font-semibold text-white rounded-full;
+}
 
 /* faq block css  */
 .faq-item .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-    }
-    .faq-item.open .faq-answer {
-      max-height: 200px; /* Adjust as needed */
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-    .faq-item .icon {
-      transition: transform 0.3s ease;
-    }
-    .faq-item.open .icon {
-      transform: rotate(45deg);
-    }
-
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+.faq-item.open .faq-answer {
+    max-height: 200px; /* Adjust as needed */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.faq-item .icon {
+    transition: transform 0.3s ease;
+}
+.faq-item.open .icon {
+    transform: rotate(45deg);
+}
 
 /* footer css  */
 .gradient-text {
     background: linear-gradient(to right, #a855f7, #3b82f6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+
+/* form css  */
+
+.form-input-cus{
+    box-shadow: none !important;
 }
