@@ -88,6 +88,7 @@ class UserMail extends Page implements HasForms
     Mail::html($data['message'], function ($mail) use ($data) {
         $mail->to($data['email'])->subject($data['subject']);
     });
+    
     MailHistories::create([
                 'email' => $data['email'],
                 'subject' => $data['subject'],

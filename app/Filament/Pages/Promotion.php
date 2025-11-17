@@ -124,6 +124,7 @@ class Promotion extends Page implements HasForms
                 $mail->to($email)->subject($data['subject']);
             });
               // Store success history
+              
             MailHistories::create([
                 'email' => $email,
                 'subject' => $data['subject'],

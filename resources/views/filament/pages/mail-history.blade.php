@@ -29,10 +29,11 @@
                         @endif
                     </td>
                     <td class="p-2 border text-center">
-                        @if(strlen($promotional_mail->message)>30)
-                        {{substr($promotional_mail->message,0,10).'...'.substr($promotional_mail->message,-8)}}
+                        @php $messages=strip_tags( $promotional_mail->message)   @endphp
+                        @if(strlen( $messages )>20)
+                        {{substr($messages ,0,10).'...'.substr( $messages,-8)}}
                         @else
-                        {{ $promotional_mail->message }}
+                        {{ $messages  }}
                         @endif
                     </td>
                     <td class="p-2 border text-center">

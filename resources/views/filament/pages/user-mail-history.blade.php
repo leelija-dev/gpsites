@@ -20,17 +20,18 @@
                             <td class="p-2 border text-center">{{ $loop->iteration }}</td>
                             <td class="p-2 border text-center">{{ $user_mail->email }}</td>
                             <td class="p-2 border text-center">
-                            @if(strlen($user_mail->subject)> 20)
-                                {{ substr($user_mail->subject, 0, 8) . '...' . substr($user_mail->subject, -8) }}
+                            @if(strlen($user_mail->subject) > 20)
+                                {{substr($user_mail->subject, 0, 8) . '...' .  substr($user_mail->subject, -8) }}
                             @else
                                 {{ $user_mail->subject }}
                             @endif
                             </td>
                             <td class="p-2 border text-center">
-                                @if(strlen($user_mail->message)> 30)
-                                    {{ substr($user_mail->message, 0, 10) . '...' . substr($user_mail->message, -10) }}
+                                @php $message = strip_tags($user_mail->message) @endphp
+                                @if(strlen( $message )>20)
+                                    {{  substr($message, 0, 8) . '...' . substr($message, -8)  }}
                                 @else
-                                    {{ $user_mail->message }}
+                                    {{ $message }}
                                 @endif
                                 </td>
                             <td class="p-2 border text-center">
