@@ -8,6 +8,7 @@ use Filament\Pages\Page;
 use Filament\Forms\Components\RichEditor;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
+use App\Models\MailHistories;
 
 class UserMail extends Page implements HasForms
 {
@@ -16,9 +17,13 @@ class UserMail extends Page implements HasForms
     protected static ?string $slug= 'user-mail';
     protected static bool $shouldRegisterNavigation = false; 
 
-
-
     public ?string $email = null;
+    public $message = null;
+    public ?string $subject = null;
+
+
+    // public ?string $email = null;
+
     public $data = [];
 
    public function mount(): void
@@ -27,8 +32,7 @@ class UserMail extends Page implements HasForms
 
     $this->form->fill([
         'email' => $this->email,
-        'subject' => '',
-        'message' => '',
+    
     ]);
     
 }
@@ -40,7 +44,6 @@ class UserMail extends Page implements HasForms
             TextInput::make('email')
                 ->label(fn () => new HtmlString('Email Address<sup style="color:red">*</sup>'))
                 ->email()
-                ->readonly(true)
                 ->placeholder('Enter email address'),
             TextInput::make('subject')
                 ->label(fn () => new HtmlString('Subject<sup style="color:red">*</sup>'))
@@ -85,6 +88,16 @@ class UserMail extends Page implements HasForms
     Mail::html($data['message'], function ($mail) use ($data) {
         $mail->to($data['email'])->subject($data['subject']);
     });
+    
+    MailHistories::create([
+                'email' => $data['email'],
+                'subject' => $data['subject'],
+                'message' => $data['message'],
+                'status' => 1, //sent 
+                'sent_at' => 'user mail',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
     Notification::make()
         ->title('Promotion Email Sent Successfully!')

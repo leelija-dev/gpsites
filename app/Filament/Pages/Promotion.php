@@ -8,28 +8,27 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\DB;
+
 
 use BackedEnum;
 
 class Promotion extends Page implements HasForms
 {
     use InteractsWithForms;
-
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
     
     protected string $view = 'filament.pages.promotion';
     protected static ?string $title = 'Promotion';
     // protected static ?int $navigationSort = 98;
     protected  static ?string $slug = 'mail'; 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 98;
 
 
     public ?string $send_to = null;
@@ -125,6 +124,7 @@ class Promotion extends Page implements HasForms
                 $mail->to($email)->subject($data['subject']);
             });
               // Store success history
+              
             MailHistories::create([
                 'email' => $email,
                 'subject' => $data['subject'],
