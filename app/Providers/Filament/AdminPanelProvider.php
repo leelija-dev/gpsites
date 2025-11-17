@@ -82,7 +82,7 @@ class AdminPanelProvider extends PanelProvider
     //         ]);
     // }
 
-     public function panel(Panel $panel): Panel
+    public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
@@ -90,7 +90,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->authGuard('admin')
             ->login()
-            ->passwordReset() // Add this line to enable password reset
+            ->passwordReset()
+
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -106,23 +107,23 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 // custom navbar profile menu
-                'profile' => fn (Action $action) => $action
-                    ->label(fn () => auth('admin')->user()?->name ?? 'Profile') // show admin name
+                'profile' => fn(Action $action) => $action
+                    ->label(fn() => auth('admin')->user()?->name ?? 'Profile') // show admin name
                     ->icon('heroicon-o-user'),
-                    //->url(fn () => route('filament.admin.pages.update-profile')),
+                //->url(fn () => route('filament.admin.pages.update-profile')),
 
                 //my account link
                 Action::make('my-account')
                     ->label('My Account')
                     ->icon('heroicon-o-user-circle')
-                    ->url(fn () => route('filament.admin.pages.update-profile')),
+                    ->url(fn() => route('filament.admin.pages.update-profile')),
 
                 // You can add other actions (these will be shown in the menu where Actions are listed).
                 // Filament typically renders the Theme switcher automatically in the menu UI,
                 // so you usually don't need to add it manually.
 
                 // logout link
-                'logout' => fn (Action $action) => $action->label('Logout'),
+                'logout' => fn(Action $action) => $action->label('Logout'),
             ])
 
             ->middleware([
