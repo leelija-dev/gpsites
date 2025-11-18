@@ -6,7 +6,7 @@
     <div>
       <div class="flex items-center mb-4">
         <div class="w-14 min-w-14 h-14 min-h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3 overflow-hidden">
-         <img src="{{asset('images/bg-8.webp')}}" alt="Post 1" class="w-full h-full  object-cover" />
+          <img src="{{asset('images/bg-8.webp')}}" alt="Post 1" class="w-full h-full  object-cover" />
         </div>
         <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg font-bold gradient-text">SYNVO</h3>
       </div>
@@ -35,19 +35,32 @@
       <ul class="space-y-3 text-sm md:text-md lg:text-[1rem] leading-relaxed text-white">
         <li class="flex items-center">
           <i class="fa-solid fa-location-dot  text-secondary  mr-2"></i>
-          <p>1234 Elm Street, Suite 500<br>San Francisco, CA 94107</p>
+          <p>Taki Road, Bamunmura, Barasat, <br>
+            Kolkata - 700125, West Bengal, India</p>
         </li>
         <li class="flex items-center">
           <i class="fa-solid fa-phone  text-secondary  mr-2"></i>
-          <p>Call Us : +1 (555) 123-4567</p>
+
+          <p class="flex flex-col smx:w-auto w-full gap-[5px] lg:items-center items-start">
+
+            <a href="tel:+916290101838" class="hover:text-purple-400 transition-all duration-300 ease-in-out inline-block">
+              +91 629 010 1838
+            </a>
+            <a href="tel:+913325849017" class="hover:text-purple-400 transition-all duration-300 ease-in-out inline-block">
+              +91 332 584 9017
+            </a>
+
+          </p>
         </li>
         <li class="flex items-center">
           <i class="fa-solid fa-envelope  text-secondary  mr-2"></i>
-          <p>Mail: synvo@gmail.com</p>
+          <a href="mailto:info@leelija.com" class="hover:text-purple-400 transition-all duration-300 ease-in-out inline-block">
+            info@leelija.com
+          </a>
         </li>
         <li class="flex items-center">
-          <i class="fa-solid fa-clock  text-secondary  mr-2"></i>
-          <p>Office : 8:00 AM - 7:00 PM</p>
+          <i class="fa-solid fa-clock  text-secondary  mr-2 "></i>
+          <p class="hover:text-purple-400 transition-all duration-300 ease-in-out inline-block">Office : 10:00 AM - 6:30 PM</p>
         </li>
       </ul>
     </div>
@@ -56,25 +69,25 @@
     <div>
       <h4 class="xl:text-2xl sm:text-xl mb-4 text-lg font-semibold  text-white ">Our Services</h4>
       <ul class="space-y-2 text-sm md:text-md lg:text-[1rem] leading-relaxed text-white">
-        <li class="flex items-center hover:text-purple-400 transition cursor-pointer">
+        <li class="flex items-center  ">
           <i class="fa-solid fa-angle-right  text-secondary  text-xs mr-2"></i>
-          Database Solution
+          <a href="#" class="inline-block hover:text-purple-400 transition-all duration-300 ease-in-out"> Database Solution</a>
         </li>
-        <li class="flex items-center hover:text-purple-400 transition cursor-pointer">
+        <li class="flex items-center  ">
           <i class="fa-solid fa-angle-right  text-secondary  text-xs mr-2"></i>
-          Data Protection
+          <a href="#" class="inline-block hover:text-purple-400 transition-all duration-300 ease-in-out"> Data Protection</a>
         </li>
-        <li class="flex items-center hover:text-purple-400 transition cursor-pointer">
+        <li class="flex items-center  ">
           <i class="fa-solid fa-angle-right  text-secondary  text-xs mr-2"></i>
-          App Development
+          <a href="#" class="inline-block hover:text-purple-400 transition-all duration-300 ease-in-out"> App Development</a>
         </li>
-        <li class="flex items-center hover:text-purple-400 transition cursor-pointer">
+        <li class="flex items-center  ">
           <i class="fa-solid fa-angle-right  text-secondary  text-xs mr-2"></i>
-          Machine Learning
+          <a href="#" class="inline-block hover:text-purple-400 transition-all duration-300 ease-in-out"> Machine Learning</a>
         </li>
-        <li class="flex items-center hover:text-purple-400 transition cursor-pointer">
+        <li class="flex items-center  ">
           <i class="fa-solid fa-angle-right  text-secondary  text-xs mr-2"></i>
-          Helpdesk Services
+          <a href="#" class="inline-block hover:text-purple-400 transition-all duration-300 ease-in-out"> Helpdesk Services</a>
         </li>
       </ul>
     </div>
