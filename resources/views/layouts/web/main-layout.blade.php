@@ -7,12 +7,15 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
 
     <link rel="stylesheet" href="{{asset('web/css/staging.css')}}">
     <link rel="stylesheet" href="{{asset('web/css/animation.css')}}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 
 
 
@@ -28,14 +31,18 @@
 
     <!-- ==== NEW WRAPPER ==== -->
     <div id="smooth-wrapper">
+
         <x-web.navbar />
+
         <div id="smooth-content">
 
             <main class="">
                 @yield('content')
             </main>
 
+
             <x-web.footer />
+
         </div>
     </div>
 
@@ -49,39 +56,33 @@
     <!-- <script src="{{asset('web/js/gsap/gsap.min.js')}}"></script> -->
     <!-- <script src="{{asset('web/js/gsap/ScrollTrigger.min.js')}}"></script> -->
     <!-- <script src="{{asset('web/js/gsap/Draggable.min.js')}}"></script> -->
-    
-    
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- gsap smooth scrolling  -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // -----------------------------------------------------------------
-            // 1. Initialise ScrollSmoother
-            // -----------------------------------------------------------------
-            let smoother = ScrollSmoother.create({
-                wrapper: '#smooth-wrapper', // outer container
-                content: '#smooth-content', // inner scrolling content
-                smooth: 1, // seconds it takes to catch up
-                // effects: true, // enables data-speed / data-lag
-                // smoothTouch: 0.1, // optional: light smooth on mobile
-                // normalizeScroll: true, // fixes iOS bounce
-                // ignoreMobileResize: true
-            });
 
-            // -----------------------------------------------------------------
-            // 2. (Optional) Refresh on dynamic content / AJAX
-            // -----------------------------------------------------------------
-            // If you load new sections via Livewire, Inertia, etc.:
-            // window.addEventListener('content-updated', () => smoother.refresh());
+            // If current page is NOT checkout → enable ScrollSmoother
+            if (!window.location.pathname.includes('/checkout')) {
 
-            // -----------------------------------------------------------------
-            // 3. (Optional) Pin navbar while scrolling
-            // -----------------------------------------------------------------
+                let smoother = ScrollSmoother.create({
+                    wrapper: '#smooth-wrapper',
+                    content: '#smooth-content',
+                    smooth: 1,
+                });
 
+                // If dynamic content reloads
+                // window.addEventListener('content-updated', () => smoother.refresh());
+            }
+
+            // Else: Do nothing → smooth scroll disabled on checkout
         });
     </script>
 
