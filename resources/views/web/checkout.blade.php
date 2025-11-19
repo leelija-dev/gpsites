@@ -254,7 +254,13 @@
                         </label>
 
                         <!-- Button -->
-                        <button id="pay-btn" type="submit" class="w-full mt-6 bg-blue-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-700 transition-all">
+                        <!-- PayPal Button Container -->
+                        <div id="paypal-button-container" class="mt-6">
+                            <p class="text-gray-500 text-sm mb-4">Please select a package to proceed with payment</p>
+                        </div>
+
+                        <!-- Hidden submit button (kept for form validation if needed) -->
+                        <button id="pay-btn" type="submit" class="hidden w-full mt-6 bg-blue-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-700 transition-all">
                             Pay
                         </button>
                     </div>
@@ -396,9 +402,13 @@
 
 @endsection
 @section('scripts')
-<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+<script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=USD&components=buttons"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Pass plan data from PHP to JavaScript
+        const planData = @json($plan ?? null);
+
         const form = document.querySelector('form');
         const inputs = document.querySelectorAll('.floating-label-group input, .floating-label-group select');
         const selectedWrapper = document.getElementById('selected-package-wrapper');
@@ -442,15 +452,171 @@
                     let digits = value.replace(/\D/g, '');
                     if (digits.length > 10) digits = digits.slice(0, 10);
                     if (digits.length <= 3) {
-                        value = digits;
+                        this.value = digits;
                     } else if (digits.length <= 6) {
-                        value = digits.slice(0, 3) + '-' + digits.slice(3);
+                        this.value = digits.slice(0, 3) + '-' + digits.slice(3);
                     } else {
-                        value = digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6);
+                        this.value = digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6);
                     }
                 }
-                this.value = value;
             });
+        }
+
+        // Initialize PayPal Buttons
+        let paypalButtons;
+        let selectedPackage = null;
+
+        function initPayPalButtons() {
+            // Destroy existing buttons if they exist
+            if (paypalButtons) {
+                paypalButtons.close();
+            }
+
+            // Check if a package is selected
+            const packageElement = selectedWrapper.querySelector('[data-item="1"]');
+            if (!packageElement) {
+                return; // No package selected
+            }
+
+            selectedPackage = {
+                id: packageElement.dataset.packageId,
+                price: parseFloat(packageElement.dataset.price)
+            };
+
+            // Render PayPal buttons
+            paypalButtons = paypal.Buttons({
+                createOrder: function(data, actions) {
+                    // Validate form before creating PayPal order
+                    let isValid = true;
+                    inputs.forEach(input => {
+                        if (!validateField(input)) isValid = false;
+                    });
+
+                    const termsCheckbox = document.querySelector('input[type="checkbox"][required]');
+                    if (termsCheckbox && !termsCheckbox.checked) {
+                        isValid = false;
+                    }
+
+                    if (!isValid) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Please Complete the Form',
+                            html: `
+                                <ul class="text-left text-sm">
+                                    ${!termsCheckbox?.checked ? '<li>Accept Privacy & Terms Policy</li>' : ''}
+                                    ${[...inputs].some(i => i.closest('.floating-label-group')?.classList.contains('error')) ? '<li>Fix highlighted fields</li>' : ''}
+                                </ul>
+                            `,
+                            confirmButtonColor: '#ef4444'
+                        });
+                        throw new Error('Form validation failed');
+                    }
+
+                    // Create order via AJAX
+                    return fetch('/checkout/create-order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            },
+                            // body: JSON.stringify({
+                            //     plan_id: selectedPackage.id,
+                            //     billing_info: getBillingInfo()
+                            // })
+                            body: JSON.stringify({
+                                plan_id: selectedPackage.id,
+                                billing_info: getBillingInfo()
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                throw new Error(data.message || 'Failed to create order');
+                            }
+                            return data.order_id;
+                        });
+                },
+                onApprove: function(data, actions) {
+                    // Capture the payment
+                    return fetch('/checkout/capture-payment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            },
+                            body: JSON.stringify({
+                                order_id: data.orderID,
+                                billing_info: getBillingInfo(),
+                                package: selectedPackage
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Redirect to success page
+                                window.location.href = `/checkout/success?transaction_id=${data.transaction_id}`;
+                            } else {
+                                throw new Error(data.message || 'Payment failed');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Payment capture error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Payment Failed',
+                                text: 'There was an error processing your payment. Please try again.',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        });
+                },
+                onCancel: function(data) {
+                    // Redirect to cancel page or show message
+                    window.location.href = '/checkout/cancel';
+                },
+                // onError: function(err) {
+                //     console.error('PayPal error:', err);
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Payment Error',
+                //         text: 'There was an error with PayPal. Please try again.',
+                //         confirmButtonColor: '#ef4444'
+                //     });
+                // }
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+
+                    let errorMessage = 'There was an error with PayPal. Please try again.';
+
+                    if (err.message && err.message.includes('419')) {
+                        errorMessage = 'Session expired. Please refresh the page and try again.';
+                    } else if (err.message && err.message.includes('authentication')) {
+                        errorMessage = 'Payment service temporarily unavailable. Please try again later.';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Error',
+                        text: errorMessage,
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            });
+
+            paypalButtons.render('#paypal-button-container');
+        }
+
+        function getBillingInfo() {
+            return {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                address1: document.getElementById('address1').value,
+                address2: document.getElementById('address2').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip: document.getElementById('zip').value,
+                phone: document.getElementById('phone').value
+            };
         }
 
         // Floating Labels + Validation
@@ -461,8 +627,7 @@
             input.addEventListener('focus', () => group.classList.add('focused'));
             input.addEventListener('blur', () => {
                 group.classList.remove('focused');
-                if (input.value.trim()) group.classList.add('has-value');
-                else group.classList.remove('has-value');
+                input.value.trim() ? group.classList.add('has-value') : group.classList.remove('has-value');
                 validateField(input);
             });
             input.addEventListener('input', () => clearError(input));
@@ -497,52 +662,28 @@
                 showError(input, 'This field is required');
                 return false;
             }
-
-            // Email validation
             if (id === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                 showError(input, 'Please enter a valid email');
                 return false;
             }
-
-            // Phone validation - ONLY digits, +, and -
-            if (id === 'phone' && value) {
-                const clean = value.replace(/[^0-9]/g, ''); // Remove + and - to count digits
-                const hasPlusAtStart = value.startsWith('+');
-
-                if (!/^(\+?[0-9-]*)$/.test(value)) {
-                    showError(input, 'Only numbers, + (at start), and - are allowed');
-                    return false;
-                }
-                if (clean.length < 7) {
-                    showError(input, 'Phone number too short (min 7 digits)');
-                    return false;
-                }
-                if (clean.length > 15) {
-                    showError(input, 'Phone number too long');
-                    return false;
-                }
-                if (value.includes('+') && !hasPlusAtStart) {
-                    showError(input, '+ sign only allowed at the beginning');
-                    return false;
-                }
-
-                // Save clean digits-only version for backend
-                input.dataset.cleanPhone = hasPlusAtStart ? '+' + clean : clean;
-                return true;
+            if (id === 'phone' && value && !/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value.replace(/\s/g, ''))) {
+                showError(input, 'Invalid phone number');
+                return false;
             }
-
-            // ZIP code
-            if (id === 'zip' && value && !/^\d{5}(-\d{4})?$/.test(value)) {
+            if (id === 'zip' && value && !/^\d{6}(-\d{4})?$/.test(value)) {
                 showError(input, 'Invalid ZIP code');
                 return false;
             }
-
             return true;
         }
 
-        // === PACKAGE SELECTION (unchanged) ===
+        // REPLACE PACKAGE - ONLY ONE PACKAGE ALLOWED AT A TIME
         function replacePackage(pkg) {
+            // Remove all existing packages
             selectedWrapper.innerHTML = '';
+
+            const wasEmpty = selectedWrapper.children.length === 0;
+
             const row = document.createElement('div');
             row.className = 'flex items-center justify-between py-5 border-b last:border-0 bg-gray-50 rounded-lg mb-3 px-4';
             row.dataset.item = '1';
@@ -572,37 +713,53 @@
             selectedWrapper.appendChild(row);
             updateTotals();
 
+            // Initialize PayPal buttons after package selection
+            setTimeout(initPayPalButtons, 100);
+
+            // Feedback message
             Swal.fire({
                 icon: 'success',
-                title: 'Package Selected!',
+                title: wasEmpty ? 'Package Selected!' : 'Package Changed!',
                 text: `${pkg.name} (ID: ${pkg.id.toUpperCase()})`,
                 timer: 1800,
                 showConfirmButton: false
             });
         }
 
+        // "Get Started" buttons inside modal - REPLACE package
         document.querySelectorAll('.package-get-started').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
+
                 const pkg = {
                     id: this.dataset.packageId,
                     name: this.dataset.packageName,
                     price: parseFloat(this.dataset.packagePrice)
                 };
+
                 replacePackage(pkg);
+
+                // Close modal
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             });
         });
 
+        // Remove package (X button)
         selectedWrapper.addEventListener('click', e => {
             if (e.target.classList.contains('remove-pkg')) {
                 e.target.closest('[data-item="1"]').remove();
                 updateTotals();
+
                 if (selectedWrapper.children.length === 0) {
                     subtotalEl.textContent = '$0.00';
                     grandTotalEl.textContent = '$0.00';
                     payBtn.textContent = 'Pay $0.00';
+                    // Remove PayPal buttons when no package selected
+                    const paypalContainer = document.getElementById('paypal-button-container');
+                    if (paypalContainer) {
+                        paypalContainer.innerHTML = '<p class="text-gray-500 text-sm">Please select a package to proceed with payment</p>';
+                    }
                 }
             }
         });
@@ -618,8 +775,10 @@
             payBtn.textContent = `Pay ${amount}`;
         }
 
-        // Collapsible Summary & Modal (unchanged)
-        if (hiddenSummary) hiddenSummary.classList.add('collapsed');
+        // Collapsible Summary
+        if (hiddenSummary) {
+            hiddenSummary.classList.add('collapsed');
+        }
         if (toggleSummaryBtn) {
             toggleSummaryBtn.classList.replace('fa-chevron-up', 'fa-chevron-down');
             toggleSummaryBtn.addEventListener('click', () => {
@@ -629,8 +788,10 @@
             });
         }
 
+        // Modal Controls
         const modalToggle = document.getElementById('modal-package-toggle');
         const modalClose = document.getElementById('modal-close');
+
         if (modalToggle) {
             modalToggle.addEventListener('click', () => {
                 modal.classList.remove('hidden');
@@ -655,26 +816,35 @@
         // Form Submit
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+
             let isValid = true;
 
+            // Validate inputs
             inputs.forEach(input => {
                 if (!validateField(input)) isValid = false;
             });
 
+            // Terms checkbox
             const termsCheckbox = document.querySelector('input[type="checkbox"][required]');
             const termsLabel = termsCheckbox?.closest('label');
+
             if (termsCheckbox && !termsCheckbox.checked) {
                 isValid = false;
                 if (termsLabel) {
                     termsLabel.style.color = '#ef4444';
                     termsLabel.style.fontWeight = '600';
                 }
-            } else if (termsLabel) {
-                termsLabel.style.color = '';
-                termsLabel.style.fontWeight = '';
+            } else {
+                if (termsLabel) {
+                    termsLabel.style.color = '';
+                    termsLabel.style.fontWeight = '';
+                }
             }
 
-            if (selectedWrapper.children.length === 0) isValid = false;
+            // Must have exactly one package
+            if (selectedWrapper.children.length === 0) {
+                isValid = false;
+            }
 
             if (!isValid) {
                 Swal.fire({
@@ -692,10 +862,33 @@
                 return;
             }
 
+            // Confirmation dialog
             const result = await Swal.fire({
                 icon: 'question',
                 title: 'Confirm Your Order',
-                html: `...`, // (your existing confirmation HTML)
+                html: `
+                    <div class="text-left max-h-96 overflow-y-auto">
+                        ${Array.from(selectedWrapper.children).map(row => {
+                            const name = row.querySelector('.package-name')?.textContent || 'Unknown';
+                            const id = row.querySelector('.package-id')?.textContent || '';
+                            const price = row.querySelector('.package-price')?.textContent || '$0.00';
+                            return `
+                                <div class="flex justify-between mb-3 p-3 bg-gray-50 rounded">
+                                    <div>
+                                        <strong>${name}</strong><br>
+                                        <small class="text-gray-500">ID: ${id}</small>
+                                    </div>
+                                    <span class="font-bold">${price}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                        <hr class="my-4 border-gray-300">
+                        <div class="flex justify-between text-xl font-bold">
+                            <span>Total:</span>
+                            <span>${grandTotalEl.textContent}</span>
+                        </div>
+                    </div>
+                `,
                 showCancelButton: true,
                 confirmButtonText: 'Yes, Complete Purchase',
                 cancelButtonText: 'Review Order',
@@ -711,8 +904,19 @@
                     timer: 3000,
                     showConfirmButton: false
                 });
+                // form.submit(); // Uncomment when live
             }
         });
+
+        // Auto-select package if plan data is available
+        if (planData) {
+            const autoSelectedPackage = {
+                id: planData.id.toString(),
+                name: planData.name,
+                price: parseFloat(planData.price)
+            };
+            replacePackage(autoSelectedPackage);
+        }
 
         updateTotals();
     });

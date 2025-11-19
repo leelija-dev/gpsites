@@ -7,9 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
+use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
+use PayPalCheckoutSdk\Core\PayPalHttpClient;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
+use PayPalCheckoutSdk\Core\ProductionEnvironment;
 
 class CheckoutController extends Controller
 {
+    private function getPayPalClient(): PayPalHttpClient
+    {
+        $environment = config('paypal.mode') === 'live' 
+            ? new ProductionEnvironment(config('paypal.client_id'), config('paypal.client_secret'))
+            : new SandboxEnvironment(config('paypal.client_id'), config('paypal.client_secret'));
+
+        return new PayPalHttpClient($environment);
+    }
+
     /**
      * Display the checkout page for a specific plan
      */
@@ -38,18 +52,48 @@ class CheckoutController extends Controller
      */
     public function createOrder(Request $request): JsonResponse
     {
-        $request->validate([
-            'plan_id' => 'required|exists:plans,id',
-        ]);
+        try {
+            $request->validate([
+                'plan_id' => 'required|string',
+                'billing_info' => 'required|array'
+            ]);
 
-        $plan = Plan::findOrFail($request->plan_id);
+            $plan = Plan::findOrFail($request->plan_id);
+            $client = $this->getPayPalClient();
+            
+            $orderRequest = new OrdersCreateRequest();
+            $orderRequest->prefer('return=representation');
+            $orderRequest->body = [
+                "intent" => "CAPTURE",
+                "purchase_units" => [[
+                    "reference_id" => $plan->id,
+                    "amount" => [
+                        "value" => number_format($plan->price, 2, '.', ''),
+                        "currency_code" => "USD"
+                    ],
+                    "description" => "Package: " . $plan->name
+                ]],
+                "application_context" => [
+                    "cancel_url" => route('checkout.cancel'),
+                    "return_url" => route('checkout.success')
+                ]
+            ];
 
-        // PayPal order creation logic here
-        return response()->json([
-            'success' => true,
-            'order_id' => 'PAYPAL_ORDER_' . time() . '_' . $plan->id,
-            'plan' => $plan
-        ]);
+            $response = $client->execute($orderRequest);
+            
+            return response()->json([
+                'success' => true,
+                'order_id' => $response->result->id,
+                'status' => $response->result->status
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('PayPal order creation failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create PayPal order: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -57,25 +101,29 @@ class CheckoutController extends Controller
      */
     public function capturePayment(Request $request): JsonResponse
     {
-        $request->validate([
-            'order_id' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'order_id' => 'required|string',
+            ]);
 
-        // PayPal SDK integration would go here
-        // For now, we'll simulate the capture
-        
-        // In a real implementation, you would:
-        // 1. Use PayPal SDK to capture the payment
-        // 2. Save order details to database
-        // 3. Send confirmation email
-        // 4. Return success/failure response
-
-        // Simulate successful payment
-        return response()->json([
-            'success' => true,
-            'transaction_id' => 'TXN_' . time(),
-            'status' => 'COMPLETED'
-        ]);
+            $client = $this->getPayPalClient();
+            $captureRequest = new OrdersCaptureRequest($request->order_id);
+            
+            $response = $client->execute($captureRequest);
+            
+            return response()->json([
+                'success' => true,
+                'transaction_id' => $response->result->purchase_units[0]->payments->captures[0]->id,
+                'status' => $response->result->status
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('PayPal payment capture failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment capture failed: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -105,7 +153,6 @@ class CheckoutController extends Controller
      */
     public function cancel(Request $request): RedirectResponse
     {
-        // Redirect back to checkout or show error message
         return redirect()->route('home')->with('error', 'Payment was cancelled.');
     }
 }

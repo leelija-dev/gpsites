@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 <!-- hero section  -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden lg:py-16 py-12 px-6">
     <!-- Background decorative circles -->
@@ -308,53 +307,59 @@
         <!-- Pricing Cards Wrapper -->
         <div class="max-w-7xl mx-auto lg:px-6 px-0 grid grid-cols-1 md:grid-cols-{{ $plans->count() }} gap-8 pb-16">
             @foreach($plans as $index => $plan)
-                @php
-                    $isHighlighted = $index === 1; // Make the middle plan highlighted
-                    $planIcons = ['🚀', '⚙️', '👑', '💎', '⭐'];
-                    $planBadges = ['STARTER BOOST', 'GROWTH ACCELERATOR', 'MARKET LEADER', 'ENTERPRISE', 'PREMIUM'];
-                    $icon = $planIcons[$index] ?? '🚀';
-                    $badge = $planBadges[$index] ?? 'PLAN';
-                @endphp
+            @php
+            $isHighlighted = $index === 1; // Make the middle plan highlighted
+            $planIcons = ['🚀', '⚙️', '👑', '💎', '⭐'];
+            $planBadges = ['STARTER BOOST', 'GROWTH ACCELERATOR', 'MARKET LEADER', 'ENTERPRISE', 'PREMIUM'];
+            $icon = $planIcons[$index] ?? '🚀';
+            $badge = $planBadges[$index] ?? 'PLAN';
+            @endphp
 
-                <!-- Plan Card -->
-                <div class="bg-{{ $isHighlighted ? 'gradient-to-br from-black to-primary text-white' : 'white' }} rounded-2xl {{ $isHighlighted ? 'shadow-xl' : 'shadow-md border border-gray-100' }} px-8 pb-8 pt-0 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
-                    <div class="text-center">
-                        <div class="bg-{{ $isHighlighted ? 'purple-600 text-white' : 'purple-100 text-purple-600' }} relative top-[-3px] py-[7px] px-[22px] mb-[3rem] rounded-b-[10px] text-sm font-semibold inline-block">
-                            {{ $badge }}
-                        </div>
-
-                        <div class="flex justify-center mb-6">
-                            <div class="w-16 h-16 {{ $isHighlighted ? 'bg-white/20' : 'bg-purple-50' }} rounded-full flex justify-center items-center">
-                                <span class="{{ $isHighlighted ? 'text-white' : 'text-purple-600' }} text-3xl">{{ $icon }}</span>
-                            </div>
-                        </div>
-
-                        <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
-                        <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-base font-medium">/{{ $plan->duration }}</span></p>
-                        <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed {{ $plan->duration === 'month' ? 'Monthly' : 'Annually' }}</p>
-                        <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
-                            {{ $plan->description ?? 'All Features Included' }}
-                        </span>
+            <!-- Plan Card -->
+            <div class="bg-{{ $isHighlighted ? 'gradient-to-br from-black to-primary text-white' : 'white' }} rounded-2xl {{ $isHighlighted ? 'shadow-xl' : 'shadow-md border border-gray-100' }} px-8 pb-8 pt-0 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
+                <div class="text-center">
+                    <div class="bg-{{ $isHighlighted ? 'purple-600 text-white' : 'purple-100 text-purple-600' }} relative top-[-3px] py-[7px] px-[22px] mb-[3rem] rounded-b-[10px] text-sm font-semibold inline-block">
+                        {{ $badge }}
                     </div>
 
-                    @if($plan->features && $plan->features->count() > 0)
-                        <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
-                            @foreach($plan->features->where('is_active', true) as $feature)
-                                <li>• {{ $feature->feature }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
-                            <li>• Feature 1</li>
-                            <li>• Feature 2</li>
-                            <li>• Feature 3</li>
-                        </ul>
-                    @endif
-
-                    <div class="text-center my-10">
-                        <a href="{{ route('checkout') }}?plan={{ $plan->id }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
+                    <div class="flex justify-center mb-6">
+                        <div class="w-16 h-16 {{ $isHighlighted ? 'bg-white/20' : 'bg-purple-50' }} rounded-full flex justify-center items-center">
+                            <span class="{{ $isHighlighted ? 'text-white' : 'text-purple-600' }} text-3xl">{{ $icon }}</span>
+                        </div>
                     </div>
+
+                    <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
+                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-base font-medium">/{{ $plan->duration }}</span></p>
+                    <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed {{ $plan->duration === 'month' ? 'Monthly' : 'Annually' }}</p>
+                    <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
+                        {{ $plan->description ?? 'All Features Included' }}
+                    </span>
                 </div>
+
+                @if($plan->features && $plan->features->count() > 0)
+                <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
+                    @foreach($plan->features->where('is_active', true) as $feature)
+                    <li>• {{ $feature->feature }}</li>
+                    @endforeach
+                </ul>
+                @else
+                <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
+                    <li>• Feature 1</li>
+                    <li>• Feature 2</li>
+                    <li>• Feature 3</li>
+                </ul>
+                @endif
+
+                <!-- <div class="text-center my-10">
+                        <a href="{{ route('checkout') }}?plan={{ $plan->id }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
+                    </div> -->
+
+                @auth
+                <a href="{{ route('checkout') }}?plan={{ $plan->id }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
+                @else
+                <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
+                @endauth
+            </div>
             @endforeach
         </div>
     </div>

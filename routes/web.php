@@ -11,7 +11,7 @@ Route::get('/', function () {
         ->get();
     
     return view('web.home', compact('plans'));
-});
+})->name('home');
 
 Route::get('/about', function () {
     return view('web.about');
