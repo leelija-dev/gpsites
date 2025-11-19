@@ -418,9 +418,9 @@
 </section>
 
 <section class="bg-darkPrimary min-h-[250px] flex justify-center items-center lg:py-16 py-12 px-6 ">
-    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between text-white">
+    <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between text-white">
         <!-- Left Section: Text -->
-        <div class="mb-6 md:mb-0 text-center md:text-left">
+        <div class="mb-6 lg:mb-0 text-center md:text-left">
             <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
  font-bold leading-tight">
                 Build Websites Rapidly With<br>
@@ -465,7 +465,7 @@
 
             <!-- Right Section - Content -->
             <div class="w-full lg:w-1/2 px-0 lg:px-16 flex flex-col justify-center space-y-8 ">
-                <div>
+                <div class="lg:text-left text-center">
                     <!-- Badge -->
                     <div class="inline-flex items-center gap-2 bg-indigo-100 text-primary text-p-xs sm:text-p-sm md:text-p-md  font-semibold px-3 py-1 rounded-full w-fit">
                         <span class="w-2 h-2 bg-primary rounded-full"></span>
@@ -481,7 +481,7 @@
                 </div>
 
                 <!-- Description -->
-                <p class="text-gray-600   text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">
+                <p class="text-gray-600   text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl lg:text-left text-center">
                     Energetically evisculate an expanded array of meta-services after cross-media strategic theme areas.
                     Interactively simplify interactive customer service before fully tested relationship parallel task high standards.
                 </p>
