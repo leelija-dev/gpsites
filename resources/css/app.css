@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Regular */
+@font-face {
+  font-family: 'TT Norms Pro';
+  src:  url('../font/ttnormspro-normal.woff2') format('woff2'),
+        url('../font/ttnormspro-normal.woff') format('woff');
+
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'TT Norms Pro';
+  src:  url('../font/ttnormspro-bold.woff2') format('woff2'),
+        url('../font/ttnormspro-bold.woff') format('woff');
+       
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Add more weights if you have them, e.g. */
+@font-face {
+  font-family: 'TT Norms Pro';
+  src:  url('../font/ttnormspro-normal.woff2') format('woff2'),
+        url('../font/ttnormspro-normal.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+body,h1,h2,h3,h4,h5,h6,p,span,li,ul,label,input,div,section{
+    font-family: 'TT Norms Pro' !important;
+}
+
+
+
+/* Repeat for every weight/style you have (Light 300, Medium 500, ExtraBold 800, etc.) */
+
+
+
+
+
 /* ===========================================
    BEAUTIFUL CUSTOM SCROLLBAR FOR ENTIRE PAGE
    Works on WebKit (Chrome, Edge, Safari) & Firefox
@@ -56,6 +100,10 @@ code {
     scrollbar-color: #764ba2 #f1f1f1;
 }
 
+
+
+
+
 /* navbar css  */
 /* Custom animation for sidebar */
 .sidebar-enter-active,
@@ -82,6 +130,116 @@ code {
 .overlay-leave-from {
     opacity: 1;
 }
+
+
+
+/* hero section custom range slider css  */
+
+    .range-slider {
+        position: relative;
+        height: 40px;
+    }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 22px;
+        width: 22px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #471396;
+        box-shadow: 0 4px 15px rgba(106, 54, 255, 0.4);
+        cursor: pointer;
+        pointer-events: auto !important;
+        z-index: 10;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #471396;
+        /* Keep this */
+        box-shadow: 0 4px 15px rgba(106, 54, 255, 0.4);
+        cursor: pointer;
+        pointer-events: auto;
+
+        /* Remove this line → border: none; */
+        /* Or if you really need to reset something else, be specific */
+        outline: none;
+        /* Usually safe to add */
+        -moz-appearance: none;
+        /* Important: removes default Firefox styling */
+    }
+
+    .track {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 9999px;
+        width: 100%;
+        z-index: 1;
+    }
+
+    .fill {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 8px;
+        background: #9049DB;
+        border: 1px solid #5b5b5b;
+        border-radius: 9999px;
+        z-index: 1;
+        transition: all 0.1s ease;
+    }
+
+    .tooltip {
+        position: absolute;
+        top: -32px;
+        background: white;
+        filter: drop-shadow(0px 1px 5px #bdb8b8d4);
+        color: #867E7E;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+        z-index: 50;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    .tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -6px;
+        border: 6px solid transparent;
+        border-top-color: white;
+    }
+
+    /* Show only when dragging */
+    .tooltip.active {
+        opacity: 1;
+    }
+
 
 /* feature block css  */
 

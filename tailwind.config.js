@@ -108,11 +108,11 @@ export default {
         function ({ addComponents }) {
             addComponents({
                 ".btn-primary": {
-                    "@apply bg-primary lg:text-[20px] text-[16px] hover:bg-white hover:text-primary hover:border-primary border-secondary border-[1px] text-white font-semibold py-3 px-8 rounded-[15px] transition-all duration-300":
+                    "@apply bg-primary lg:text-[20px] text-[16px] hover:bg-white hover:text-primary hover:border-primary border-secondary border-[1px] text-white font-medium py-3 px-8 rounded-[15px] transition-all duration-300":
                         "",
                 },
                 ".btn-secondary": {
-                    "@apply bg-white lg:text-[20px] text-[16px] hover:bg-primary hover:text-white text-primary hover:border-secondary border-primary border-[1px]  font-semibold py-3 px-8 rounded-[15px] transition-all duration-300":
+                    "@apply bg-white lg:text-[20px] text-[16px] hover:bg-primary hover:text-white text-primary hover:border-secondary border-primary border-[1px]  font-medium py-3 px-8 rounded-[15px] transition-all duration-300":
                         "",
                 },
             });

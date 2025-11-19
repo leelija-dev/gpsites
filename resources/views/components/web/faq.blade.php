@@ -1,5 +1,5 @@
 <section class="lg:py-16 py-12 px-6">
-  <div class="container mx-auto px-4 py-12">
+  <div class="container mx-auto px-4 ">
     <!-- Title -->
     <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
  font-bold text-center text-gray-900 mb-10">
