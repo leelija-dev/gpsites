@@ -1,9 +1,16 @@
 <?php
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Plan;
 
 Route::get('/', function () {
-    return view('web.home');
+    $plans = Plan::with('features')
+        ->where('is_active', true)
+        ->orderBy('price', 'asc')
+        ->get();
+    
+    return view('web.home', compact('plans'));
 });
 
 Route::get('/about', function () {
@@ -12,9 +19,14 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('web.contact');
 });
-Route::get('/checkout', function () {
-    return view('web.checkout');
-});
+
+// Checkout routes
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+Route::post('/checkout/create-order', [CheckoutController::class, 'createOrder'])->name('checkout.create-order');
+Route::post('/checkout/capture-payment', [CheckoutController::class, 'capturePayment'])->name('checkout.capture-payment');
+Route::post('/checkout/webhook', [CheckoutController::class, 'webhook'])->name('checkout.webhook');
+Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
