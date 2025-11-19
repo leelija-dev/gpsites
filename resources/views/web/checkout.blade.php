@@ -466,18 +466,12 @@
             return true;
         }
 
-        // ADD PACKAGE WITH CLEAN & SAFE STRUCTURE
-        function addPackage(pkg) {
-            if ([...selectedWrapper.children].some(el => el.dataset.packageId === pkg.id)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Already Added',
-                    text: `${pkg.name} is already selected!`,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                return;
-            }
+        // REPLACE PACKAGE - ONLY ONE PACKAGE ALLOWED AT A TIME
+        function replacePackage(pkg) {
+            // Remove all existing packages
+            selectedWrapper.innerHTML = '';
+
+            const wasEmpty = selectedWrapper.children.length === 0;
 
             const row = document.createElement('div');
             row.className = 'flex items-center justify-between py-5 border-b last:border-0 bg-gray-50 rounded-lg mb-3 px-4';
@@ -501,40 +495,50 @@
                 </div>
                 <div class="text-right">
                     <p class="package-price text-xl font-bold text-gray-900">${fmt.format(pkg.price)}</p>
-                    <button type="button" class="remove-pkg text-red-500 hover:text-red-700 text-3xl font-light mt-2">&times;</button>
+                    <button type="button" class="remove-pkg text-red-500 hover:text-red-700 text-3xl font-light mt-2">×</button>
                 </div>
             `;
 
             selectedWrapper.appendChild(row);
             updateTotals();
 
+            // Feedback message
             Swal.fire({
                 icon: 'success',
-                title: 'Added!',
+                title: wasEmpty ? 'Package Selected!' : 'Package Changed!',
                 text: `${pkg.name} (ID: ${pkg.id.toUpperCase()})`,
                 timer: 1800,
                 showConfirmButton: false
             });
         }
 
+        // "Get Started" buttons inside modal - REPLACE package
         document.querySelectorAll('.package-get-started').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                addPackage({
+
+                const pkg = {
                     id: this.dataset.packageId,
                     name: this.dataset.packageName,
                     price: parseFloat(this.dataset.packagePrice)
-                });
+                };
+
+                replacePackage(pkg);
+
+                // Close modal
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             });
         });
 
+
+        // Remove package (X button)
         selectedWrapper.addEventListener('click', e => {
             if (e.target.classList.contains('remove-pkg')) {
                 e.target.closest('[data-item="1"]').remove();
                 updateTotals();
-                if (!selectedWrapper.children.length) {
+
+                if (selectedWrapper.children.length === 0) {
                     subtotalEl.textContent = '$0.00';
                     grandTotalEl.textContent = '$0.00';
                     payBtn.textContent = 'Pay $0.00';
@@ -542,9 +546,13 @@
             }
         });
 
+
+
         function updateTotals() {
             let total = 0;
-            selectedWrapper.querySelectorAll('[data-item="1"]').forEach(el => total += parseFloat(el.dataset.price || 0));
+            selectedWrapper.querySelectorAll('[data-item="1"]').forEach(el => {
+                total += parseFloat(el.dataset.price || 0);
+            });
             const amount = fmt.format(total);
             subtotalEl.textContent = amount;
             grandTotalEl.textContent = amount;
@@ -552,47 +560,64 @@
         }
 
         // Collapsible Summary
-        hiddenSummary.classList.add('collapsed');
-        toggleSummaryBtn.classList.replace('fa-chevron-up', 'fa-chevron-down');
-        toggleSummaryBtn.addEventListener('click', () => {
-            hiddenSummary.classList.toggle('collapsed');
-            toggleSummaryBtn.classList.toggle('fa-chevron-up');
-            toggleSummaryBtn.classList.toggle('fa-chevron-down');
-        });
+        if (hiddenSummary) {
+            hiddenSummary.classList.add('collapsed');
+        }
+        if (toggleSummaryBtn) {
+            toggleSummaryBtn.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            toggleSummaryBtn.addEventListener('click', () => {
+                hiddenSummary.classList.toggle('collapsed');
+                toggleSummaryBtn.classList.toggle('fa-chevron-up');
+                toggleSummaryBtn.classList.toggle('fa-chevron-down');
+            });
+        }
 
-        // Modal
-        document.getElementById('modal-package-toggle')?.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        });
-        document.getElementById('modal-close')?.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        });
-        modal?.addEventListener('click', e => {
-            if (e.target === modal) modal.classList.add('hidden'), modal.classList.remove('flex');
-        });
+        // Modal Controls
+        const modalToggle = document.getElementById('modal-package-toggle');
+        const modalClose = document.getElementById('modal-close');
 
-        // FINAL SUBMIT - FIXED SELECTOR ERROR
+        if (modalToggle) {
+            modalToggle.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+        }
+        if (modalClose) {
+            modalClose.addEventListener('click', () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            });
+        }
+        if (modal) {
+            modal.addEventListener('click', e => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+        }
+
+        // Form Submit
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             let isValid = true;
 
-            // 1. Validate all form fields
+            // Validate inputs
             inputs.forEach(input => {
                 if (!validateField(input)) isValid = false;
             });
 
-            // 2. Check Terms & Conditions checkbox (the one with required attribute)
+            // Terms checkbox
             const termsCheckbox = document.querySelector('input[type="checkbox"][required]');
             const termsLabel = termsCheckbox?.closest('label');
 
             if (termsCheckbox && !termsCheckbox.checked) {
                 isValid = false;
-                // Visual feedback
-                if (termsLabel) termsLabel.style.color = '#ef4444';
-                if (termsLabel) termsLabel.style.fontWeight = '600';
+                if (termsLabel) {
+                    termsLabel.style.color = '#ef4444';
+                    termsLabel.style.fontWeight = '600';
+                }
             } else {
                 if (termsLabel) {
                     termsLabel.style.color = '';
@@ -600,55 +625,54 @@
                 }
             }
 
-            // 3. Check at least one package selected
+            // Must have exactly one package
             if (selectedWrapper.children.length === 0) {
                 isValid = false;
             }
 
-            // If anything is wrong → stop and show error
             if (!isValid) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Complete the Form',
+                    title: 'Please Complete the Form',
                     html: `
-                    <ul class="text-left text-sm">
-                        ${!termsCheckbox?.checked ? '<li>Please accept the Privacy & Terms Policy</li>' : ''}
-                        ${selectedWrapper.children.length === 0 ? '<li>Please select at least one package</li>' : ''}
-                        ${[...inputs].some(i => i.closest('.floating-label-group')?.classList.contains('error')) ? '<li>Please fix the highlighted fields</li>' : ''}
-                    </ul>
-                `,
+                        <ul class="text-left text-sm">
+                            ${!termsCheckbox?.checked ? '<li>Accept Privacy & Terms Policy</li>' : ''}
+                            ${selectedWrapper.children.length === 0 ? '<li>Select a package</li>' : ''}
+                            ${[...inputs].some(i => i.closest('.floating-label-group')?.classList.contains('error')) ? '<li>Fix highlighted fields</li>' : ''}
+                        </ul>
+                    `,
                     confirmButtonColor: '#ef4444'
                 });
                 return;
             }
 
-            // Everything is good → show beautiful confirmation
+            // Confirmation dialog
             const result = await Swal.fire({
                 icon: 'question',
                 title: 'Confirm Your Order',
                 html: `
-                <div class="text-left max-h-96 overflow-y-auto">
-                    ${Array.from(selectedWrapper.children).map(row => {
-                        const name = row.querySelector('.package-name')?.textContent || 'Unknown Package';
-                        const id = row.querySelector('.package-id')?.textContent || '';
-                        const price = row.querySelector('.package-price')?.textContent || '$0.00';
-                        return `
-                            <div class="flex justify-between mb-3 p-3 bg-gray-50 rounded">
-                                <div>
-                                    <strong>${name}</strong><br>
-                                    <small class="text-gray-500">ID: ${id}</small>
+                    <div class="text-left max-h-96 overflow-y-auto">
+                        ${Array.from(selectedWrapper.children).map(row => {
+                            const name = row.querySelector('.package-name')?.textContent || 'Unknown';
+                            const id = row.querySelector('.package-id')?.textContent || '';
+                            const price = row.querySelector('.package-price')?.textContent || '$0.00';
+                            return `
+                                <div class="flex justify-between mb-3 p-3 bg-gray-50 rounded">
+                                    <div>
+                                        <strong>${name}</strong><br>
+                                        <small class="text-gray-500">ID: ${id}</small>
+                                    </div>
+                                    <span class="font-bold">${price}</span>
                                 </div>
-                                <span class="font-bold">${price}</span>
-                            </div>
-                        `;
-                    }).join('')}
-                    <hr class="my-4 border-gray-300">
-                    <div class="flex justify-between text-xl font-bold">
-                        <span>Total:</span>
-                        <span>${grandTotalEl.textContent}</span>
+                            `;
+                        }).join('')}
+                        <hr class="my-4 border-gray-300">
+                        <div class="flex justify-between text-xl font-bold">
+                            <span>Total:</span>
+                            <span>${grandTotalEl.textContent}</span>
+                        </div>
                     </div>
-                </div>
-            `,
+                `,
                 showCancelButton: true,
                 confirmButtonText: 'Yes, Complete Purchase',
                 cancelButtonText: 'Review Order',
@@ -660,14 +684,15 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Purchase Successful!',
-                    text: 'Thank you for your order! Confirmation sent.',
+                    text: 'Thank you! Confirmation email sent.',
                     timer: 3000,
                     showConfirmButton: false
                 });
-                // form.submit(); // ← Uncomment when you're ready to go live
+                // form.submit(); // Uncomment when live
             }
         });
 
+        // Initial totals
         updateTotals();
     });
 </script>
