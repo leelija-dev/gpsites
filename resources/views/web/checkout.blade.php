@@ -544,28 +544,49 @@
         function replacePackage(pkg) {
             selectedWrapper.innerHTML = '';
             const row = document.createElement('div');
-            row.className = 'flex items-center justify-between py-5 border-b last:border-0 bg-gray-50 rounded-lg mb-3 px-4';
+            row.className = 'flex items-center justify-between py-5 border-b last:border-0 bg-gray-50 rounded-lg mb-3 px-4 relative';
             row.dataset.item = '1';
             row.dataset.price = pkg.price;
             row.dataset.packageId = pkg.id;
 
             row.innerHTML = `
-                <div class="flex items-center gap-4 flex-1">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                        Check
+                <div class="flex flex-col smx:flex-row smx:items-center gap-2 sm:gap-6 w-full ">
+                  <!-- Left side: Icon + Package Info -->
+                  <div class="flex items-center gap-4 flex-1 min-w-0 xs:flex-row flex-col ">
+                    <!-- Icon -->
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
+                      Check
                     </div>
-                    <div>
-                        <p class="package-name font-bold text-gray-800">${pkg.name}</p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Package ID:</span> 
-                            <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs package-id">${pkg.id.toUpperCase()}</span>
-                        </p>
-                        <p class="text-xs text-gray-500 mt-1">$${pkg.price.toLocaleString()}/month • Billed Annually</p>
+
+                    <!-- Package Details -->
+                    <div class="xs:flex-1 xs:min-w-0 xs:w-auto w-full xs:text-left text-center">
+                      <p class="package-name font-bold text-gray-800 text-lg truncate ">
+                        ${pkg.name}
+                      </p>
+                      <p class="text-sm text-gray-600 mt-1">
+                        <span class="font-medium">Package ID:</span>
+                        <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs package-id ml-1">
+                          ${pkg.id.toUpperCase()}
+                        </span>
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">
+                        $${pkg.price.toLocaleString()}/month • Billed Annually
+                      </p>
                     </div>
-                </div>
-                <div class="text-right">
-                    <p class="package-price text-xl font-bold text-gray-900">${fmt.format(pkg.price)}</p>
-                    <button type="button" class="remove-pkg text-red-500 hover:text-red-700 text-3xl font-light mt-2">×</button>
+                  </div>
+
+                  <!-- Right side: Price + Remove button -->
+                  <div class="flex items-center  xs:justify-end justify-center  gap-4 mt-2 smxl:mt-0">
+                    <p class="package-price text-[1.2rem] font-bold text-gray-900 whitespace-nowrap ">
+                      ${fmt.format(pkg.price)}
+                    </p>
+                    <button 
+                      type="button" 
+                      class="remove-pkg text-red-500 hover:text-red-700 text-4xl font-light leading-none absolute top-0 right-[3px]"
+                      aria-label="Remove package">
+                      ×
+                    </button>
+                  </div>
                 </div>
             `;
 
