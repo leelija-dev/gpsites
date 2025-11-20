@@ -29,7 +29,7 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
+                <div class="grid grid-cols-1 smx:grid-cols-2 gap-8 text-gray-700">
                     <div>
                         <div class="flex items-center  lg:justify-start justify-center mb-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,7 +37,7 @@
                             </svg>
                             <span class="font-semibold text-lg lg:text-xl">Email us</span>
                         </div>
-                        <p class="text-gray-600">support@yourdomain.com</p>
+                        <p class="text-gray-600"><a class="hover:text-secondary transition-all duration-300 ease-in-out inline-block w-fit" href="mailto:info@leelija.com">info@leelija.com</a></p>
                         <p class="text-gray-600">We reply within 24 hours.</p>
                     </div>
                     <div>
@@ -47,8 +47,15 @@
                             </svg>
                             <span class="font-semibold text-lg lg:text-xl">Give us a ring</span>
                         </div>
-                        <p class="text-gray-600">+1 (123) 456-7890</p>
-                        <p class="text-gray-600">Available Mon-Fri, 9am-5pm PST</p>
+                        <p class="text-gray-600 flex flex-col gap-1 lg:items-start items-center">
+                            <a href="tel:+916290101838" class=" hover:text-secondary transition-all duration-300 ease-in-out inline-block w-fit">
+                                +91 629 010 1838
+                            </a>
+                            <a href="tel:+913325849017" class=" hover:text-secondary transition-all duration-300 ease-in-out inline-block w-fit">
+                                +91 332 584 9017
+                            </a>
+                        </p>
+                        <p class="text-gray-600">Available Mon-Sat, 10am-6.30pm IST</p>
                     </div>
                     <div>
                         <div class="flex items-center  lg:justify-start justify-center mb-2">
@@ -58,77 +65,99 @@
                             <span class="font-semibold text-lg lg:text-xl">Working Hours</span>
                         </div>
                         <p class="text-gray-600">Monday to Friday</p>
-                        <p class="text-gray-600">9:00 AM - 5:00 PM (PST)</p>
+                        <p class="text-gray-600">10:00 AM - 6:30 PM (PST) . Sat - 2.00 PM</p>
+
                     </div>
                     <div>
                         <div class="flex items-center  lg:justify-start justify-center mb-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
-                            <span class="font-semibold text-lg lg:text-xl">Global HQ</span>
+                            <span class="font-semibold text-lg lg:text-xl">Address</span>
                         </div>
-                        <p class="text-gray-600">123 Skylane Avenue,</p>
-                        <p class="text-gray-600">San Francisco, CA 94103</p>
+                        <p class="text-gray-600">Taki Road, Bamunmura, Barasat,<br>
+                            Kolkata - 700125, West Bengal, India</p>
                     </div>
                 </div>
             </div>
 
             <!-- Right side - Contact Form -->
             <div class="bg-white rounded-2xl shadow-[0_6px_19px_#ccc] p-8 lg:p-10">
-                <form id="contact-us" class="space-y-6">
+                <form id="contact-us" class="space-y-6" novalidate>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Full Name -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full name</label>
+                        <div class="floating-label-group">
+
                             <input
                                 type="text"
-                                placeholder="Full name"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition" />
+                                id="full_name"
+                                name="full_name"
+                                placeholder=""
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+                                required />
+                            <label for="full_name" class="block text-sm font-medium text-gray-700 mb-2">Full name</label>
                         </div>
 
                         <!-- Phone Number -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <div class="floating-label-group">
+
                             <input
                                 type="text"
-                                placeholder="Phone number"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition" />
+                                id="phone"
+                                name="phone"
+                                placeholder=""
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+                                required />
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                         </div>
                     </div>
 
                     <!-- Email -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <div class="floating-label-group">
+
                         <input
                             type="email"
-                            placeholder="Enter your email"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition" />
+                            id="email"
+                            name="email"
+                            placeholder=""
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+                            required />
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                     </div>
 
                     <!-- Subject -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition">
-                            <option>General Inquiry</option>
-                            <option>Support</option>
-                            <option>Partnership</option>
-                            <option>Feedback</option>
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                        <select
+                            id="subject"
+                            name="subject"
+                            class="w-full px-4 py-3 text-[#a8a8a8] border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+                            required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="support">Support</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="feedback">Feedback</option>
                         </select>
                     </div>
 
                     <!-- Message -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                    <div class="floating-label-group">
+
                         <textarea
+                            id="message"
+                            name="message"
                             rows="5"
-                            placeholder="Leave us a message..."
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition resize-none"></textarea>
+                            placeholder=""
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition resize-none"
+                            required></textarea>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
                     </div>
 
                     <!-- Submit Button -->
                     <button
                         type="submit"
-                        class="w-full btn-primary ">
+                        class="w-full btn-primary">
                         Send Message
                     </button>
                 </form>
@@ -237,6 +266,7 @@
 </section>
 
 <x-web.faq />
+
 
 @endsection
 @section('scripts')

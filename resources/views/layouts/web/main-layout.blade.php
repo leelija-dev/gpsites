@@ -65,7 +65,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
+
 
     <!-- gsap smooth scrolling  -->
     <script>
@@ -88,7 +88,7 @@
         });
     </script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -102,6 +102,175 @@
             }
         });
     </script>
+
+
+    <!-- Contact Form Validation Script -->
+    <script>
+        // Universal Contact Form Validation + SweetAlert2 Success Toast
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toast configuration (top-right, auto-dismiss)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            document.querySelectorAll('form[id*="contact"], form.contact-form').forEach(form => {
+                form.setAttribute('novalidate', true);
+
+                const fields = [{
+                        el: form.querySelector('#full_name, #first_name'),
+                        type: 'name',
+                        required: true
+                    },
+                    {
+                        el: form.querySelector('#phone'),
+                        type: 'phone',
+                        required: true
+                    },
+                    {
+                        el: form.querySelector('#email'),
+                        type: 'email',
+                        required: true
+                    },
+                    {
+                        el: form.querySelector('#subject'),
+                        type: 'subject',
+                        required: true
+                    },
+                    {
+                        el: form.querySelector('#message'),
+                        type: 'message',
+                        required: true
+                    }
+                ].filter(f => f.el);
+
+                function showError(input, message) {
+                    clearError(input);
+                    const error = document.createElement('p');
+                    error.className = 'error-message text-red-600 text-sm mt-1 font-medium';
+                    error.textContent = message;
+                    input.parentNode.appendChild(error);
+                    input.classList.add('border-red-500', 'focus:ring-red-500');
+                    input.classList.remove('border-green-500', 'focus:ring-green-500');
+                }
+
+                function clearError(input) {
+                    const existing = input.parentNode.querySelector('.error-message');
+                    if (existing) existing.remove();
+                    input.classList.remove('border-red-500', 'focus:ring-red-500');
+                    if (input.value.trim() && isFieldValid(input)) {
+                        input.classList.add('border-green-500', 'focus:ring-green-500');
+                    }
+                }
+
+                function isFieldValid(input) {
+                    const value = input.value.trim();
+                    if (!value && input.hasAttribute('required')) return false;
+                    if (input.id.includes('name')) return value.length >= 2;
+                    if (input.id === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    if (input.id === 'phone') {
+                        const digits = value.replace(/\D/g, '');
+                        return digits.length >= 10;
+                    }
+                    if (input.id === 'subject') return value !== '';
+                    if (input.id === 'message') return value.length >= 10;
+                    return true;
+                }
+
+                // Real-time validation
+                fields.forEach(field => {
+                    const input = field.el;
+
+                    if (input.id === 'phone') {
+                        input.addEventListener('input', function() {
+                            this.value = this.value.replace(/[^0-9+\-\s]/g, '');
+                        });
+                    }
+
+                    input.addEventListener('input', function() {
+                        clearError(this);
+                        if (this.value.trim() && !isFieldValid(this) && this.id === 'message') {
+                            showError(this, `Message too short (${this.value.length}/10)`);
+                        }
+                    });
+
+                    input.addEventListener('blur', function() {
+                        if (!this.value.trim() && field.required) {
+                            showError(this, 'This field is required');
+                        } else if (this.value.trim() && !isFieldValid(this)) {
+                            if (this.id.includes('name')) showError(this, 'Please enter your full name');
+                            if (this.id === 'email') showError(this, 'Please enter a valid email');
+                            if (this.id === 'phone') showError(this, 'Enter a valid phone number (min 10 digits)');
+                            if (this.id === 'message') showError(this, 'Message must be at least 10 characters');
+                        } else {
+                            clearError(this);
+                        }
+                    });
+                });
+
+                // Form Submit
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    let isValid = true;
+                    let firstErrorField = null;
+
+                    fields.forEach(field => {
+                        const input = field.el;
+                        clearError(input);
+
+                        if (!input.value.trim() && field.required) {
+                            showError(input, 'This field is required');
+                            if (!firstErrorField) firstErrorField = input;
+                            isValid = false;
+                        } else if (input.value.trim() && !isFieldValid(input)) {
+                            if (input.id.includes('name')) showError(input, 'Please enter your full name');
+                            if (input.id === 'email') showError(input, 'Please enter a valid email');
+                            if (input.id === 'phone') showError(input, 'Enter a valid phone number (min 10 digits)');
+                            if (input.id === 'message') showError(input, 'Message must be at least 10 characters');
+                            if (!firstErrorField) firstErrorField = input;
+                            isValid = false;
+                        }
+                    });
+
+                    if (isValid) {
+                        // Beautiful top-right success toast
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Message sent successfully!',
+                            background: '#10b981', // emerald green
+                            color: 'white',
+                            iconColor: 'white'
+                        });
+
+                        console.log('Form Submitted:', {
+                            name: form.querySelector('#full_name, #first_name')?.value.trim(),
+                            phone: form.querySelector('#phone')?.value.trim(),
+                            email: form.querySelector('#email')?.value.trim(),
+                            subject: form.querySelector('#subject')?.value,
+                            message: form.querySelector('#message')?.value.trim()
+                        });
+
+                        // form.submit(); // Uncomment for real submission
+                        // form.reset();   // Uncomment to clear form after send
+                    } else if (firstErrorField) {
+                        firstErrorField.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    
 
 
 </body>

@@ -61,14 +61,25 @@
             <div class="backdrop-blur-[9px]  bg-white/0  rounded-3xl shadow-2xl p-8 w-full max-w-[500px] border-t-0 border-b-0 border-l-[3px] border-r-[3px] border-primary">
 
                 <!-- Search Bar -->
-                <div class="relative mb-8">
+                <div class="relative mb-8 z-[51]">
+                    <!-- Search Input -->
                     <input
                         type="text"
+                        id="niche-search"
                         placeholder="Search and Select Niche"
-                        class="w-full backdrop-blur-[3px]  bg-white/0 shadow-[1px_4px_17px_#5e5d5d38]  pl-12 pr-4 py-3 rounded-full border border-secondary focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" />
-                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        autocomplete="off"
+                        class="w-full backdrop-blur-[3px] bg-white/0 shadow-[1px_4px_17px_#5e5d5d38] pl-12 pr-4 py-3 rounded-full border border-secondary focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" />
+                    <!-- Search Icon -->
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-secondary pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
+
+                    <!-- Dropdown Results -->
+                    <div id="niche-dropdown" class="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 max-h-64 overflow-y-auto hidden z-50">
+                        <ul id="niche-list" class="py-2">
+                            <!-- Items will be injected here by JavaScript -->
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- Sliders -->
@@ -547,52 +558,47 @@
 
             <!-- RIGHT FORM -->
             <div class="w-full lg:w-2/3 lg:p-6 p-4">
-                <form id="contact-us" class="space-y-6">
+                <form id="contact-us" class="space-y-6" novalidate>
 
                     <!-- NAME ROW -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-gray-700">First Name</label>
-                            <input type="text" placeholder="John"
-                                class="mt-1 w-full border-t-0 border-l-0  border-r-0 border-gray-300 form-input-cus outline-none py-2" />
+                            <label class="block text-gray-700">Full Name</label>
+                            <input type="text" id="full_name" placeholder="John Doe" required
+                                class="mt-1 w-full border-t-0 border-l-0 border-r-0 border-gray-300 form-input-cus outline-none py-2" />
                         </div>
 
                         <div>
-                            <label class="block text-gray-700">Last Name</label>
-                            <input type="text" placeholder="Doe"
-                                class="mt-1 w-full border-t-0 border-l-0  border-r-0 border-gray-300 form-input-cus outline-none py-2" />
+                            <label class="block text-gray-700">Email</label>
+                            <input type="email" id="email" placeholder="email@example.com" required
+                                class="mt-1 w-full border-t-0 border-l-0 border-r-0 border-gray-300 form-input-cus outline-none py-2" />
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700">Email</label>
-                        <input type="email" placeholder="email@example.com"
-                            class="mt-1 w-full border-t-0 border-l-0  border-r-0 border-gray-300 form-input-cus outline-none py-2" />
                     </div>
 
                     <!-- SUBJECT -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                        <select class="w-full px-4 py-3 text-[#625e5e] border border-t-0 border-l-0  border-r-0 border-gray-300   transition" style="box-shadow: none !important;">
-                            <option>General Inquiry</option>
-                            <option>Support</option>
-                            <option>Partnership</option>
-                            <option>Feedback</option>
+                        <select id="subject" required
+                            class="w-full px-4 py-3 text-[#625e5e] border border-t-0 border-l-0 border-r-0 border-gray-300 transition"
+                            style="box-shadow: none !important;">
+                            <option value="">Select a subject</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Support">Support</option>
+                            <option value="Partnership">Partnership</option>
+                            <option value="Feedback">Feedback</option>
                         </select>
                     </div>
 
                     <!-- MESSAGE -->
                     <div>
                         <label class="block text-gray-700">Message</label>
-                        <textarea placeholder="Write your message..."
+                        <textarea id="message" placeholder="Write your message..." required
                             class="mt-1 w-full border-t-0 border-l-0 min-h-[150px] border-r-0 border-gray-300 form-input-cus outline-none py-2 h-24"></textarea>
                     </div>
 
-                    <!-- BUTTON -->
-                    <button
-                        class="btn-primary mt-2">
+                    <button type="submit" class="btn-primary mt-2">
                         Send Message
                     </button>
-
                 </form>
             </div>
         </div>
@@ -688,6 +694,169 @@
         'tar-min', 'tar-max', 'tar-values', 'tar-fill',
         'tar-min-tooltip', 'tar-max-tooltip'
     );
+</script>
+
+
+<!-- search and select  -->
+ <script>
+    // Your list of niches (you can replace or fetch this from API)
+    const niches = [
+        "Artificial Intelligence",
+        "Digital Marketing",
+        "E-commerce",
+        "Health & Fitness",
+        "Personal Finance",
+        "Cryptocurrency",
+        "Web Development",
+        "Graphic Design",
+        "Travel Blogging",
+        "SaaS Products",
+        "Online Education",
+        "Real Estate",
+        "Fashion & Beauty",
+        "Gaming",
+        "Mental Health",
+        "Sustainable Living",
+        "Parenting",
+        "Photography",
+        "Food & Cooking",
+        "Home Decor"
+    ];
+
+    const searchInput = document.getElementById('niche-search');
+    const dropdown = document.getElementById('niche-dropdown');
+    const nicheList = document.getElementById('niche-list');
+
+    let selectedIndex = -1; // For keyboard navigation
+
+    // Render the list
+    function renderNiches(items) {
+        nicheList.innerHTML = '';
+        if (items.length === 0) {
+            nicheList.innerHTML = '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>';
+            return;
+        }
+
+        items.forEach((niche, index) => {
+            const li = document.createElement('li');
+            li.className = `px-6 py-3 hover:bg-primary/10 cursor-pointer transition-colors ${
+                index === selectedIndex ? 'bg-primary/10 text-primary font-medium' : 'text-gray-700'
+            }`;
+            li.textContent = niche;
+            li.dataset.index = index;
+
+            li.addEventListener('click', () => {
+                searchInput.value = niche;
+                closeDropdown();
+                searchInput.focus();
+            });
+
+            nicheList.appendChild(li);
+        });
+    }
+
+    // Filter niches based on input
+    function filterNiches(query) {
+        if (!query.trim()) {
+            return niches;
+        }
+        return niches.filter(niche =>
+            niche.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+
+    // Open dropdown
+    function openDropdown() {
+        dropdown.classList.remove('hidden');
+        selectedIndex = -1;
+        renderNiches(filterNiches(searchInput.value));
+    }
+
+    // Close dropdown
+    function closeDropdown() {
+        dropdown.classList.add('hidden');
+        selectedIndex = -1;
+    }
+
+    // Input event: filter as user types
+    searchInput.addEventListener('input', () => {
+        selectedIndex = -1;
+        const filtered = filterNiches(searchInput.value);
+        renderNiches(filtered);
+        if (filtered.length > 0 && searchInput.value.trim() !== '') {
+            openDropdown();
+        } else {
+            closeDropdown();
+        }
+    });
+
+    // Click outside to close
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+            closeDropdown();
+        }
+    });
+
+    // Click on input to show all if empty
+    searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim() === '') {
+            renderNiches(niches);
+            openDropdown();
+        } else if (filterNiches(searchInput.value).length > 0) {
+            openDropdown();
+        }
+    });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', (e) => {
+        const items = nicheList.querySelectorAll('li');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedIndex = (selectedIndex + 1) % items.length;
+            highlightItem(items);
+            scrollIntoView(items[selectedIndex]);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
+            highlightItem(items);
+            scrollIntoView(items[selectedIndex]);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedIndex >= 0 && items[selectedIndex]) {
+                searchInput.value = items[selectedIndex].textContent;
+                closeDropdown();
+            }
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+            searchInput.blur();
+        }
+    });
+
+    function highlightItem(items) {
+        items.forEach((item, i) => {
+            if (i === selectedIndex) {
+                item.classList.add('bg-primary/10', 'text-primary', 'font-medium');
+            } else {
+                item.classList.remove('bg-primary/10', 'text-primary', 'font-medium');
+            }
+        });
+    }
+
+    function scrollIntoView(item) {
+        if (item) {
+            item.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    // Optional: Initialize with all items on focus
+    searchInput.addEventListener('focus', () => {
+        if (!searchInput.value) {
+            renderNiches(niches);
+            openDropdown();
+        }
+    });
 </script>
 
 @endsection
