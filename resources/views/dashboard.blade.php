@@ -110,6 +110,5 @@
             }
         });
     </script>
-     </body>
-</html>
+
 </x-app-layout>

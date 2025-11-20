@@ -79,6 +79,8 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\web\BlogController;
+use App\Http\Controllers\web\MailController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Plan;
 
@@ -100,6 +102,10 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('web.contact');
 });
+
+// Blog routes
+
+
 
 
 // Email verification routes (MUST be outside auth middleware)
@@ -140,6 +146,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout/webhook', [CheckoutController::class, 'webhook'])->name('checkout.webhook');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+
+
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/Mail/{id}', [BlogController::class, 'viewMail'])->name('blog.viewMail');
+    Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
+    Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
+
+    Route::get('/mailHistory/{id}', [MailController::class, 'mailHistory'])->name('blog.mailHistory');
+    Route::get('/viewMail/{id}', [MailController::class, 'viewMail'])->name('blog.view-mail');
 });
 
 // Authenticated routes (require authentication only)
