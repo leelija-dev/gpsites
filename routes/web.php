@@ -1,6 +1,7 @@
 <!-- < ?php
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\web\MailController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Plan;
 
