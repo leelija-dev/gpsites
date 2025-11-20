@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -64,6 +65,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
 
     <!-- gsap smooth scrolling  -->
     <script>
@@ -83,6 +85,21 @@
             }
 
             // Else: Do nothing → smooth scroll disabled on checkout
+        });
+    </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- gsap smooth scrolling  -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // If current page is NOT checkout → enable ScrollSmoother
+            if (!window.location.pathname.includes('/checkout')) {
+                // Your GSAP code here
+            }
         });
     </script>
 
