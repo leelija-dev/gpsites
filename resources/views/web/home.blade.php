@@ -34,9 +34,9 @@
                 <button class="btn-primary">
                     See Pricing
                 </button>
-                <button class="btn-secondary">
+                <a href="/contact"><button class="btn-secondary" >
                     Contact Us
-                </button>
+                </button></a>
             </div>
 
             <!-- Stats -->

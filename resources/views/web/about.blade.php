@@ -142,9 +142,9 @@
                 differently at reliable technology services.
             </p>
 
-            <button class="btn-primary">
+            <a href="/contact"><button class="btn-primary">
                 Contact Us
-            </button>
+            </button></a>
         </div>
 
         <!-- RIGHT PROGRESS BARS -->

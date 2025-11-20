@@ -18,15 +18,15 @@
       <div class="flex gap-6 items-center">
         <!-- Desktop Navigation Links -->
         <div class="hidden lg:flex items-center space-x-8">
-          <a href="#" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Home</a>
+          <a href="/" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Home</a>
           <a href="#" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Pricing</a>
-          <a href="#" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">About Us</a>
-          <a href="#" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Contact Us</a>
+          <a href="/about" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">About Us</a>
+          <a href="/contact" class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Contact Us</a>
         </div>
 
         <!-- Desktop Login Button -->
         <div class="hidden lg:flex items-center">
-          <a href="{{route('login')}}" class="btn-primary px-8 py-[0.3rem] text-[17px]">
+          <a href="/login" class="btn-primary px-8 py-[0.3rem] text-[17px]">
             Login
           </a>
         </div>
@@ -71,11 +71,11 @@
 
     <!-- Mobile Menu Links -->
     <nav class="space-y-2">
-      <a href="#" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Home</a>
+      <a href="/" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Home</a>
       <a href="#" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Pricing</a>
-      <a href="#" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">About Us</a>
-      <a href="#" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Contact Us</a>
-      <a href="#" class="block px-4 py-3 btn-primary text-center mt-6">Login</a>
+      <a href="/about" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">About Us</a>
+      <a href="/" class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Contact Us</a>
+      <a href="/login" class="block px-4 py-3 btn-primary text-center mt-6">Login</a>
     </nav>
   </div>
 </div>
