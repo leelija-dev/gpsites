@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('total_mail')->default(0);
             $table->integer('available_mail')->default(0);
             $table->timestamps();
+             $table->softDeletes();
 
             
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
