@@ -33,8 +33,18 @@ class AuthenticatedSessionController extends Controller
             Auth::logout();
             return redirect()->route('verification.notice')->with('error', 'Please verify your email address before logging in.');
         }
+        //start
+        // Check if login was directly clicked
+        $previousUrl = url()->previous();
+        $loginUrl = route('login');
+        if ($previousUrl === $loginUrl) {
+        // User clicked login manually
+        return redirect()->route('dashboard');
+        }
+        return redirect()->intended();
+        //end
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        //return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
