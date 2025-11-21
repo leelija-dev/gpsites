@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Plan;
 use App\Models\PlanOrder;
+use App\Models\MailAvailable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -140,7 +141,8 @@ public function createOrder(Request $request): JsonResponse
 
             // Find and update the order in database
             $order = PlanOrder::where('paypal_order_id', $request->order_id)->first();
-            
+            $plan = Plan::findOrFail($order->plan_id);
+
             if ($order) {
                 $order->update([
                     'transaction_id' => $transactionId,
@@ -148,6 +150,15 @@ public function createOrder(Request $request): JsonResponse
                     'payment_details' => $response->result,
                     'paid_at' => now(),
                 ]);
+             $mail_available = MailAvailable::create([
+                'user_id' => Auth::id(),
+                'order_id' => $order->id,
+                'total_mail'=>$plan->mail_available,
+                'available_mail'=>$plan->mail_available,
+                'created_at' => now(),
+                
+                ]);
+
             }
 
             return response()->json([

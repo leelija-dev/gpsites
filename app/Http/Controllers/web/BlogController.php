@@ -20,8 +20,8 @@ class BlogController extends Controller
     {
         $response = Http::get(env('API_BASE_URL') . '/api/blogs');
 
-        $mail_available = MailAvailable::where('user_id', Auth::user()->id)->first();
-
+        $mail_available = MailAvailable::where('user_id', Auth::user()->id)->latest()->first(); // or ->orderBy('id','desc')
+    
         if ($response->failed()) {
             return 'API Request Failed: ' . $response->status();
         }
@@ -110,8 +110,13 @@ class BlogController extends Controller
                     'file' => !empty($attachment) ? implode(',', $attachment) : null,
 
                 ]);
-                MailAvailable::where('user_id', Auth::id())
-                    ->decrement('available_mail', 1);
+                $lastMail = MailAvailable::where('user_id', Auth::id())
+                    ->latest() // or ->orderBy('id','desc')
+                    ->first();
+
+                if ($lastMail) {
+                    $lastMail->decrement('available_mail', 1);
+                }
             }
         }
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
@@ -175,7 +180,14 @@ class BlogController extends Controller
             'file' => !empty($attachment) ? implode(',', $attachment) : null,
         ]);
 
-        MailAvailable::where('user_id', Auth::id())->decrement('available_mail', 1);
+        // MailAvailable::where('user_id', Auth::id())->decrement('available_mail', 1);
+        $lastMail = MailAvailable::where('user_id', Auth::id())
+            ->latest() // or ->orderBy('id','desc')
+            ->first();
+
+        if ($lastMail) {
+            $lastMail->decrement('available_mail', 1);
+}
 
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
     }
