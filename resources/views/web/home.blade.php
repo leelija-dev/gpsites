@@ -34,9 +34,9 @@
                 <button class="btn-primary">
                     See Pricing
                 </button>
-                <a href="/contact"><button class="btn-secondary" >
-                    Contact Us
-                </button></a>
+                <a href="/contact"><button class="btn-secondary">
+                        Contact Us
+                    </button></a>
             </div>
 
             <!-- Stats -->
@@ -371,10 +371,24 @@
                 <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
                 @endauth -->
 
-                @auth
+                <!-- @auth
                 <a href="{{ route('checkout', ['plan' => $plan->id]) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
                 @else
                 <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
+                @endauth -->
+
+                @auth
+                <form method="POST" action="{{ route('checkout') }}" class="w-full">
+                    @csrf
+                    <input type="hidden" name="plan" value="{{ $plan->id }}">
+                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                </form>
+                @else
+                <form method="POST" action="{{ route('login') }}" class="w-full">
+                    @csrf
+                    <input type="hidden" name="redirect" value="{{ route('checkout', ['plan' => $plan->id]) }}">
+                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                </form>
                 @endauth
             </div>
             @endforeach
@@ -698,7 +712,7 @@
 
 
 <!-- search and select  -->
- <script>
+<script>
     // Your list of niches (you can replace or fetch this from API)
     const niches = [
         "Artificial Intelligence",
@@ -846,7 +860,9 @@
 
     function scrollIntoView(item) {
         if (item) {
-            item.scrollIntoView({ block: 'nearest' });
+            item.scrollIntoView({
+                block: 'nearest'
+            });
         }
     }
 

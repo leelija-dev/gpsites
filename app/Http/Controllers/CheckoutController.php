@@ -36,6 +36,11 @@ class CheckoutController extends Controller
             $plan = $request->query('plan');
         }
 
+        // Also check POST data for plan
+        if (!$plan) {
+            $plan = $request->input('plan');
+        }
+
         if (!$plan) {
             abort(404, 'Plan not specified');
         }
