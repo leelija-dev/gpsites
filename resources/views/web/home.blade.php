@@ -343,7 +343,7 @@
                     <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-base font-medium">/{{ $plan->duration }}</span></p>
                     <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed {{ $plan->duration === 'month' ? 'Monthly' : 'Annually' }}</p>
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
-                        {{ $plan->description ?? 'All Features Included' }}
+                        {{ $plan->mail_available ?? '0' }}
                     </span>
                 </div>
 
