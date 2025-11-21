@@ -18,7 +18,7 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {
-        $response = Http::get(env('APP_BASE_URL') . '/api/blogs');
+        $response = Http::get(env('API_BASE_URL') . '/api/blogs');
 
         $mail_available = MailAvailable::where('user_id', Auth::user()->id)->first();
 
@@ -57,7 +57,7 @@ class BlogController extends Controller
             'message' => 'required|string',
             'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,txt|max:20480|nullable',
         ]);
-        $response = Http::get(env('APP_BASE_URL') . '/api/blogs');
+        $response = Http::get(env('API_BASE_URL') . '/api/blogs');
 
         if ($response->failed()) {
             return 'API Request Failed: ' . $response->status();
@@ -126,7 +126,7 @@ class BlogController extends Controller
         ]);
 
         $id = $request->id;
-        $response = Http::get(env('APP_BASE_URL') . '/api/blogs');
+        $response = Http::get(env('API_BASE_URL') . '/api/blogs');
         if ($response->failed()) {
             return 'API Request Failed: ' . $response->status();
         }
