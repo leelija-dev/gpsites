@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('subject')->nullable();
             $table->string('message')->nullable();
             $table->string('file')->nullable();
-            $table->deleted_at();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
