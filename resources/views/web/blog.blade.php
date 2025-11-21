@@ -31,7 +31,9 @@
         <!-- Main content -->
 
         <div class="flex-grow-1 p-4">
-            @if ($mail_available):
+            
+            @if($mail_available)
+                       <h5 >dsdsd</h5>
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-6">
@@ -143,7 +145,7 @@
                 </div>
             @endif --}}
                 </table>
-        </div>
+        
         @else
         <div
             style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
@@ -153,6 +155,7 @@
             </a>
         </div>
         @endif
+    </div>
     </div>
 
     <!-- Modal -->
