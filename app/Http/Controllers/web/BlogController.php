@@ -5,6 +5,8 @@ namespace App\Http\Controllers\web;
 use App\Http\Controllers\Controller;
 use App\Mail\BlogMail;
 use App\Models\Blog;
+use App\Models\PlanOrder;
+use App\Models\Plan;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MailAvailable;
 use App\Models\UserMailHistory;
@@ -12,16 +14,29 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use Carbon\Carbon;
 class BlogController extends Controller
 {
 
     public function index(Request $request)
     {
         $response = Http::get(env('API_BASE_URL') . '/api/blogs');
-
+        
         $mail_available = MailAvailable::where('user_id', Auth::user()->id)->latest()->first(); // or ->orderBy('id','desc')
-    
+        if($mail_available){
+            $plan_order_id= $mail_available->order_id; 
+           
+            $plan_order=PlanOrder::where('id', $plan_order_id)->latest()->first();
+            
+            $plan_id=Plan::where('id', $plan_order->plan_id)->first();
+            // $plan_expire=$plan_id->duration >=$plan_order->created_at;
+            $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_id->duration);
+
+            $isValidPlan = Carbon::now()->lessThanOrEqualTo($expiryDate) ?? false;
+            
+
+        }
+        // $plan_expire=$plan_id->duration ?? 0;
         if ($response->failed()) {
             return 'API Request Failed: ' . $response->status();
         }
@@ -41,7 +56,7 @@ class BlogController extends Controller
             ['path' => url()->current()]
         );
 
-        return view('web.blog', compact('pagination', 'mail_available'));
+        return view('web.blog', compact('pagination', 'mail_available','isValidPlan'));
     }
     public function viewMail($id)
     {
