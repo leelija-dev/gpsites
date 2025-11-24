@@ -29,6 +29,6 @@ class MailAvailable extends Model
      */
     public function PlanOrder()
     {
-        return $this->belongsTo(PlanOrder::class);
+        return $this->belongsTo(PlanOrder::class,'order_id');
     }
 }

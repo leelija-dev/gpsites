@@ -81,6 +81,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\web\BlogController;
 use App\Http\Controllers\web\MailController;
+use App\Http\Controllers\web\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Plan;
 
@@ -158,8 +159,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
 
+
+
     Route::get('/mailHistory/{id}', [MailController::class, 'mailHistory'])->name('blog.mailHistory');
     Route::get('/viewMail/{id}', [MailController::class, 'viewMail'])->name('blog.view-mail');
+
+    //order routes
+    Route::get('/my-orders', [OrderController::class, 'index'])->name('my-orders');
+    Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('view-my-order');
 });
 
 // Authenticated routes (require authentication only)

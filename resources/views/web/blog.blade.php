@@ -33,7 +33,7 @@
 
         <div class="flex-grow-1 p-4">
             @if($isValidPlan)
-                @if($mail_available)
+                @if($total_mail_available)
                 
                 <div class="col-md-12">
                     <div class="row">
@@ -53,8 +53,8 @@
                 <button class="btn btn-primary ms-3" id="openMailModalBtn">Send Mail</button>
                 @endif --}}
                                 <button class="btn btn-primary ms-3" id="openMailModalBtn"
-                                    data-available-mail="{{ $mail_available->available_mail ?? 0 }}"
-                                    data-total-mail="{{ $mail_available->total_mail ?? 0 }}">
+                                    data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                    data-total-mail="{{ $total_mail ?? 0 }}">
                                     Send Mail
                                 </button>
 
@@ -101,8 +101,8 @@
                                             class="btn btn-primary btn-sm">Send Mail</button> </a> --}}
 
                                             <button class="btn btn-primary btn-sm rowMailBtn"
-                                                data-available-mail="{{ $mail_available->available_mail ?? 0 }}"
-                                                data-total-mail="{{ $mail_available->total_mail ?? 0 }}"
+                                                data-available-mail="{{ $total_mail_available->available_mail ?? 0 }}"
+                                                data-total-mail="{{ $total_mail ?? 0 }}"
                                                 id="openMailModalBtn"
                                                 data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
                                                 Send Mail
@@ -173,7 +173,7 @@
                     <input type="hidden" name="selected_ids" id="selectedIdsInput">
                     <input type="hidden" name="userId" id="userId" value="{{ $loggedUserId }}">
                     <input type="hidden" name="availableMail" id="availableMail"
-                        value="{{ $mail_available->available_mail ?? 0 }}">
+                        value="{{ $total_mail_available->available_mail ?? 0 }}">
 
                     <div class="modal-header">
                         <h5 class="modal-title">Send Mail</h5>
