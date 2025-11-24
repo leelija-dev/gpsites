@@ -22,19 +22,38 @@ class BlogController extends Controller
     {
         $response = Http::get(env('API_BASE_URL') . '/api/blogs');
         
-        $mail_available = MailAvailable::where('user_id', Auth::user()->id)->latest()->first(); // or ->orderBy('id','desc')
+        $mail_available = MailAvailable::where('user_id', Auth::user()->id)->get();//->latest()->first(); // or ->orderBy('id','desc')
+        
+        $isValidPlan = false;
+        $total_mail_available=0;
+        $total_mail=0;
         if($mail_available){
-            $plan_order_id= $mail_available->order_id; 
-           
+            foreach($mail_available as $mail_available){
+                
+            $plan_order_id= $mail_available->order_id;
+    
             $plan_order=PlanOrder::where('id', $plan_order_id)->latest()->first();
             
-            $plan_id=Plan::where('id', $plan_order->plan_id)->first();
+            $plan_id=Plan::where('id', $plan_order->plan_id)->first() ;
             // $plan_expire=$plan_id->duration >=$plan_order->created_at;
-            $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_id->duration);
+            $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_id->duration) ;
 
-            $isValidPlan = Carbon::now()->lessThanOrEqualTo($expiryDate) ?? false;
+            $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate) ? Carbon::now()->lessThanOrEqualTo($expiryDate): false;
+            if(!$isValid){ // is expired 
+                
+                continue;    
+            }else{
+                $isValidPlan=true;
+                $total_mail_available += $mail_available->available_mail;
+                $total_mail +=$mail_available->total_mail;   
+            }
+                        
+            }
+
             
-
+        }
+        else{
+            return view('web.blog', compact('isValidPlan'));
         }
         // $plan_expire=$plan_id->duration ?? 0;
         if ($response->failed()) {
@@ -56,7 +75,7 @@ class BlogController extends Controller
             ['path' => url()->current()]
         );
 
-        return view('web.blog', compact('pagination', 'mail_available','isValidPlan'));
+        return view('web.blog', compact('pagination', 'total_mail_available','isValidPlan','total_mail'));
     }
     public function viewMail($id)
     {
@@ -159,6 +178,7 @@ class BlogController extends Controller
         $messageBody = $request->input('message');
         $messageForDB = strip_tags($messageBody);
         $user_id = $request->userId;
+        
 
         // Store attachments in public/attachment folder
         $attachment = [];

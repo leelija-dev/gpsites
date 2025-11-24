@@ -13,6 +13,12 @@
 
                 <!-- Session Status -->
                 <x-auth-session-status class="mb-4 text-center" :status="session('status')" />
+                <!-- Error Alert -->
+                @if(session('error'))
+                    <div class="mb-4 text-center text-red-600 font-medium bg-red-100 border border-red-300 p-3 rounded-lg">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <!-- Title -->
                 <div class="text-center mb-8">

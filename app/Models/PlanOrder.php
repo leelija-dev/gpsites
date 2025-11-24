@@ -39,6 +39,11 @@ class PlanOrder extends Model
      */
     public function plan(): BelongsTo
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(Plan::class,'plan_id');
     }
+    public function mailAvailable()
+{
+    return $this->hasOne(MailAvailable::class, 'order_id');
+}
+
 }

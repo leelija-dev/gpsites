@@ -16,6 +16,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        
         return view('auth.login');
     }
 
@@ -29,9 +30,12 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // Check if user has verified email
-        if (!Auth::user()->hasVerifiedEmail()) {
+        // if (!Auth::user()->hasVerifiedEmail()) {
+        if (is_null(Auth::user()->email_verified_at)){
             Auth::logout();
-            return redirect()->route('verification.notice')->with('error', 'Please verify your email address before logging in.');
+            return redirect()->route('login')
+            ->with('error', 'Please verify your email address before logging in.');
+            //return redirect()->route('verification.notice')->with('error', 'Please verify your email address before logging in.');
         }
         //start
         // Check if login was directly clicked
