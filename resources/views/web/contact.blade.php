@@ -83,50 +83,81 @@
 
             <!-- Right side - Contact Form -->
             <div class="bg-white rounded-2xl shadow-[0_6px_19px_#ccc] p-8 lg:p-10">
-                <form id="contact-us" method="post" action="{{route('contact.store')}}" class="space-y-6"  enctype="multipart/form-data" novalidate>
+                <form id="contact-us" method="post" action="{{route('contact.store')}}" class="space-y-6" novalidate>
+                    
+                    <!-- Success Message -->
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ session('success') }}
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Error Message -->
+                    @if(session('error'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ session('error') }}
+                            </div>
+                        </div>
+                    @endif
+                    
                     @csrf
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Full Name -->
                         <div class="floating-label-group">
-
                             <input
                                 type="text"
                                 id="full_name"
                                 name="name"
+                                value="{{ old('name') }}"
                                 placeholder=""
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+                                class="w-full px-4 py-3 border @error('name') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
                                 required />
                             <label for="full_name" class="block text-sm font-medium text-gray-700 mb-2">Full name</label>
-                            
+                            @error('name')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <!-- Phone Number -->
                         <div class="floating-label-group">
-
                             <input
-                                type="text"
+                                type="tel"
                                 id="phone"
                                 name="phone"
+                                value="{{ old('phone') }}"
                                 placeholder=""
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
-                                required />
+                                class="w-full px-4 py-3 border @error('phone') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition" />
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                           
+                            @error('phone')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
                     <!-- Email -->
                     <div class="floating-label-group">
-
                         <input
                             type="email"
                             id="email"
                             name="email"
+                            value="{{ old('email') }}"
                             placeholder=""
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+                            class="w-full px-4 py-3 border @error('email') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
                             required />
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        
+                        @error('email')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Subject -->
@@ -135,39 +166,49 @@
                         <select
                             id="subject"
                             name="subject"
-                            class="w-full px-4 py-3 text-[#a8a8a8] border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
-                            required>
+                            class="w-full px-4 py-3 text-[#a8a8a8] border @error('subject') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition">
                             <option value="">Select a subject</option>
-                            <option value="general">General Inquiry</option>
-                            <option value="support">Support</option>
-                            <option value="partnership">Partnership</option>
-                            <option value="feedback">Feedback</option>
+                            <option value="general" {{ old('subject') == 'general' ? 'selected' : '' }}>General Inquiry</option>
+                            <option value="support" {{ old('subject') == 'support' ? 'selected' : '' }}>Support</option>
+                            <option value="partnership" {{ old('subject') == 'partnership' ? 'selected' : '' }}>Partnership</option>
+                            <option value="feedback" {{ old('subject') == 'feedback' ? 'selected' : '' }}>Feedback</option>
                         </select>
-                        
+                        @error('subject')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Message -->
                     <div class="floating-label-group">
-
                         <textarea
                             id="message"
                             name="message"
                             rows="5"
                             placeholder=""
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition resize-none"
-                            required></textarea>
+                            class="w-full px-4 py-3 border @error('message') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition resize-none"
+                            required>{{ old('message') }}</textarea>
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                        
+                        @error('message')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
-
 
                     <!-- Submit Button -->
                     <button
                         type="submit"
-                        class="w-full btn-primary">
-                        Send Message
+                        class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="submit-btn">
+                        <span id="btn-text">Send Message</span>
+                        <span id="btn-loading" class="hidden">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Sending...
+                        </span>
                     </button>
                 </form>
+                
             </div>
 
         </div>

@@ -15,6 +15,7 @@ class ContactController extends Controller
     'message'=>'string|nullable',
     
   ]);
+
   $store=Contact::create($data);
   if($store){
   return redirect()->route('contact')->with('success','Message sent successfully');

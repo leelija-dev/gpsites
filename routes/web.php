@@ -103,7 +103,7 @@ Route::get('/about', function () {
 });
 Route::get('/contact', function () {
     return view('web.contact');
-});
+})->name('contact');
 
 // Blog routes
 
