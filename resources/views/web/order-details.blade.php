@@ -52,7 +52,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if($orders)
+                    
+                    @if($orders->isNotEmpty())
                         
                         @foreach ($orders as $order)
                                 @php
@@ -92,7 +93,7 @@
                         @endforeach
                     @else
                         <tr>
-                            <td colspan="7" class="p-4 text-center">No mail history found.</td>
+                            <td colspan="9" class="p-4 text-center">No order yet!</td>
                         </tr>
                     @endif
 

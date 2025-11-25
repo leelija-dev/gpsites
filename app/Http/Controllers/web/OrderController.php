@@ -28,4 +28,19 @@ class OrderController extends Controller
         return view('web.view-order-details',compact('order'));
 
     }
+    // public function billing(){
+    //     $bill=PlanOrder::where('user_id',Auth::id() & 'transrction_id'!='');
+    //     return view('web.billing',compact($bill));
+
+    // }
+    public function billing()
+{
+    $bills = PlanOrder::where('user_id', Auth::id())
+        ->whereNotNull('transaction_id')
+        ->where('transaction_id', '!=', '')
+        ->get();
+
+    return view('web.billing', compact('bills'));
+}
+
 }

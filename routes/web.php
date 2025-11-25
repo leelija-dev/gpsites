@@ -167,6 +167,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //order routes
     Route::get('/my-orders', [OrderController::class, 'index'])->name('my-orders');
     Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('view-my-order');
+    Route::get('/billing',[OrderController::class,'billing'])->name('order-billing');
 });
 
 // Authenticated routes (require authentication only)

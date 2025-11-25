@@ -144,13 +144,14 @@ class BlogController extends Controller
                     'file' => !empty($attachment) ? implode(',', $attachment) : null,
 
                 ]);
-                $lastMail = MailAvailable::where('user_id', Auth::id())
-                    ->latest() // or ->orderBy('id','desc')
-                    ->first();
+                // $lastMail = MailAvailable::where('user_id', Auth::id())
+                //     ->latest() // or ->orderBy('id','desc')
+                //     ->first();
 
-                if ($lastMail) {
-                    $lastMail->decrement('available_mail', 1);
-                }
+                // if ($lastMail) {
+                //     $lastMail->decrement('available_mail', 1);
+                // }
+                $this->decrementMailCount();
             }
         }
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
@@ -216,14 +217,48 @@ class BlogController extends Controller
         ]);
 
         // MailAvailable::where('user_id', Auth::id())->decrement('available_mail', 1);
-        $lastMail = MailAvailable::where('user_id', Auth::id())
-            ->latest() // or ->orderBy('id','desc')
-            ->first();
+//         $lastMail = MailAvailable::where('user_id', Auth::id())
+//             ->latest() // or ->orderBy('id','desc')
+//             ->first();
 
-        if ($lastMail) {
-            $lastMail->decrement('available_mail', 1);
-}
+//         if ($lastMail) {
+//             $lastMail->decrement('available_mail', 1);
+// }    
+    $this->decrementMailCount();
+
 
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
     }
+   public function decrementMailCount()
+{
+    $mailPlans = MailAvailable::where('user_id', Auth::id())
+        ->orderBy('id', 'asc')
+        ->get();
+
+    foreach ($mailPlans as $mailPlan) {
+        
+        $order = PlanOrder::where('id', $mailPlan->order_id)->first();
+        if (!$order) continue;
+
+        $plan = Plan::where('id', $order->plan_id)->first();
+        if (!$plan) continue;
+
+        // Calculate expiry from PlanOrder created_at + plan duration
+        $expiryDate = Carbon::parse($order->created_at)->addDays($plan->duration);
+
+        if (Carbon::now()->greaterThan($expiryDate)) {
+            continue; // skip expired plan
+        }
+
+        // Active plan check + available mail
+        if ($mailPlan->available_mail > 0) {
+            $mailPlan->decrement('available_mail', 1);
+            return true;
+        }
+    }
+
+    return false; // No valid active plans found
+}
+
+
 }

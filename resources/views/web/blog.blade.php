@@ -32,132 +32,144 @@
         <!-- Main content -->
 
         <div class="flex-grow-1 p-4">
-            @if($isValidPlan)
-                @if($total_mail_available)
-                
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="col-md-6 d-flex justify-content-start mb-3" style="width:500px;">
-                                <input type="text" class="form-control" id="searchInput" placeholder="Search">
-                                <button class="btn btn-primary ms-3" id="searchBtn">Search</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-end mb-3">
-                                <span class="fw-bold me-2" style="font-size:20px">Selected site:</span>
-                                <span id="selectedCount" style="font-size:20px">0</span>
-                                {{-- @if ($mail_available->available_mail <= 0)
-                <button class="btn btn-primary ms-3" id="notMailAvailable">Send Mail</button>
-                @else
-                <button class="btn btn-primary ms-3" id="openMailModalBtn">Send Mail</button>
-                @endif --}}
-                                <button class="btn btn-primary ms-3" id="openMailModalBtn"
-                                    data-available-mail="{{ $total_mail_available ?? 0 }}"
-                                    data-total-mail="{{ $total_mail ?? 0 }}">
-                                    Send Mail
-                                </button>
+            @if ($isValidPlan)
+                @if ($total_mail_available)
 
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-6 d-flex justify-content-start mb-3" style="width:500px;">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search">
+                                    <button class="btn btn-primary ms-3" id="searchBtn">Search</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-end mb-3">
+                                    <span class="fw-bold me-2" style="font-size:20px">Selected site:</span>
+                                    <span id="selectedCount" style="font-size:20px">0</span>
+                                    {{-- @if ($mail_available->available_mail <= 0)
+                                    <button class="btn btn-primary ms-3" id="notMailAvailable">Send Mail</button>
+                                    @else
+                                    <button class="btn btn-primary ms-3" id="openMailModalBtn">Send Mail</button>
+                                    @endif --}}
+                                    <button class="btn btn-primary ms-3" id="openMailModalBtn"
+                                        data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                        data-total-mail="{{ $total_mail ?? 0 }}">
+                                        Send Mail
+                                    </button>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
 
-                <table class="table  table-hover bg-white">
-                    <div class="table-responsive">
+                    <table class="table  table-hover bg-white">
+                        <div class="table-responsive">
 
-                        <thead class="table-success text-center">
-                            <tr>
-                                <th></th>
-                                <th>ID</th>
-                                <th>Website Name</th>
-                                <th>Site Url</th>
-                                <th>Website Niche</th>
-                                <th>DA</th>
-                                <th>DR</th>
-                                <th>Ahrefs Traffic</th>
-                                <th>Mail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($pagination)
-                                @foreach ($pagination['data'] as $blog)
-                                    <!-- Main row -->
-                                    <tr class="main-row cursor-pointer" data-target="#expandRow{{ $blog['blog_id'] }}">
-                                        <td class="text-center" onclick="event.stopPropagation();">
-                                            <input type="checkbox" class="selectSiteCheckbox"
-                                                value="{{ $blog['blog_id'] }}" onclick="event.stopPropagation();">
-                                        </td>
-                                        <td class="text-center">#{{ $blog['blog_id'] ?? '' }}</td>
-                                        <td class="text-center">{{ $blog['website_name'] ?? '' }}</td>
-                                        <td class="text-center">{{ $blog['site_url'] ?? '' }} </td>
-                                        <td class="text-center">{{ $blog['website_niche'] ?? '' }}</td>
-                                        <td class="text-center">{{ $blog['moz_da'] ?? '' }}</td>
-                                        <td class="text-center">{{ $blog['ahrefs_dr'] ?? '' }}</td>
-                                        <td class="text-center">{{ $blog['ahrefs_traffic'] ?? '' }}</td>
-                                        <td class="text-center" onclick="event.stopPropagation();">
-                                            {{-- <a href="{{ route('blog.viewMail', encrypt($blog['created_by'])) }}"><button
+                            <thead class="table-success text-center">
+                                <tr>
+                                    <th></th>
+                                    <th>ID</th>
+                                    <th>Website Name</th>
+                                    <th>Site Url</th>
+                                    <th>Website Niche</th>
+                                    <th>DA</th>
+                                    <th>DR</th>
+                                    <th>Ahrefs Traffic</th>
+                                    <th>Mail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($pagination)
+                                    @foreach ($pagination['data'] as $blog)
+                                        <!-- Main row -->
+                                        <tr class="main-row cursor-pointer"
+                                            data-target="#expandRow{{ $blog['blog_id'] }}">
+                                            <td class="text-center" onclick="event.stopPropagation();">
+                                                <input type="checkbox" class="selectSiteCheckbox"
+                                                    value="{{ $blog['blog_id'] }}" onclick="event.stopPropagation();">
+                                            </td>
+                                            <td class="text-center">#{{ $blog['blog_id'] ?? '' }}</td>
+                                            <td class="text-center">{{ $blog['website_name'] ?? '' }}</td>
+                                            <td class="text-center">{{ $blog['site_url'] ?? '' }} </td>
+                                            <td class="text-center">{{ $blog['website_niche'] ?? '' }}</td>
+                                            <td class="text-center">{{ $blog['moz_da'] ?? '' }}</td>
+                                            <td class="text-center">{{ $blog['ahrefs_dr'] ?? '' }}</td>
+                                            <td class="text-center">{{ $blog['ahrefs_traffic'] ?? '' }}</td>
+                                            <td class="text-center" onclick="event.stopPropagation();">
+                                                {{-- <a href="{{ route('blog.viewMail', encrypt($blog['created_by'])) }}"><button
                                             class="btn btn-primary btn-sm">Send Mail</button> </a> --}}
 
-                                            <button class="btn btn-primary btn-sm rowMailBtn"
-                                                data-available-mail="{{ $total_mail_available->available_mail ?? 0 }}"
-                                                data-total-mail="{{ $total_mail ?? 0 }}"
-                                                id="openMailModalBtn"
-                                                data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
-                                                Send Mail
-                                            </button>
+                                                <button class="btn btn-primary btn-sm rowMailBtn"
+                                                    data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                                    data-total-mail="{{ $total_mail ?? 0 }}" id="openMailModalBtn"
+                                                    data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
+                                                    Send Mail
+                                                </button>
 
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
 
-                                    <!-- Expandable row (hidden by default) -->
-                                    <tr class="expandable-row" id="expandRow{{ $blog['blog_id'] }}"
-                                        style="display:none;">
-                                        <td colspan="9" class="bg-light">
-                                            <div>
-                                                <b>Website Name:</b> {{ $blog['website_name'] ?? '—' }} <br>
-                                                <b>Site URL:</b> {{ $blog['site_url'] ?? '—' }} <br>
-                                                <b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }} <br>
-                                                <b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }} <br>
-                                                <b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }} <br>
-                                                <b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}
-                                            </div>
-                                        </td>
+                                        <!-- Expandable row (hidden by default) -->
+                                        <tr class="expandable-row" id="expandRow{{ $blog['blog_id'] }}"
+                                            style="display:none;">
+                                            <td colspan="9" class="bg-light">
+                                                <div>
+                                                    <b>Website Name:</b> {{ $blog['website_name'] ?? '—' }} <br>
+                                                    <b>Site URL:</b> {{ $blog['site_url'] ?? '—' }} <br>
+                                                    <b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }} <br>
+                                                    <b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }} <br>
+                                                    <b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }} <br>
+                                                    <b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="9" class="text-center" id="noResult">No blog found.</td>
                                     </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="9" class="text-center" id="noResult">No blog found.</td>
+                                @endif
+                                <tr id="noResultsRow" style="display: none;">
+                                    <td colspan="9" class="text-center  fw-bold">
+                                        No blog found.
+                                    </td>
                                 </tr>
-                            @endif
-                            <tr id="noResultsRow" style="display: none;">
-                                <td colspan="9" class="text-center  fw-bold">
-                                    No blog found.
-                                </td>
-                            </tr>
 
 
-                        </tbody>
-                    </div>
-                    {{-- @if (isset($pagination))
+                            </tbody>
+                        </div>
+                        {{-- @if (isset($pagination))
                 <div class="d-flex justify-content-center mt-3">
                     {{ $pagination->links('pagination::bootstrap-5') }}
                 </div>
             @endif --}}
-                </table>
+                    </table>
+                @else
+                <div
+                    style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
+                    <p>
+                    <h4>You have use all mail services!</h4>
+                    </p>
+                    <a href="{{ route('home') }}">
+                        <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
+                    </a>
+                </div>
+                @endif
+            @else
+                <div
+                    style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
+                    <p>
+                    <h4>You have not purchased any plan.</h4>
+                    </p>
+                    <a href="{{ route('home') }}">
+                        <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
+                    </a>
+                </div>
             @endif
-        @else
-        <div
-            style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
-            <p><h4>You have not purchased any plan.</h4></p>
-            <a href="{{ route('home') }}">
-                <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
-            </a>
+
         </div>
-        @endif
-        
-    </div>
     </div>
 
     <!-- Modal -->
@@ -212,7 +224,7 @@
                 </form>
             </div>
         </div>
-    
+
     </div>
     <script>
         // $(document).ready(function() {
@@ -385,7 +397,7 @@
 
                     // Check if file already exists
                     const fileExists = selectedFiles.some(f => f.name === file.name && f.size === file
-                    .size);
+                        .size);
                     if (!fileExists) {
                         selectedFiles.push(file);
 
