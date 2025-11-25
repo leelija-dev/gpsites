@@ -536,6 +536,29 @@
                         });
                 },
                 onApprove: function(data, actions) {
+                    // Validate that we have an order ID
+                    if (!data.orderID) {
+                        console.error('No PayPal order ID received');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Payment Error',
+                            text: 'Invalid payment session. Please try again.',
+                            confirmButtonColor: '#ef4444'
+                        });
+                        return;
+                    }
+
+                    // Show processing message
+                    Swal.fire({
+                        title: 'Processing Payment...',
+                        text: 'Please wait while we process your payment.',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     // Capture the payment
                     return fetch('/checkout/capture-payment', {
                             method: 'POST',
@@ -544,16 +567,26 @@
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                             },
                             body: JSON.stringify({
-                                order_id: data.orderID,
-                                billing_info: getBillingInfo(),
-                                package: selectedPackage
+                                order_id: data.orderID
                             })
                         })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.success) {
-                                // Redirect to success page
-                                window.location.href = `/checkout/success`;
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Payment Successful!',
+                                    text: 'Redirecting to confirmation page...',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href = `/checkout/success`;
+                                });
                             } else {
                                 throw new Error(data.message || 'Payment failed');
                             }
@@ -563,7 +596,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Payment Failed',
-                                text: 'There was an error processing your payment. Please try again.',
+                                text: error.message || 'There was an error processing your payment. Please try again.',
                                 confirmButtonColor: '#ef4444'
                             });
                         });

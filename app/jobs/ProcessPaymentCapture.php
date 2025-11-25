@@ -29,7 +29,7 @@ class ProcessPaymentCapture implements ShouldQueue
     {
         $this->paypalOrderId = $paypalOrderId;
         $this->userId = $userId;
-        
+
         \Log::info('ProcessPaymentCapture job created', [
             'paypal_order_id' => $paypalOrderId,
             'user_id' => $userId
@@ -39,12 +39,113 @@ class ProcessPaymentCapture implements ShouldQueue
     /**
      * Execute the job.
      */
+    // public function handle(): void
+    // {
+    //     \Log::info('ProcessPaymentCapture job started', [
+    //         'paypal_order_id' => $this->paypalOrderId,
+    //         'user_id' => $this->userId
+    //     ]);
+
+    //     try {
+    //         $client = $this->getPayPalClient();
+    //         $captureRequest = new OrdersCaptureRequest($this->paypalOrderId);
+    //         $response = $client->execute($captureRequest);
+
+    //         \Log::info('PayPal capture response', [
+    //             'paypal_order_id' => $this->paypalOrderId,
+    //             'response_status' => $response->statusCode,
+    //             'result' => $response->result
+    //         ]);
+
+    //         $transactionId = $response->result->purchase_units[0]->payments->captures[0]->id;
+
+    //         \Log::info('Transaction ID extracted', [
+    //             'paypal_order_id' => $this->paypalOrderId,
+    //             'transaction_id' => $transactionId
+    //         ]);
+
+    //         // Find and update the order
+    //         $order = PlanOrder::where('paypal_order_id', $this->paypalOrderId)->first();
+
+    //         \Log::info('Order found', [
+    //             'paypal_order_id' => $this->paypalOrderId,
+    //             'order_id' => $order ? $order->id : null
+    //         ]);
+
+    //         if ($order) {
+    //             $updateData = [
+    //                 'transaction_id' => $transactionId,
+    //                 'status' => 'completed',
+    //                 'payment_details' => $response->result,
+    //                 'paid_at' => now(),
+    //             ];
+
+    //             $order->update($updateData);
+
+    //             \Log::info('Order updated successfully', [
+    //                 'order_id' => $order->id,
+    //                 'transaction_id' => $transactionId
+    //             ]);
+
+    //             // Create mail credits
+    //             $plan = Plan::findOrFail($order->plan_id);
+    //             MailAvailable::create([
+    //                 'user_id' => $this->userId,
+    //                 'order_id' => $order->id,
+    //                 'total_mail' => $plan->mail_available,
+    //                 'available_mail' => $plan->mail_available,
+    //                 'created_at' => now(),
+    //             ]);
+
+    //             \Log::info('Mail credits created', [
+    //                 'user_id' => $this->userId,
+    //                 'order_id' => $order->id,
+    //                 'mail_available' => $plan->mail_available
+    //             ]);
+
+    //             // Store transaction_id in a cache/database for success page
+    //             // Since session doesn't work in queue context, use cache instead
+    //             \Cache::put('payment_success_' . $this->userId, $transactionId, now()->addMinutes(30));
+    //         } else {
+    //             \Log::error('Order not found for PayPal order ID', [
+    //                 'paypal_order_id' => $this->paypalOrderId
+    //             ]);
+    //         }
+
+    //     } catch (\Exception $e) {
+    //         \Log::error('Queue job ProcessPaymentCapture failed', [
+    //             'paypal_order_id' => $this->paypalOrderId,
+    //             'user_id' => $this->userId,
+    //             'error' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString()
+    //         ]);
+
+    //         // Update order status to failed
+    //         $order = PlanOrder::where('paypal_order_id', $this->paypalOrderId)->first();
+    //         if ($order) {
+    //             $order->update(['status' => 'failed']);
+    //             \Log::info('Order marked as failed', ['order_id' => $order->id]);
+    //         }
+
+    //         throw $e;
+    //     }
+    // }
+
+
     public function handle(): void
     {
         \Log::info('ProcessPaymentCapture job started', [
             'paypal_order_id' => $this->paypalOrderId,
             'user_id' => $this->userId
         ]);
+
+        // Validate that we have a PayPal order ID
+        if (empty($this->paypalOrderId)) {
+            \Log::error('ProcessPaymentCapture job failed: No PayPal order ID provided', [
+                'user_id' => $this->userId
+            ]);
+            throw new \InvalidArgumentException('PayPal order ID is required');
+        }
 
         try {
             $client = $this->getPayPalClient();
@@ -57,21 +158,14 @@ class ProcessPaymentCapture implements ShouldQueue
                 'result' => $response->result
             ]);
 
-            $transactionId = $response->result->purchase_units[0]->payments->captures[0]->id;
-
-            \Log::info('Transaction ID extracted', [
-                'paypal_order_id' => $this->paypalOrderId,
-                'transaction_id' => $transactionId
-            ]);
-
             // Find and update the order
             $order = PlanOrder::where('paypal_order_id', $this->paypalOrderId)->first();
-            
+
             \Log::info('Order found', [
                 'paypal_order_id' => $this->paypalOrderId,
                 'order_id' => $order ? $order->id : null
             ]);
-            
+
             if ($order) {
                 $updateData = [
                     'transaction_id' => $transactionId,
@@ -111,7 +205,6 @@ class ProcessPaymentCapture implements ShouldQueue
                     'paypal_order_id' => $this->paypalOrderId
                 ]);
             }
-
         } catch (\Exception $e) {
             \Log::error('Queue job ProcessPaymentCapture failed', [
                 'paypal_order_id' => $this->paypalOrderId,
@@ -119,21 +212,22 @@ class ProcessPaymentCapture implements ShouldQueue
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             // Update order status to failed
             $order = PlanOrder::where('paypal_order_id', $this->paypalOrderId)->first();
             if ($order) {
                 $order->update(['status' => 'failed']);
                 \Log::info('Order marked as failed', ['order_id' => $order->id]);
             }
-            
+
             throw $e;
         }
     }
 
+
     private function getPayPalClient(): PayPalHttpClient
     {
-        $environment = config('paypal.mode') === 'live' 
+        $environment = config('paypal.mode') === 'live'
             ? new ProductionEnvironment(config('paypal.client_id'), config('paypal.client_secret'))
             : new SandboxEnvironment(config('paypal.client_id'), config('paypal.client_secret'));
 

@@ -128,16 +128,28 @@ class CheckoutController extends Controller
     {
         try {
             $request->validate([
-                'order_id' => 'required|string',
+                'order_id' => 'required|string|min:1',
             ]);
+
+            // Additional validation - ensure order_id looks like a PayPal order ID
+            if (empty($request->order_id) || !preg_match('/^[A-Z0-9]+$/', $request->order_id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid order ID format.'
+                ], 400);
+            }
 
             // Find the order by PayPal order ID
             $order = PlanOrder::where('paypal_order_id', $request->order_id)->first();
 
             if (!$order) {
+                \Log::warning('Order not found for PayPal order ID', [
+                    'paypal_order_id' => $request->order_id,
+                    'user_id' => Auth::id()
+                ]);
                 return response()->json([
                     'success' => false,
-                    'message' => 'Order not found.'
+                    'message' => 'Order not found. Please try again.'
                 ], 404);
             }
 
@@ -157,18 +169,24 @@ class CheckoutController extends Controller
                 'message' => 'Payment processing started. You will be redirected shortly.',
                 'status' => 'processing'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed for payment capture', [
+                'errors' => $e->errors(),
+                'request_data' => $request->all()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid request data.'
+            ], 422);
         } catch (\Exception $e) {
-            \Log::error('PayPal payment capture dispatch failed: ' . $e->getMessage());
-
-            // Update order status to failed
-            $order = PlanOrder::where('paypal_order_id', $request->order_id)->first();
-            if ($order) {
-                $order->update(['status' => 'failed']);
-            }
+            \Log::error('PayPal payment capture dispatch failed: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all()
+            ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Payment processing failed: ' . $e->getMessage()
+                'message' => 'Payment processing failed. Please try again.'
             ], 500);
         }
     }
