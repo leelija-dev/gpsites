@@ -81,6 +81,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\web\BlogController;
 use App\Http\Controllers\web\MailController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\web\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Plan;
@@ -168,7 +169,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-orders', [OrderController::class, 'index'])->name('my-orders');
     Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('view-my-order');
     Route::get('/billing',[OrderController::class,'billing'])->name('order-billing');
+    //contact routes
+    
 });
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Authenticated routes (require authentication only)
 Route::middleware('auth')->group(function () {

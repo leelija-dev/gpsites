@@ -384,11 +384,12 @@
                     <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
                 </form>
                 @else
-                <form method="POST" action="{{ route('login') }}" class="w-full">
+                {{-- <form method="POST" action="{{ route('login') }}" class="w-full">
                     @csrf
                     <input type="hidden" name="redirect" value="{{ route('checkout', ['plan' => $plan->id]) }}">
                     <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
-                </form>
+                </form> --}}
+                <a href="{{ route('login', ['redirect' => route('checkout', ['plan' => $plan->id])]) }}"   class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">    Get Started</a>
                 @endauth
             </div>
             @endforeach
@@ -572,19 +573,19 @@
 
             <!-- RIGHT FORM -->
             <div class="w-full lg:w-2/3 lg:p-6 p-4">
-                <form id="contact-us" class="space-y-6" novalidate>
+                <form id="contact-us" method="POST" action="{{route('contact.store')}}" class="space-y-6" novalidate>
 
                     <!-- NAME ROW -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-gray-700">Full Name</label>
-                            <input type="text" id="full_name" placeholder="John Doe" required
+                            <input type="text" id="full_name" name="name" placeholder="John Doe" required
                                 class="mt-1 w-full border-t-0 border-l-0 border-r-0 border-gray-300 form-input-cus outline-none py-2" />
                         </div>
 
                         <div>
                             <label class="block text-gray-700">Email</label>
-                            <input type="email" id="email" placeholder="email@example.com" required
+                            <input type="email" id="email" name="email" placeholder="email@example.com" required
                                 class="mt-1 w-full border-t-0 border-l-0 border-r-0 border-gray-300 form-input-cus outline-none py-2" />
                         </div>
                     </div>
@@ -594,7 +595,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
                         <select id="subject" required
                             class="w-full px-4 py-3 text-[#625e5e] border border-t-0 border-l-0 border-r-0 border-gray-300 transition"
-                            style="box-shadow: none !important;">
+                            style="box-shadow: none !important;" name="subject">
                             <option value="">Select a subject</option>
                             <option value="General Inquiry">General Inquiry</option>
                             <option value="Support">Support</option>
@@ -606,7 +607,7 @@
                     <!-- MESSAGE -->
                     <div>
                         <label class="block text-gray-700">Message</label>
-                        <textarea id="message" placeholder="Write your message..." required
+                        <textarea id="message" placeholder="Write your message..." name="message" required
                             class="mt-1 w-full border-t-0 border-l-0 min-h-[150px] border-r-0 border-gray-300 form-input-cus outline-none py-2 h-24"></textarea>
                     </div>
 

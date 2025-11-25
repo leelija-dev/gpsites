@@ -83,7 +83,8 @@
 
             <!-- Right side - Contact Form -->
             <div class="bg-white rounded-2xl shadow-[0_6px_19px_#ccc] p-8 lg:p-10">
-                <form id="contact-us" class="space-y-6" novalidate>
+                <form id="contact-us" method="post" action="{{route('contact.store')}}" class="space-y-6"  enctype="multipart/form-data" novalidate>
+                    @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Full Name -->
                         <div class="floating-label-group">
@@ -91,13 +92,14 @@
                             <input
                                 type="text"
                                 id="full_name"
-                                name="full_name"
+                                name="name"
                                 placeholder=""
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
                                 required />
                             <label for="full_name" class="block text-sm font-medium text-gray-700 mb-2">Full name</label>
+                            
                         </div>
-
+                        
                         <!-- Phone Number -->
                         <div class="floating-label-group">
 
@@ -109,6 +111,7 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
                                 required />
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                           
                         </div>
                     </div>
 
@@ -123,6 +126,7 @@
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
                             required />
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        
                     </div>
 
                     <!-- Subject -->
@@ -139,6 +143,7 @@
                             <option value="partnership">Partnership</option>
                             <option value="feedback">Feedback</option>
                         </select>
+                        
                     </div>
 
                     <!-- Message -->
@@ -152,7 +157,9 @@
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition resize-none"
                             required></textarea>
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                        
                     </div>
+
 
                     <!-- Submit Button -->
                     <button
