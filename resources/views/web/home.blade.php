@@ -573,7 +573,7 @@
 
             <!-- RIGHT FORM -->
             <div class="w-full lg:w-2/3 lg:p-6 p-4">
-                <form id="contact-us" method="POST" action="{{route('contact.store')}}" class="space-y-6" novalidate>
+                <form id="contact-us" method="POST" action="{{ route('contact.store') }}" class="space-y-6" novalidate>
                     
                     <!-- Success Message -->
                     @if(session('success'))
