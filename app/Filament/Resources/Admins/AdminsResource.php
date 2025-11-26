@@ -18,7 +18,7 @@ class AdminsResource extends Resource
 {
     protected static ?string $model = Admin::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
     protected static ?string $recordTitleAttribute = 'name';
 

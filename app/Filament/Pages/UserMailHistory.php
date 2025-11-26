@@ -8,7 +8,7 @@ use Filament\Support\Icons\Heroicon;
 class UserMailHistory extends Page
 {
     protected static ?int $navigationSort = 2;
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Envelope;
 
     protected string $view = 'filament.pages.user-mail-history';
     public static function getNavigationGroup(): ?string

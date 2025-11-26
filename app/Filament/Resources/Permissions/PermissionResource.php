@@ -19,7 +19,7 @@ class PermissionResource extends Resource
     protected static ?string $model = \Spatie\Permission\Models\Permission::class;
 
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::LockOpen;
 
     protected static ?string $recordTitleAttribute = 'name';
 

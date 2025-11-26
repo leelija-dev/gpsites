@@ -199,4 +199,34 @@
       <a href="#" class="hover:text-secondary transition-all duration-300 ease-in-out">Site map</a>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('newsletter_success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success!',
+    text: '{{ session('newsletter_success') }}',
+    // timer: 2000,
+    // showConfirmButton: false
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#F59E0B',
+});
+</script>
+@endif
+
+@if(session('newsletter_error'))
+<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Already Subscribed',
+    text: '{{ session('newsletter_error') }}',
+    //timer: 2500,
+     confirmButtonText: 'OK',
+     confirmButtonColor: '#F59E0B',
+    //showConfirmButton: false
+});
+</script>
+@endif
+
 </footer>

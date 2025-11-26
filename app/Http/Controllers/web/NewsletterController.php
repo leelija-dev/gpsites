@@ -25,7 +25,10 @@ class NewsletterController extends Controller
         $redirectTo = $request->input('redirect_to', url()->previous() ?: route('home'));
     
         $newsletter = Newsletter::where('email', $request->email)->first();
-    
+        $exists = Newsletter::where('email', $request->email)->exists();
+         if ($exists) {
+        return back()->with('newsletter_error', 'Email already subscribed!');
+        }
         if ($newsletter) {
             if ($newsletter->status === 'unsubscribed') {
                 $newsletter->update([
