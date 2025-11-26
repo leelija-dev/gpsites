@@ -25,8 +25,13 @@
                 <div class="hidden lg:flex items-center space-x-8">
                     <a href="/"
                         class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Home</a>
-                    <a href="#"
-                        class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Pricing</a>
+                            <a href="/#pricing"
+                            id="nav-pricing"
+                            class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
+                                Pricing
+                            </a>
+
+
                     <a href="/about"
                         class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">About
                         Us</a>
@@ -102,7 +107,7 @@
         <nav class="space-y-2">
             <a href="/"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Home</a>
-            <a href="#"
+            <a href="{{ url('/') }}#pricing"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Pricing</a>
             <a href="/about"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">About

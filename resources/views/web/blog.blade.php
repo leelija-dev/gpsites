@@ -152,8 +152,13 @@
                     <p>
                     <h4>You have use all mail services!</h4>
                     </p>
-                    <a href="{{ route('home') }}">
+                    {{-- <a href="{{ route('home') }}">
                         <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
+                    </a> --}}
+                    <a href="/#pricing"
+                            id="nav-pricing"
+                            class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
+                                <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
                     </a>
                 </div>
                 @endif
@@ -163,9 +168,14 @@
                     <p>
                     <h4>You have not purchased any plan.</h4>
                     </p>
-                    <a href="{{ route('home') }}">
+                    {{-- <a href="{{ route('home') }}">
                         <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
-                    </a>
+                    </a> --}}
+                    <a href="/#pricing"
+                            id="nav-pricing"
+                            class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
+                                <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
+                            </a>
                 </div>
             @endif
 

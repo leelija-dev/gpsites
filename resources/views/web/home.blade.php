@@ -31,9 +31,8 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 lg:justify-start sm:justify-center items-center">
-                <button class="btn-primary">
-                    See Pricing
-                </button>
+                <!-- Hero CTA -->
+        <button type="button" id="see-pricing" class="btn-primary"> See Pricing </button>
                 <a href="/contact"><button class="btn-secondary">
                         Contact Us
                     </button></a>
@@ -301,7 +300,8 @@
 
 
 <!-- pricing plan section  -->
-<section class="lg:py-16 py-12 px-6">
+{{-- <section id="pricing" class="lg:py-16 py-12 px-6"> --}}
+    <section id="pricing" class="scroll-mt-24 lg:py-16 py-12 px-6">
     <div class="container mx-auto">
         <!-- Header -->
         <div class="w-full text-center mb-12">
@@ -327,7 +327,10 @@
             @endphp
 
             <!-- Plan Card -->
-            <div class="bg-{{ $isHighlighted ? 'gradient-to-br from-black to-primary text-white' : 'white' }} rounded-2xl {{ $isHighlighted ? 'shadow-xl' : 'shadow-md border border-gray-100' }} px-8 pb-8 pt-0 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
+            <div class="bg-{{ $isHighlighted ? 'gradient-to-br from-black to-primary text-white' : 'white' }}
+            rounded-2xl {{ $isHighlighted ? 'shadow-xl' : 'shadow-md border border-gray-100' }}
+            px-8 pb-8 pt-0 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out
+            flex flex-col h-full">
                 <div class="text-center">
                     <div class="bg-{{ $isHighlighted ? 'purple-600 text-white' : 'purple-100 text-purple-600' }} relative top-[-3px] py-[7px] px-[22px] mb-[3rem] rounded-b-[10px] text-sm font-semibold inline-block">
                         {{ $badge }}
@@ -340,26 +343,29 @@
                     </div>
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
-                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-base font-medium">/{{ $plan->duration }}</span></p>
-                    <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed {{ $plan->duration === 'month' ? 'Monthly' : 'Annually' }}</p>
+                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30) 
+                    : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}}
+
+                    {{-- <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">--}}{{$plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
-                        {{ $plan->mail_available ?? '0' }}
+                        {{ $plan->mail_available ?? '0' }} Mail
                     </span>
                 </div>
-
+                <div class="flex-1 mt-6">
                 @if($plan->features && $plan->features->count() > 0)
                 <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
                     @foreach($plan->features->where('is_active', true) as $feature)
                     <li>• {{ $feature->feature }}</li>
                     @endforeach
                 </ul>
-                @else
+                {{-- @else
                 <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
                     <li>• Feature 1</li>
                     <li>• Feature 2</li>
                     <li>• Feature 3</li>
-                </ul>
+                </ul> --}}
                 @endif
+                </div>
 
                 <!-- <div class="text-center my-10">
                         <a href="{{ route('checkout') }}?plan={{ $plan->id }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
@@ -376,12 +382,12 @@
                 @else
                 <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
                 @endauth -->
-
+            <div class="mt-8">
                 @auth
                 <form method="POST" action="{{ route('checkout') }}" class="w-full">
                     @csrf
                     <input type="hidden" name="plan" value="{{ $plan->id }}">
-                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block ">Get Started</button>
                 </form>
                 @else
                 {{-- <form method="POST" action="{{ route('login') }}" class="w-full">
@@ -391,6 +397,7 @@
                 </form> --}}
                 <a href="{{ route('login', ['redirect' => route('checkout', ['plan' => $plan->id])]) }}"   class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">    Get Started</a>
                 @endauth
+            </div>
             </div>
             @endforeach
         </div>
@@ -921,8 +928,78 @@
     });
 </script>
 
+
 @endsection
 @section('scripts')
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('see-pricing');
+    const target = document.getElementById('pricing');
+
+    if (!btn || !target) return;
+
+    btn.addEventListener('click', function () {
+        const nav = document.querySelector('nav');
+        const navHeight = nav ? nav.offsetHeight : 0;
+
+        const offset = target.getBoundingClientRect().top
+                     + window.pageYOffset
+                     - navHeight;
+
+        window.scrollTo({
+            top: offset,
+            behavior: 'smooth'
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const pricingSection = document.getElementById('pricing');
+
+    // If URL contains #pricing and we are on home page -> auto scroll
+    if (pricingSection && window.location.hash === '#pricing') {
+        setTimeout(() => {
+            const nav = document.querySelector('nav');
+            const navHeight = nav ? nav.offsetHeight : 0;
+
+            const offset = pricingSection.getBoundingClientRect().top
+                         + window.pageYOffset
+                         - navHeight;
+
+            window.scrollTo({ top: offset, behavior: 'smooth' });
+        }, 200);
+
+        // Remove hash so URL stays clean
+        history.replaceState(null, null, ' ');
+    }
+
+    // When clicking Pricing while already on Home page
+    const navPricing = document.getElementById('nav-pricing');
+    if (navPricing && pricingSection) {
+        navPricing.addEventListener('click', function (e) {
+            e.preventDefault();
+            const nav = document.querySelector('nav');
+            const navHeight = nav ? nav.offsetHeight : 0;
+
+            const offset = pricingSection.getBoundingClientRect().top
+                         + window.pageYOffset
+                         - navHeight;
+
+            window.scrollTo({ top: offset, behavior: 'smooth' });
+
+            history.replaceState(null, null, ' ');
+        });
+    }
+});
+
+
+</script>
+
+
+
+
+
 
 
 @endsection
