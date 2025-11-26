@@ -198,6 +198,7 @@ class ProcessPaymentCapture implements ShouldQueue
                     'available_mail' => $plan->mail_available,
                     'created_at' => now(),
                 ]);
+                
                 //order mail for user
                 $userEmail = $order->user->email;
                 $userSubject = "Your plan '{$plan->name}' is activated!";

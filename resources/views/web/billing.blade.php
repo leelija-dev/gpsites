@@ -36,7 +36,8 @@
 
 
                     <thead class="table-success text-center">
-
+                         <tr><h1><strong>Billing<strong></h1>
+                         </tr>
                         <tr>
                             <th scope="col">SL No</th>
                             <th scope="col">Plan Order ID</th>

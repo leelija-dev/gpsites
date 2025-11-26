@@ -12,14 +12,32 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
    <div class="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-default">
       <ul class="space-y-2 font-medium">
          <li>
-            <a href="{{route('blog.index')}}" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6.025A7.5 7.5 0 1 0 17.975 14H10V6.025Z" />
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 3c-.169 0-.334.014-.5.025V11h7.975c.011-.166.025-.331.025-.5A7.5 7.5 0 0 0 13.5 3Z" />
-               </svg>
-               <span class="ms-3">Blog</span>
-            </a>
-         </li>
+    <a href="{{ route('blog.index') }}"
+       class="flex items-center px-2 py-1.5 rounded-base group 
+       {{ request()->routeIs('blog.index','blog.viewMail') 
+            ? 'text-blue-500 font-semibold'
+            : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
+       }}">
+        
+        <svg class="w-5 h-5 transition duration-75 
+            {{ request()->routeIs('blog.index','blog.viewMail') 
+                ? 'text-blue-500'
+                : 'group-hover:text-fg-brand'
+            }}"
+            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" 
+                  stroke-linejoin="round" stroke-width="2" 
+                  d="M10 6.025A7.5 7.5 0 1 0 17.975 14H10V6.025Z" />
+            <path stroke="currentColor" stroke-linecap="round" 
+                  stroke-linejoin="round" stroke-width="2" 
+                  d="M13.5 3c-.169 0-.334.014-.5.025V11h7.975c.011-.166.025-.331.025-.5A7.5 7.5 0 0 0 13.5 3Z" />
+        </svg>
+
+        <span class="ms-3">Blog</span>
+    </a>
+</li>
+
          {{-- <li>
             <button type="button" class="flex items-center w-full justify-between px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/></svg>
@@ -39,8 +57,14 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
             </ul>
          </li> --}}
          <li>
-            <a href="{{route('blog.mailHistory',encrypt($loggedUserId))}}" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <a href="{{route('blog.mailHistory',encrypt($loggedUserId))}}" class="flex items-center px-2 py-1.5 rounded-base group {{ request()->routeIs('blog.mailHistory','blog.view-mail') 
+                  ? 'text-blue-500 font-semibold'
+                  : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
+            }}">
+               <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('blog.mailHistory','blog.view-mail') 
+                     ? 'text-blue-500'
+                     : 'group-hover:text-fg-brand'
+                  }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v14M9 5v14M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Mail History</span>
@@ -50,21 +74,47 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
          @auth
          @if(Auth::user()->hasVerifiedEmail())
          <li>
-            <a href="{{route('my-orders')}}" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8" />
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">My Order</span>
+         <a href="{{route('my-orders')}}"
+            class="flex items-center px-2 py-1.5 rounded-base group {{ request()->routeIs('my-orders','view-my-order') 
+                  ? 'text-blue-500 font-semibold'
+                  : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
+            }}">
+            
+            <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('my-orders','view-my-order') 
+                     ? 'text-blue-500'
+                     : 'group-hover:text-fg-brand'
+                  }}"
+                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
 
-            </a>
-         </li>
+            <span class="flex-1 ms-3 whitespace-nowrap">My Order</span>
+         </a>
+      </li>
+
          
-          <li>
-            <a href="{{route('order-billing')}}" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Billing</span>
-            </a>
-         </li>
+         <li>
+            <a href="{{ route('order-billing') }}"
+                  class="flex items-center px-2 py-1.5 rounded-base group
+                     {{ request()->routeIs('order-billing') 
+                           ? 'bg-neutral-tertiary text-fg-brand font-semibold'
+                           : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
+                     }}">
+                  
+                  <svg class="shrink-0 w-5 h-5 transition duration-75
+                        {{ request()->routeIs('order-billing') ? 'text-fg-brand' : 'group-hover:text-fg-brand' }}"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                           d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+                  </svg>
+
+                  <span class="flex-1 ms-3 whitespace-nowrap">Billing</span>
+               </a>
+            </li>
+
          @endif
          @endauth
          {{--<li>

@@ -157,7 +157,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-    Route::get('/Mail/{id}', [BlogController::class, 'viewMail'])->name('blog.viewMail');
+    Route::get('/mail/{id}', [BlogController::class, 'viewMail'])->name('blog.viewMail');
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
 

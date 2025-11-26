@@ -150,7 +150,7 @@
                 <div
                     style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
                     <p>
-                    <h4>You have use all mail services!</h4>
+                    <h4>You have already used all mail services!</h4>
                     </p>
                     {{-- <a href="{{ route('home') }}">
                         <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
