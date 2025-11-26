@@ -10,24 +10,29 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 class OrdersTable
 {
-    public static function configure(Table $table): Table
+    public static function configure(Table $table): Table 
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('user_id')
                     ->label('User ID')
                     ->searchable(),
-                TextColumn::make('plan_id')
-                    ->label('Plan ID')
-                    ->searchable(),
+                // TextColumn::make('plan_id')
+                //     ->label('Plan ID')
+                //     ->searchable(),
                 TextColumn::make('amount')
                     ->searchable(),
-                TextColumn::make('paid_at')
-                    ->searchable(),
+                // TextColumn::make('paid_at')
+                //     ->searchable()
+                //     ->dateTime(),
+
                 TextColumn::make('transaction_id')
                     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable()
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
             ])
             ->filters([
                 //
