@@ -150,8 +150,8 @@
 
                         <!-- Coupon Input -->
 
-                        <div class="floating-label-group ">
-                            <input type="text" id="discount" placeholder=" " value="" required />
+                        <div class="floating-label-group">
+                            <input type="text" id="discount" placeholder=" " value="" />
                             <label for="discount">Discount Coupon Code</label>
                         </div>
 
