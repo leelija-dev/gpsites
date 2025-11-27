@@ -160,6 +160,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mail/{id}', [BlogController::class, 'viewMail'])->name('blog.viewMail');
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
+    // web.php
+    Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
+
 
 
 

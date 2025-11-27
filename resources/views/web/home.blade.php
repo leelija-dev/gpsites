@@ -61,6 +61,8 @@
 
                 <!-- Search Bar -->
                 <div class="relative mb-8 z-[51]">
+                    <div id="selected-niches" class="flex flex-wrap gap-2 mb-2"></div>
+
                     <!-- Search Input -->
                     <input
                         type="text"
@@ -69,9 +71,9 @@
                         autocomplete="off"
                         class="w-full backdrop-blur-[3px] bg-white/0 shadow-[1px_4px_17px_#5e5d5d38] pl-12 pr-4 py-3 rounded-full border border-secondary focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" />
                     <!-- Search Icon -->
-                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-secondary pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {{-- <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-secondary pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    </svg> --}}
 
                     <!-- Dropdown Results -->
                     <div id="niche-dropdown" class="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 max-h-64 overflow-y-auto hidden z-50">
@@ -79,6 +81,8 @@
                             <!-- Items will be injected here by JavaScript -->
                         </ul>
                     </div>
+                        <div id="selected-niches" class="flex flex-wrap gap-2 mb-2"></div>
+
                 </div>
 
                 <!-- Sliders -->
@@ -143,9 +147,17 @@
                 </div>
 
                 <!-- CTA Button -->
-                <button class="mt-10 w-full bg-primary hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition text-lg">
+                {{-- <button class="mt-10 w-full bg-primary hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition text-lg">
+                    Find Now
+                </button> --}}
+                <form action="{{ route('find.niches') }}" method="GET">
+                <input type="hidden" id="niche-values" name="niches" />
+                <button
+                    type="submit"
+                    class="mt-10 w-full bg-primary hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition text-lg">
                     Find Now
                 </button>
+            </form>
             </div>
         </div>
     </div>
@@ -767,165 +779,150 @@
 <!-- search and select  -->
 <script>
     // Your list of niches (you can replace or fetch this from API)
-    const niches = [
-        "Artificial Intelligence",
-        "Digital Marketing",
-        "E-commerce",
-        "Health & Fitness",
-        "Personal Finance",
-        "Cryptocurrency",
-        "Web Development",
-        "Graphic Design",
-        "Travel Blogging",
-        "SaaS Products",
-        "Online Education",
-        "Real Estate",
-        "Fashion & Beauty",
-        "Gaming",
-        "Mental Health",
-        "Sustainable Living",
-        "Parenting",
-        "Photography",
-        "Food & Cooking",
-        "Home Decor"
-    ];
+  // Your Niche List
+const niches = [
+    "Artificial Intelligence", "Digital Marketing", "E-commerce", "Health & Fitness",
+    "Personal Finance", "Cryptocurrency", "Web Development", "Graphic Design",
+    "Travel Blogging", "SaaS Products", "Online Education", "Real Estate",
+    "Fashion & Beauty", "Gaming", "Mental Health", "Sustainable Living",
+    "Parenting", "Photography", "Food & Cooking", "Home Decor","General","Technology",
+];
 
-    const searchInput = document.getElementById('niche-search');
-    const dropdown = document.getElementById('niche-dropdown');
-    const nicheList = document.getElementById('niche-list');
+const searchInput = document.getElementById('niche-search');
+const dropdown = document.getElementById('niche-dropdown');
+const nicheList = document.getElementById('niche-list');
+const selectedBox = document.getElementById('selected-niches'); // ADD in HTML
+const hiddenInput = document.getElementById('niche-values'); // ADD in HTML
 
-    let selectedIndex = -1; // For keyboard navigation
+let selectedIndex = -1;
+let selectedValues = [];  // store selected niches
 
-    // Render the list
-    function renderNiches(items) {
-        nicheList.innerHTML = '';
-        if (items.length === 0) {
-            nicheList.innerHTML = '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>';
-            return;
-        }
+function renderSelected() {
+    selectedBox.innerHTML = '';
+    selectedValues.forEach(niche => {
+        const tag = document.createElement('div');
+        tag.className = "flex items-center gap-2 text-white bg-primary px-3 py-1 rounded-full text-sm";
+        tag.innerHTML = `
+            ${niche}
+            <span class="cursor-pointer px-1" onclick="removeNiche('${niche}')">×</span>
+        `;
+        selectedBox.appendChild(tag);
+    });
 
-        items.forEach((niche, index) => {
-            const li = document.createElement('li');
-            li.className = `px-6 py-3 hover:bg-primary/10 cursor-pointer transition-colors ${
-                index === selectedIndex ? 'bg-primary/10 text-primary font-medium' : 'text-gray-700'
-            }`;
-            li.textContent = niche;
-            li.dataset.index = index;
+    // store values in hidden field (JSON)
+    hiddenInput.value = JSON.stringify(selectedValues);
+}
 
-            li.addEventListener('click', () => {
-                searchInput.value = niche;
-                closeDropdown();
-                searchInput.focus();
-            });
+function removeNiche(niche) {
+    selectedValues = selectedValues.filter(item => item !== niche);
+    renderSelected();
+}
 
-            nicheList.appendChild(li);
+function selectNiche(niche) {
+    if (!selectedValues.includes(niche)) {
+        selectedValues.push(niche);
+        renderSelected();
+    }
+    searchInput.value = "";
+    closeDropdown();
+}
+
+function renderNiches(items) {
+    nicheList.innerHTML = '';
+
+    if (items.length === 0) {
+        nicheList.innerHTML = '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>';
+        return;
+    }
+
+    items.forEach((niche, index) => {
+        const li = document.createElement('li');
+        li.className = `
+            px-6 py-3 hover:bg-primary/10 cursor-pointer transition-colors
+            ${index === selectedIndex ? 'bg-primary/10 text-primary font-medium' : 'text-gray-700'}
+        `;
+        li.textContent = niche;
+        li.dataset.index = index;
+
+        li.addEventListener('click', () => {
+            selectNiche(niche);
         });
-    }
 
-    // Filter niches based on input
-    function filterNiches(query) {
-        if (!query.trim()) {
-            return niches;
-        }
-        return niches.filter(niche =>
-            niche.toLowerCase().includes(query.toLowerCase())
-        );
-    }
-
-    // Open dropdown
-    function openDropdown() {
-        dropdown.classList.remove('hidden');
-        selectedIndex = -1;
-        renderNiches(filterNiches(searchInput.value));
-    }
-
-    // Close dropdown
-    function closeDropdown() {
-        dropdown.classList.add('hidden');
-        selectedIndex = -1;
-    }
-
-    // Input event: filter as user types
-    searchInput.addEventListener('input', () => {
-        selectedIndex = -1;
-        const filtered = filterNiches(searchInput.value);
-        renderNiches(filtered);
-        if (filtered.length > 0 && searchInput.value.trim() !== '') {
-            openDropdown();
-        } else {
-            closeDropdown();
-        }
+        nicheList.appendChild(li);
     });
+}
 
-    // Click outside to close
-    document.addEventListener('click', (e) => {
-        if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-            closeDropdown();
-        }
-    });
+function filterNiches(query) {
+    return query.trim()
+        ? niches.filter(n => n.toLowerCase().includes(query.toLowerCase()))
+        : niches;
+}
 
-    // Click on input to show all if empty
-    searchInput.addEventListener('focus', () => {
-        if (searchInput.value.trim() === '') {
-            renderNiches(niches);
-            openDropdown();
-        } else if (filterNiches(searchInput.value).length > 0) {
-            openDropdown();
-        }
-    });
+function openDropdown() {
+    dropdown.classList.remove('hidden');
+    selectedIndex = -1;
+    renderNiches(filterNiches(searchInput.value));
+}
 
-    // Keyboard navigation
-    searchInput.addEventListener('keydown', (e) => {
-        const items = nicheList.querySelectorAll('li');
-        if (!items.length) return;
+function closeDropdown() {
+    dropdown.classList.add('hidden');
+    selectedIndex = -1;
+}
 
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            selectedIndex = (selectedIndex + 1) % items.length;
-            highlightItem(items);
-            scrollIntoView(items[selectedIndex]);
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
-            highlightItem(items);
-            scrollIntoView(items[selectedIndex]);
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            if (selectedIndex >= 0 && items[selectedIndex]) {
-                searchInput.value = items[selectedIndex].textContent;
-                closeDropdown();
-            }
-        } else if (e.key === 'Escape') {
-            closeDropdown();
-            searchInput.blur();
-        }
-    });
+// Events
+searchInput.addEventListener('input', () => {
+    const filtered = filterNiches(searchInput.value);
+    renderNiches(filtered);
+    filtered.length ? openDropdown() : closeDropdown();
+});
 
-    function highlightItem(items) {
-        items.forEach((item, i) => {
-            if (i === selectedIndex) {
-                item.classList.add('bg-primary/10', 'text-primary', 'font-medium');
-            } else {
-                item.classList.remove('bg-primary/10', 'text-primary', 'font-medium');
-            }
-        });
+searchInput.addEventListener('focus', () => {
+    renderNiches(niches);
+    openDropdown();
+});
+
+// Click outside hide dropdown
+document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        closeDropdown();
+    }
+});
+
+// Keyboard Navigation
+searchInput.addEventListener('keydown', (e) => {
+    const items = nicheList.querySelectorAll('li');
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % items.length;
+        highlightItems(items);
+        items[selectedIndex].scrollIntoView({ block: 'nearest' });
     }
 
-    function scrollIntoView(item) {
-        if (item) {
-            item.scrollIntoView({
-                block: 'nearest'
-            });
-        }
+    if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
+        highlightItems(items);
+        items[selectedIndex].scrollIntoView({ block: 'nearest' });
     }
 
-    // Optional: Initialize with all items on focus
-    searchInput.addEventListener('focus', () => {
-        if (!searchInput.value) {
-            renderNiches(niches);
-            openDropdown();
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (selectedIndex >= 0 && items[selectedIndex]) {
+            selectNiche(items[selectedIndex].textContent);
         }
+    }
+});
+
+function highlightItems(items) {
+    items.forEach((item, i) => {
+        item.classList.toggle('bg-primary/10', i === selectedIndex);
+        item.classList.toggle('text-primary', i === selectedIndex);
+        item.classList.toggle('font-medium', i === selectedIndex);
     });
+}
+
 </script>
 
 

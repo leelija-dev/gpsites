@@ -6,6 +6,8 @@ use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Schemas\Components\View;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 class OrdersTable
@@ -15,8 +17,9 @@ class OrdersTable
         return $table
             ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('user_id')
-                    ->label('User ID')
+                TextColumn::make('id')->label('Order Id')->searchable()->sortable(),
+                TextColumn::make('user.name')
+                    ->label('User Name')
                     ->searchable(),
                 // TextColumn::make('plan_id')
                 //     ->label('Plan ID')
@@ -37,8 +40,10 @@ class OrdersTable
             ->filters([
                 //
             ])
+            
             ->recordActions([
-                EditAction::make(),
+                // EditAction::make(),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

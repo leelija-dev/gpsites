@@ -7,6 +7,7 @@ use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\ListOrders;
 use App\Filament\Resources\Orders\Schemas\OrderForm;
 use App\Filament\Resources\Orders\Tables\OrdersTable;
+use App\Filament\Resources\Orders\Pages\ViewOrder;
 use App\Models\PlanOrder;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -30,6 +31,7 @@ class OrderResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return OrderForm::configure($schema);
+         
     }
 
     public static function table(Table $table): Table
@@ -50,6 +52,7 @@ class OrderResource extends Resource
             'index' => ListOrders::route('/'),
             'create' => CreateOrder::route('/create'),
             'edit' => EditOrder::route('/{record}/edit'),
+            'view' => ViewOrder::route('/{record}/view'),
         ];
     }
 }

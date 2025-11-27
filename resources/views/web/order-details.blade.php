@@ -41,7 +41,7 @@
 
                     <tr>
                         <th scope="col">SL No</th>
-                        <th scope="col">Plan Order ID</th>
+                        <th scope="col">Plan ID</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Payment Status</th>
                         <th scope="col">Total Mail</th>

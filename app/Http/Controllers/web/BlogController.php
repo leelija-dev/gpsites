@@ -269,6 +269,79 @@ class BlogController extends Controller
 
     return false; // No valid active plans found
 }
+public function findNiches(Request $request)
+{
+    // Convert input to readable array (["Technology", "Health"])
+    $niches = $request->niches;
+    if (is_string($niches)) {
+        $decoded = json_decode($niches, true);
+        $niches = json_last_error() === JSON_ERROR_NONE ? $decoded : explode(',', $niches);
+    }
+    $niches = array_map('trim', (array)$niches);
+
+    // Store for login redirect
+    session(['selected_niches' => $niches]);
+
+    // Login check
+    if (!Auth::check()) {
+        return redirect()->route('login')
+            ->with('error', 'Please login to see filtered blogs.');
+    }
+
+    // Check active plan
+    $mail_available = MailAvailable::where('user_id', Auth::id())->get();
+    $isValidPlan = $total_mail_available = $total_mail = 0;
+
+    foreach ($mail_available as $item) {
+        $order = PlanOrder::find($item->order_id);
+        $plan = Plan::find($order->plan_id);
+
+        $expiry = Carbon::parse($order->created_at)->addDays($plan->duration);
+        if (Carbon::now()->lte($expiry)) {
+            $isValidPlan = true;
+            $total_mail_available += $item->available_mail;
+            $total_mail += $item->total_mail;
+        }
+    }
+
+    if (!$isValidPlan) {
+        return redirect()->route('pricing')->with('error', 'Please purchase a plan first!');
+    }
+
+    // Call API
+    $response = Http::get(env('API_BASE_URL').'/api/blogs', [
+        'page' => $request->get('page', 1),
+        'per_page' => 500 // fetch more so filter works
+    ]);
+
+    if ($response->failed()) {
+        return back()->with('error', 'API Request Failed');
+    }
+
+    $blogs = $response->json();
+
+    // Filter blogs by niche
+    $filteredBlogs = collect($blogs['data'])
+        ->filter(fn($blog) => in_array($blog['website_niche'], $niches))
+        ->values();
+
+    // Pagination (Manual for filtered results)
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $perPage = 20;
+    $currentItems = $filteredBlogs->slice(($currentPage - 1) * $perPage, $perPage);
+
+    $pagination = new LengthAwarePaginator(
+        $currentItems,
+        $filteredBlogs->count(),
+        $perPage,
+        $currentPage,
+        ['path' => url()->current(), 'query' => $request->query()]
+    );
+    // print_r($blogs);die;
+
+    return view('web.blog', compact('pagination', 'total_mail_available', 'total_mail', 'isValidPlan', 'niches'));
+}
+
 
 
 }
