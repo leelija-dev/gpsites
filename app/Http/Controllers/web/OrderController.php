@@ -18,7 +18,7 @@ class OrderController extends Controller
         // $mail=MailAvailable::where('user_id', Auth::user()->id)->get();
         $orders = PlanOrder::where('user_id', Auth::id())
             ->with(['mailAvailable','plan'])
-            ->get();
+            ->paginate(10); ;
         
          return view('web.order-details',compact('orders'));
 
@@ -38,7 +38,7 @@ class OrderController extends Controller
     $bills = PlanOrder::where('user_id', Auth::id())
         ->whereNotNull('transaction_id')
         ->where('transaction_id', '!=', '')
-        ->get();
+        ->paginate(10);
 
     return view('web.billing', compact('bills'));
 }

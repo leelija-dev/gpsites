@@ -104,6 +104,11 @@
                 </tbody>
                 
             </table>
+               <div class="d-flex justify-content-center mt-3">
+                    {{ $orders->links('pagination::bootstrap-5') }}
+                </div>
+
+
             </div>
             {{-- <div class="d-flex justify-content-center mt-3">
                 {{ $mails->links('pagination::bootstrap-5') }}

@@ -88,7 +88,7 @@
                                             data-target="#expandRow{{ $blog['blog_id'] }}">
                                             <td class="text-center" onclick="event.stopPropagation();">
                                                 <input type="checkbox" class="selectSiteCheckbox" id="selectSiteCheckbox"
-                                                    value="{{ $blog['blog_id'] }}" onclick="event.stopPropagation();">
+                                                    value="{{ $blog['blog_id'] }}" onclick="event.stopPropagation();" autocomplete="off">
                                             </td>
                                             <td class="text-center">#{{ $blog['blog_id'] ?? '' }}</td>
                                             <td class="text-center">{{ $blog['website_name'] ?? '' }}</td>
@@ -285,6 +285,7 @@
         //         height: 200
         //     });
         // });
+
         $(document).ready(function() {
             //Update counter when checkbox changes
             $('.selectSiteCheckbox').on('change', function() {
@@ -354,12 +355,13 @@
                     });
                     return;
                 }
-
+                
                 // (3) If both pass -> open modal
                 $('#selectedIdsInput').val(JSON.stringify(selectedIds));
                 $('#modalSelectedCount').text(selectedIds.length);
                 new bootstrap.Modal(document.getElementById('sendMailModal')).show();
             });
+
             // Submit Summernote content
             // $('#sendMailForm').on('submit', function() {
             //     var content = $('#summernote').summernote('code');
