@@ -248,7 +248,8 @@ class CheckoutController extends Controller
                         'transaction_id' => $paypalOrder->purchase_units[0]->payments->captures[0]->id,
                         'payment_details' => json_encode($paypalOrder)
                     ]);
-                    $plan = Plan::findOrFail($order->plan_id);
+                
+                $plan = Plan::findOrFail($order->plan_id);
                 MailAvailable::create([
                     'user_id' => $order->user_id,
                     'order_id' => $order->id,

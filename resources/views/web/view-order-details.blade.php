@@ -69,11 +69,11 @@
                                 <th class="text-secondary">Amount:</th>
                                 <td class="fw-medium">{{ $order->currency }} {{ number_format($order->amount, 2) }}</td>
                                 <th class="text-secondary">Transaction ID:</th>
-                                <td class="fw-medium">{{ $order->transaction_id }}</td>
+                                <td class="fw-medium">{{ $order->transaction_id ?? '' }}</td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
     
-                            </tr>
+                            </tr> --}}
                             
                             <tr>
                                 <th class="text-secondary">Payment:</th>
@@ -90,11 +90,13 @@
                                      $expiryDate = \Carbon\Carbon::parse($order->created_at)->addDays($order->plan->duration);
                                      $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate); 
                                     ?>
-                                                                       
-                                         @if($isActive)
-                                        <span class="status-badge bg-success">Active</span>
-                                        @else
-                                        <span class="status-badge bg-secondary">Expired</span>
+                                        @if($order->status === 'completed')                              
+                                            @if($isActive)
+                                            <span class="status-badge bg-success">Active</span>
+                                            @else
+                                            <span class="status-badge bg-secondary">Expired</span>
+                                            @endif
+                                        
                                         @endif
                                 </td>
                                 
@@ -105,18 +107,21 @@
                             <tr>
                                 <th class="text-secondary">Payment Date:</th>
                                 <td class="fw-medium">
-                                    {{ $order->paid_at ? $order->paid_at->format('M d, Y H:i') : 'N/A' }}
+                                    {{ $order->paid_at ? $order->paid_at->format('M d, Y H:i') : '' }}
                                 </td>
                                 <th class="text-secondary">Expire Date:</th>
                                 <td class="fw-medium">
+                                @if($order->status === 'completed')
                                 {{$expiryDate->format('M d, Y H:i')}}
+                                @else
+                                @endif
                                 </td>
                             </tr>
                             <tr>
                                 <th class="text-secondary">Total Mail</th>
-                                <td class="fw-medium">{{ $order->mailAvailable->total_mail }}</td>
+                                <td class="fw-medium">{{ $order->mailAvailable->total_mail ?? 0}}</td>
                                 <th class="text-secondary">Sent Mail</th>
-                                <td class="fw-medium">{{ $order->mailAvailable->total_mail -$order->mailAvailable->available_mail }}</td>
+                                <td class="fw-medium">{{ (($order->mailAvailable->total_mail ?? 0) - ($order->mailAvailable->available_mail ?? 0) ) ?? 0}}</td>
                             </tr>
                             
                         </tbody>

@@ -82,12 +82,12 @@
                             </thead>
                             <tbody>
                                 @if ($pagination)
-                                    @foreach ($pagination['data'] as $blog)
+                                    @foreach ($pagination as $blog)
                                         <!-- Main row -->
                                         <tr class="main-row cursor-pointer"
                                             data-target="#expandRow{{ $blog['blog_id'] }}">
                                             <td class="text-center" onclick="event.stopPropagation();">
-                                                <input type="checkbox" class="selectSiteCheckbox"
+                                                <input type="checkbox" class="selectSiteCheckbox" id="selectSiteCheckbox"
                                                     value="{{ $blog['blog_id'] }}" onclick="event.stopPropagation();">
                                             </td>
                                             <td class="text-center">#{{ $blog['blog_id'] ?? '' }}</td>
@@ -140,12 +140,13 @@
 
                             </tbody>
                         </div>
-                        {{-- @if (isset($pagination))
-                <div class="d-flex justify-content-center mt-3">
-                    {{ $pagination->links('pagination::bootstrap-5') }}
-                </div>
-            @endif --}}
+                        
                     </table>
+                    @if (isset($pagination))
+                        <div class="d-flex justify-content-center mt-3">
+                            {{ $pagination->links('pagination::bootstrap-5') }}
+                        </div>
+                    @endif
                 @else
                 <div
                     style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
@@ -652,6 +653,7 @@ $(document).ready(function () {
             }
         });
     </script>
-
+<script>
+    
 
 </x-app-layout>

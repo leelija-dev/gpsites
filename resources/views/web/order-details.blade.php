@@ -80,10 +80,14 @@
                                 <td class="text-center">{{$order->mailAvailable->available_mail ?? 0}}</td>
                                 <td class="text-center">{{ $order->created_at->format('d M Y') }}</td>
                                 <td class="text-center" style="position: relative">
-                                    @if($isActive)
-                                    Active
+                                    @if($order->status == 'completed')
+                                        @if($isActive)
+                                        Active
+                                        @else
+                                        Expired
+                                        @endif
                                     @else
-                                    Expired
+                                     
                                     @endif
 
                                 </td>
