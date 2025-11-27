@@ -20,7 +20,10 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {
-        $response = Http::get(env('API_BASE_URL') . '/api/blogs');
+        // $response = Http::get(env('API_BASE_URL') . '/api/blogs');
+        $response = Http::get(env('API_BASE_URL') . '/api/blogs', [
+        'page' => $request->get('page', 1) // pass current page to API
+        ]);
         
         $mail_available = MailAvailable::where('user_id', Auth::user()->id)->get();//->latest()->first(); // or ->orderBy('id','desc')
         
@@ -61,20 +64,27 @@ class BlogController extends Controller
         }
 
         $blogs = $response->json();
-        $page = LengthAwarePaginator::resolveCurrentPage(); // current page number
-        $perPage = 10; // Show 10 blogs per page
-        $offset = ($page - 1) * $perPage;
+        //$page = LengthAwarePaginator::resolveCurrentPage(); // current page number
+       // $perPage = 10; // Show 10 blogs per page
+        //$offset = ($page - 1) * $perPage;
 
-        $items = array_slice($blogs, $offset, $perPage);
+        //$items = array_slice($blogs, $offset, $perPage);
 
+        // $pagination = new LengthAwarePaginator(
+        //     $items,
+        //     count($blogs), // total count
+        //     $perPage,
+        //     $page,
+        //     ['path' => url()->current()]
+        // );
         $pagination = new LengthAwarePaginator(
-            $items,
-            count($blogs), // total count
-            $perPage,
-            $page,
-            ['path' => url()->current()]
-        );
-
+        $blogs['data'],            // blog list
+        $blogs['total'],           // total items
+        $blogs['per_page'],        // per page
+        $blogs['current_page'],    // current page
+        ['path' => url()->current()]
+    );
+   
         return view('web.blog', compact('pagination', 'total_mail_available','isValidPlan','total_mail'));
     }
     public function viewMail($id)
