@@ -790,13 +790,15 @@
 <script>
     // Your list of niches (you can replace or fetch this from API)
   // Your Niche List
-const niches = [
-    "Artificial Intelligence", "Digital Marketing", "E-commerce", "Health & Fitness",
-    "Personal Finance", "Cryptocurrency", "Web Development", "Graphic Design",
-    "Travel Blogging", "SaaS Products", "Online Education", "Real Estate",
-    "Fashion & Beauty", "Gaming", "Mental Health", "Sustainable Living",
-    "Parenting", "Photography", "Food & Cooking", "Home Decor","General","Technology",
-];
+// const niches = [
+//     "Artificial Intelligence", "Digital Marketing", "E-commerce", "Health & Fitness",
+//     "Personal Finance", "Cryptocurrency", "Web Development", "Graphic Design",
+//     "Travel Blogging", "SaaS Products", "Online Education", "Real Estate",
+//     "Fashion & Beauty", "Gaming", "Mental Health", "Sustainable Living",
+//     "Parenting", "Photography", "Food & Cooking", "Home Decor","General","Technology",
+// ];
+const niches_data = @json($niches_data);
+ const niches = niches_data.map(n => n.niche_name).filter(n => n && n.trim() !== "");
 
 const searchInput = document.getElementById('niche-search');
 const dropdown = document.getElementById('niche-dropdown');

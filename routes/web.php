@@ -82,6 +82,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\web\BlogController;
 use App\Http\Controllers\web\MailController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\web\OrderController;
 use App\Http\Controllers\web\NewsletterController;  
 use Illuminate\Support\Facades\Route;
@@ -89,15 +90,8 @@ use App\Models\Plan;
 
 // ... existing routes ...
 
-Route::get('/', function () {
-    $plans = Plan::with('features')
-        ->where('is_active', true)
-        ->orderBy('price', 'asc')
-        ->get();
 
-    return view('web.home', compact('plans'));
-})->name('home');
-
+Route::get('/',[HomeController::class,'index'])->name('home');
 
 Route::get('/about', function () {
     return view('web.about');

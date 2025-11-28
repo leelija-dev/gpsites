@@ -25,6 +25,7 @@ class BlogController extends Controller
         'page' => $request->get('page', 1) // pass current page to API
         ]);
         
+        
         $mail_available = MailAvailable::where('user_id', Auth::user()->id)->get();//->latest()->first(); // or ->orderBy('id','desc')
         
         $isValidPlan = false;
