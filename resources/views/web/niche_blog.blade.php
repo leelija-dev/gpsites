@@ -70,9 +70,10 @@
                 @endif
             </tbody>
         </table>
-        </div></div>
-        <div class="text-center"><a><button class="btn-primary">View more</button></a>
-                        </div>
+        </div>
+    <div class="text-center mt-2"><a href="{{route('blog.index')}}"><button class="btn-primary">View more</button></a>
+                        </div></div>
+        
     
 
 
