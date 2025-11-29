@@ -146,6 +146,7 @@ Route::middleware(['web'])->group(function () {
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
 // Checkout routes (require authentication AND email verification)
+ Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('/checkout/{plan?}', [CheckoutController::class, 'show'])->name('checkout');
     Route::match(['GET', 'POST'], '/checkout/{plan?}', [CheckoutController::class, 'show'])->name('checkout');
@@ -156,7 +157,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
     // web.php
-    Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
+   
 
 
 

@@ -324,10 +324,10 @@ public function findNiches(Request $request)
     session(['selected_niches' => $niches]);
 
     // Login required
-    if (!Auth::check()) {
-        return redirect()->route('login')
-            ->with('error', 'Please login to see filtered blogs.');
-    }
+    // if (!Auth::check()) {
+    //     return redirect()->route('login')
+    //         ->with('error', 'Please login to see filtered blogs.');
+    // }
 
     // Check active plan
     $mailData = MailAvailable::where('user_id', Auth::id())->get();

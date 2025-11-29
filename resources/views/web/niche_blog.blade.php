@@ -40,7 +40,7 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                 {{ $blog['website_niche'] ?? '—' }}
+                                 {{ $blog['site_url'] ?? '—' }}
                             </td>
 
                             <td class="px-4 py-3">{{ $blog['website_niche'] ?? '—' }}</td>
