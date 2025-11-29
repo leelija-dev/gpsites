@@ -330,24 +330,24 @@ public function findNiches(Request $request)
     // }
 
     // Check active plan
-    $mailData = MailAvailable::where('user_id', Auth::id())->get();
-    $isValidPlan = false;
-    $total_mail_available = 0;
-    $total_mail = 0;
+    // $mailData = MailAvailable::where('user_id', Auth::id())->get();
+    // $isValidPlan = false;
+    // $total_mail_available = 0;
+    // $total_mail = 0;
 
-    foreach ($mailData as $mail) {
-        $order = PlanOrder::find($mail->order_id);
-        if (!$order) continue;
+    // foreach ($mailData as $mail) {
+    //     $order = PlanOrder::find($mail->order_id);
+    //     if (!$order) continue;
 
-        $plan = Plan::find($order->plan_id);
-        if (!$plan) continue;
+    //     $plan = Plan::find($order->plan_id);
+    //     if (!$plan) continue;
 
-        if (now()->lte($order->created_at->addDays($plan->duration))) {
-            $isValidPlan = true;
-            $total_mail_available += $mail->available_mail;
-            $total_mail += $mail->total_mail;
-        }
-    }
+    //     if (now()->lte($order->created_at->addDays($plan->duration))) {
+    //         $isValidPlan = true;
+    //         $total_mail_available += $mail->available_mail;
+    //         $total_mail += $mail->total_mail;
+    //     }
+    // }
 
     // if (!$isValidPlan) {
     //     return redirect()->route('pricing')->with('error', 'Please purchase a valid plan first!');
@@ -383,10 +383,7 @@ public function findNiches(Request $request)
     // print_r($pagination);die;
     return view('web.niche_blog', compact(
         'pagination',
-        'total_mail_available',
-        'total_mail',
-        'isValidPlan',
-        'niches'
+       
     ));
 }
 
