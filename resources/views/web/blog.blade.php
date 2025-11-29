@@ -192,6 +192,7 @@
 
                     <div class="modal-body">
                         <p>Selected Site: <span id="modalSelectedCount">0</span></p>
+                        <p class="text-muted">From: {{ env('MAIL_USERNAME') }}</p>
 
                         <div class="mb-3">
                             <label class="form-label">Subject</label>
