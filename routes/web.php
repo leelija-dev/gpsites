@@ -216,6 +216,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Start Trial (no email verification required)
+    Route::post('/trial/start', [HomeController::class, 'startTrial'])->name('trial.start');
 });
 
 // In routes/web.php, ensure this route is outside auth middleware

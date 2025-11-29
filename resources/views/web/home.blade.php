@@ -36,6 +36,15 @@
                 <a href="/contact"><button class="btn-secondary">
                         Contact Us
                     </button></a>
+                @auth
+                <form method="POST" action="{{ route('trial.start') }}">
+                    @csrf
+                    <button type="submit" class="btn-secondary">Start Trial</button>
+                </form>
+                @endauth
+                @guest
+                <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="btn-secondary">Start Trial</a>
+                @endguest
             </div>
 
             <!-- Stats -->

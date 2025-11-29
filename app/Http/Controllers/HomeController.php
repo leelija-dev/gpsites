@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Plan;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -40,4 +42,20 @@ class HomeController extends Controller
 
         return view('web.home', compact('plans','niches_data'));
     }
+
+    public function startTrial(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $user->is_trial = 1;
+        // Ensure column exists: valid_trial_date should be a nullable datetime column
+        $user->valid_trial_date = Carbon::today()->addDays(7);
+        $user->save();
+
+        return back()->with('status', 'Trial activated for 7 days.');
+    }
 }
+
