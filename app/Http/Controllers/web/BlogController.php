@@ -322,7 +322,7 @@ public function findNiches(Request $request)
     $niches = array_map('trim', (array)$niches);
     
     // Store temporary in session
-    session(['selected_niches' => $niches]);
+    // session(['selected_niches' => $niches]);
 
     
     // Build API Request
