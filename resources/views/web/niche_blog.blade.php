@@ -40,18 +40,17 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                 {{ $blog['website_niche'] ?? '—' }}
+                                 {{ $blog['site_url'] ?? '—' }}
                             </td>
 
-                            <td class="px-4 py-3">{{ $blog['website_niche'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['moz_da'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['ahrefs_dr'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['ahrefs_traffic'] ?? '—' }}</td>
+                            <td class="px-4 py-3">{{ $blog['website_niche'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['moz_da'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_dr'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_traffic'] ?? '' }}</td>
 
                             <td class="px-4 py-3" onclick="event.stopPropagation();">
                             
-                                <a href="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}" ><button class="bg-primary hover:bg-purple-800 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-md transition"
-                        >
+                                <a href="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}" ><button class="bg-primary hover:bg-purple-800 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-md transition">
                                     Send Mail
                                 </button></a>
                             </td>

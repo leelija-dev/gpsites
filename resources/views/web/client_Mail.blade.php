@@ -35,7 +35,7 @@
                         @csrf
                         <input type="hidden" id="id" value="{{ $id }}" name="id">
                         <input type="hidden" id="userId" value="{{ $loggedUserId }}" name="userId">
-
+                        <p class="text-muted">From: {{ env('MAIL_USERNAME') }}</p>
                         <div class="form-group">
                             <label for="subject">Subject<sup class="text-danger">*</sup></label>
                             <input type="text" class="form-control" name="subject" id="subject" required>

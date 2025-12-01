@@ -268,10 +268,10 @@ class CheckoutController extends Controller
                         . "Mail Credits: {$plan->mail_available}\n\n"
                         . "Thank you for choosing " . config('app.name') . ".";
 
-                    // Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
-                    //     $message->to($userEmail)
-                    //         ->subject($userSubject);
-                    // });
+                    Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
+                        $message->to($userEmail)
+                            ->subject($userSubject);
+                    });
                     //admin mail 
                     $adminEmail = config('mail.admin_email'); // set in .env
                     $adminSubject = "New Plan Ordered";
@@ -281,10 +281,10 @@ class CheckoutController extends Controller
                         . "Transaction ID: {$order->transaction_id}\n"
                         . "Paid at: " . now()->toDateTimeString();
 
-                    // Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
-                    //     $message->to($adminEmail)
-                    //         ->subject($adminSubject);
-                    // });
+                    Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
+                        $message->to($adminEmail)
+                            ->subject($adminSubject);
+                    });
                     //end mail
 
                     // Update user's plan
