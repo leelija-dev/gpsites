@@ -773,14 +773,14 @@
                       <p class="package-name font-bold text-gray-800 text-lg truncate ">
                         ${pkg.name}
                       </p>
-                      <p class="text-sm text-gray-600 mt-1">
+                      <!-- <p class="text-sm text-gray-600 mt-1">
                         <span class="font-medium">Package ID:</span>
                         <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs package-id ml-1">
                           ${pkg.id.toUpperCase()}
                         </span>
-                      </p>
+                      </p> -->
                       <p class="text-xs text-gray-500 mt-1">
-                        $${pkg.price.toLocaleString()}/month • Billed Annually
+                        $${pkg.price.toLocaleString()}/${pkg.validity} days 
                       </p>
                     </div>
                   </div>
@@ -818,7 +818,8 @@
                 const pkg = {
                     id: this.dataset.packageId,
                     name: this.dataset.packageName,
-                    price: parseFloat(this.dataset.packagePrice)
+                    price: parseFloat(this.dataset.packagePrice),
+                    validity: this.dataset.duration
                 };
 
                 replacePackage(pkg);

@@ -324,36 +324,7 @@ public function findNiches(Request $request)
     // Store temporary in session
     session(['selected_niches' => $niches]);
 
-    // Login required
-    // if (!Auth::check()) {
-    //     return redirect()->route('login')
-    //         ->with('error', 'Please login to see filtered blogs.');
-    // }
-
-    // Check active plan
-    // $mailData = MailAvailable::where('user_id', Auth::id())->get();
-    // $isValidPlan = false;
-    // $total_mail_available = 0;
-    // $total_mail = 0;
-
-    // foreach ($mailData as $mail) {
-    //     $order = PlanOrder::find($mail->order_id);
-    //     if (!$order) continue;
-
-    //     $plan = Plan::find($order->plan_id);
-    //     if (!$plan) continue;
-
-    //     if (now()->lte($order->created_at->addDays($plan->duration))) {
-    //         $isValidPlan = true;
-    //         $total_mail_available += $mail->available_mail;
-    //         $total_mail += $mail->total_mail;
-    //     }
-    // }
-
-    // if (!$isValidPlan) {
-    //     return redirect()->route('pricing')->with('error', 'Please purchase a valid plan first!');
-    // }
-
+    
     // Build API Request
     $response = Http::get(env('API_BASE_URL') . '/api/blogs/search', [
         'niche' => implode(',', $niches),

@@ -43,10 +43,10 @@
                                  {{ $blog['site_url'] ?? '—' }}
                             </td>
 
-                            <td class="px-4 py-3">{{ $blog['website_niche'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['moz_da'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['ahrefs_dr'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['ahrefs_traffic'] ?? '—' }}</td>
+                            <td class="px-4 py-3">{{ $blog['website_niche'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['moz_da'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_dr'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_traffic'] ?? '' }}</td>
 
                             <td class="px-4 py-3" onclick="event.stopPropagation();">
                             
