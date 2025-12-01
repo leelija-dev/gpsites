@@ -136,7 +136,10 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/',[HomeController::class,'index'])->name('home');
-Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
+
+// Public route to store intended plan in session for guests
+Route::post('/intent/plan', [HomeController::class, 'storeIntentPlan'])->name('intent.plan');
+
 Route::middleware(['web'])->group(function () {
     Route::post('/checkout/create-order', [CheckoutController::class, 'createOrder'])->name('checkout.create-order');
     Route::post('/checkout/capture-payment', [CheckoutController::class, 'capturePayment'])->name('checkout.capture-payment');
@@ -216,6 +219,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Start Trial (no email verification required)
+    Route::post('/trial/start', [HomeController::class, 'startTrial'])->name('trial.start');
+    // Complete Trial (commit trial to DB)
+    Route::post('/trial/complete', [HomeController::class, 'completeTrial'])->name('trial.complete');
 });
 
 // In routes/web.php, ensure this route is outside auth middleware

@@ -46,6 +46,15 @@ class CheckoutController extends Controller
         }
 
         if (!$plan) {
+            // Fallback to session-stored intent
+            $plan = session('intent_plan');
+            if ($plan) {
+                // consume the intent once
+                session()->forget('intent_plan');
+            }
+        }
+
+        if (!$plan) {
             abort(404, 'Plan not specified');
         }
 
@@ -383,6 +392,14 @@ class CheckoutController extends Controller
 
     public function success(Request $request): View
     {
+        // If this is a trial completion, do not show any paid order details
+        if (session()->has('trial_completed')) {
+            return view('web.checkout-success', [
+                'transactionId' => null,
+                'order' => null,
+            ]);
+        }
+
         // Get the most recent completed order for the current user
         $order = PlanOrder::with(['plan', 'user'])
             ->where('user_id', Auth::id())
