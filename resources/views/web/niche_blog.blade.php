@@ -41,7 +41,12 @@
                                  {{ $blog['site_url'] ?? '' }}
                             </td>
 
-                            <td class="px-4 py-3">{{ $blog['website_niche'] ?? '' }}</td>
+                            {{-- <td class="px-4 py-3">{{ $blog['website_niche'] ?? '' }}</td> --}}
+                             <td class="px-4 py-3">{{ is_array($blog['website_niche']) 
+                                                    ? implode(', ', $blog['website_niche']) 
+                                                    : implode(', ', json_decode($blog['website_niche'], true) ?? []  ) 
+                                                }} 
+                             </td>
                             <td class="px-4 py-3 blur-sm">{{ $blog['moz_da'] ?? '' }}</td>
                             <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_dr'] ?? '' }}</td>
                             <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_traffic'] ?? '' }}</td>
