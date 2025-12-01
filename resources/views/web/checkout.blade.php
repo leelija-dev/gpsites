@@ -454,6 +454,8 @@
             style: 'currency',
             currency: 'USD'
         });
+        // Track validation-blocked PayPal attempts to avoid showing payment error
+        let validationBlocked = false;
 
         // === PREVENT UNWANTED CHARACTERS IN PHONE FIELD WHILE TYPING ===
         const phoneInput = document.getElementById('phone');
@@ -542,7 +544,8 @@
                             `,
                             confirmButtonColor: '#ef4444'
                         });
-                        throw new Error('Form validation failed');
+                        validationBlocked = true;
+                        return actions.reject();
                     }
 
                     // Create order via AJAX
@@ -646,6 +649,8 @@
                 // }
                 onError: function(err) {
                     console.error('PayPal error:', err);
+                    // Suppress PayPal error UI if the flow was blocked by client-side validation
+                    if (validationBlocked) { validationBlocked = false; return; }
 
                     let errorMessage = 'There was an error with PayPal. Please try again.';
 
