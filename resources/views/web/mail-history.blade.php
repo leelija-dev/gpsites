@@ -61,7 +61,7 @@
                                         {!! $message !!}
                                     @endif
                                 </td>
-                                <td class="text-center">{{ $mail->created_at->format('d M Y') }}</td>
+                                <td class="text-center">{{ $mail->created_at->format('d-m-Y') }}</td>
                                 <td class="text-center"><a href="{{ route('blog.view-mail', encrypt($mail->id)) }}"
                                         class="btn btn-primary" title="blog.view-mail">view</a></td>
 

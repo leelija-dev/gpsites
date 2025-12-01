@@ -85,7 +85,7 @@
                             </td>
                             <td class="text-center">{{$order->mailAvailable->total_mail ?? 0}}</td>
                                 <td class="text-center">{{$order->mailAvailable->available_mail ?? 0}}</td>
-                                <td class="text-center">{{ $order->created_at->format('d M Y') }}</td>
+                                <td class="text-center">{{ $order->created_at->format('d-m-Y') }}</td>
                                 <td class="text-center" style="position: relative">
                                     @if($order->status == 'completed')
                                         @if($isActive)

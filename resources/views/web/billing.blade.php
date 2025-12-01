@@ -74,8 +74,8 @@
                                 @endif
                             </td>
                             <td class="text-center">{{$bill->plan->duration}} day</td>
-                            <td class="text-center">{{ $bill->created_at->format('M d, Y h:i a') ?? '' }}</td>
-                            <td class="text-center">{{$expiryDate->format('M d, Y h:i a') ?? ''}}</td>    
+                            <td class="text-center">{{ $bill->created_at->format( 'd-m-Y h:i a') ?? '' }}</td>
+                            <td class="text-center">{{$expiryDate->format('d-m-Y h:i a') ?? ''}}</td>    
                         </tr>
                         @endforeach
                         @else

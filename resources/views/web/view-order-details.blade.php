@@ -107,12 +107,12 @@
                             <tr>
                                 <th class="text-secondary">Payment Date:</th>
                                 <td class="fw-medium">
-                                    {{ $order->paid_at ? $order->paid_at->format('M d, Y H:i A') : '' }}
+                                    {{ $order->paid_at ? $order->paid_at->format('d-m-Y, H:i A') : '' }}
                                 </td>
                                 <th class="text-secondary">Expire Date:</th>
                                 <td class="fw-medium">
                                 @if($order->status === 'completed')
-                                {{$expiryDate->format('M d, Y H:i A')}}
+                                {{$expiryDate->format('d-m-Y, H:i A')}}
                                 @else
                                 @endif
                                 </td>

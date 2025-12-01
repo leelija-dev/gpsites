@@ -26,7 +26,7 @@
          <div class="flex-grow-1 p-4" style="background: white;">
             <div class="container">
                 <p><?= $mail->site_url ?></p>
-                <p><?= $mail->created_at->format('d M Y,h:i a') ?></p>
+                <p><?= $mail->created_at->format('d-m-Y,h:i a') ?></p>
                 <p><?= $mail->subject ?></p>
                 <p><?= $mail->message ?></p><p>
                     @if($mail->file)
