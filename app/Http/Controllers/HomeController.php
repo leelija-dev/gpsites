@@ -7,11 +7,18 @@ use App\Models\Plan;
 use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
-{
+{   
+     protected $APIBASEURL;
+    public function __construct()
+    {   
+        $this->APIBASEURL = config('app.api_url');
+    }
     public function index()
     {
-        $response = Http::get(env('API_BASE_URL') .'/api/niches');
-       
+        $APPURL  = $this->APIBASEURL .'/api/niches';
+
+        $response = Http::get($APPURL);
+        
         if ($response->successful()) {
             $niches_data = $response->json() ?? [];
             if (is_array($niches_data)) {
