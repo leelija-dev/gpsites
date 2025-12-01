@@ -8,150 +8,280 @@
 use Illuminate\Support\Facades\Auth;
 $loggedUserId = Auth::id(); // or Auth::user()->id
 @endphp
-<aside id="separator-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-default">
-      <ul class="space-y-2 font-medium">
-         <li>
-    <a href="{{ route('blog.index') }}"
-       class="flex items-center px-2 py-1.5 rounded-base group 
-       {{ request()->routeIs('blog.index','blog.viewMail','find.niches') 
-            ? 'text-blue-500 font-semibold'
-            : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
-       }}">
-        
-        <svg class="w-5 h-5 transition duration-75 
-            {{ request()->routeIs('blog.index','blog.viewMail','find.niches') 
-                ? 'text-blue-500'
-                : 'group-hover:text-fg-brand'
-            }}"
-            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" 
-                  stroke-linejoin="round" stroke-width="2" 
-                  d="M10 6.025A7.5 7.5 0 1 0 17.975 14H10V6.025Z" />
-            <path stroke="currentColor" stroke-linecap="round" 
-                  stroke-linejoin="round" stroke-width="2" 
-                  d="M13.5 3c-.169 0-.334.014-.5.025V11h7.975c.011-.166.025-.331.025-.5A7.5 7.5 0 0 0 13.5 3Z" />
-        </svg>
 
-        <span class="ms-3">Blog</span>
-    </a>
-</li>
 
-         {{-- <li>
-            <button type="button" class="flex items-center w-full justify-between px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                  <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/></svg>
-                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">E-commerce</span>
-                  <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
-            </button>
-            <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                  <li>
-                     <a href="#" class="pl-10 flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">Products</a>
-                  </li>
-                  <li>
-                     <a href="#" class="pl-10 flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">Billing</a>
-                  </li>
-                  <li>
-                     <a href="#" class="pl-10 flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">Invoice</a>
-                  </li>
-            </ul>
-         </li> --}}
-         <li>
-            <a href="{{route('blog.mailHistory',encrypt($loggedUserId))}}" class="flex items-center px-2 py-1.5 rounded-base group {{ request()->routeIs('blog.mailHistory','blog.view-mail') 
-                  ? 'text-blue-500 font-semibold'
-                  : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
-            }}">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('blog.mailHistory','blog.view-mail') 
-                     ? 'text-blue-500'
-                     : 'group-hover:text-fg-brand'
-                  }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v14M9 5v14M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Mail History</span>
+{{-- resources/views/layouts/sidebar.blade.php --}}
+<style>
+  
 
+   /* Sidebar width */
+   [data-state="expanded"] {
+      width: 256px !important;
+   }
+
+   [data-state="collapsed"] {
+      width: 80px !important;
+   }
+
+   /* Hide all text instantly when collapsed */
+   [data-state="collapsed"] .hide-when-collapsed {
+      display: none !important;
+   }
+
+   /* Center icons when collapsed */
+   [data-state="collapsed"] .px-6 {
+      @apply px-3;
+   }
+
+   [data-state="collapsed"] .gap-4,
+   [data-state="collapsed"] .gap-3 {
+      @apply gap-0 justify-center;
+   }
+
+   /* Beautiful tooltip on hover (only when collapsed) */
+   @media (min-width: 992px) {
+      [data-state="collapsed"] a {
+         @apply relative;
+      }
+
+     
+
+
+
+      /* Red tooltip for Logout */
+      [data-state="collapsed"] a.bg-red-600:hover .hide-when-collapsed {
+         @apply bg-red-700;
+      }
+   }
+
+   @media screen and (max-width:991px) {
+      #whole-heade-wrapper {
+         width: 100% !important;
+      }
+      
+   }
+
+   /* Smooth transition */
+   #sidebar {
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   }
+</style>
+
+<aside id="sidebar"
+   class=" lg:relative fixed z-[51] top-0 left-0  h-screen bg-white shadow-2xl border-r border-gray-200
+              lg:translate-x-0 -translate-x-full
+              transition-all duration-300 ease-in-out"
+   data-state="expanded" style="transition: 0.2s all ease-in-out !important;">
+   <!-- Your existing sidebar content (unchanged) -->
+   <div class="h-full flex flex-col overflow-y-auto">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+         <div class="flex items-center space-x-3 transition-all duration-300 hide-when-collapsed">
+            <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
+               <x-application-logo class="h-10 w-10 fill-current text-blue-600 flex-shrink-0" />
+               <span class="text-xl font-bold text-gray-800 sidebar-text ">Gpts</span>
             </a>
-         </li>
-         @auth
-         @if(Auth::user()->hasVerifiedEmail())
-         <li>
-         <a href="{{route('my-orders')}}"
-            class="flex items-center px-2 py-1.5 rounded-base group {{ request()->routeIs('my-orders','view-my-order') 
-                  ? 'text-blue-500 font-semibold'
-                  : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
-            }}">
-            
-            <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('my-orders','view-my-order') 
-                     ? 'text-blue-500'
-                     : 'group-hover:text-fg-brand'
-                  }}"
-                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                  width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
+         </div>
 
-            <span class="flex-1 ms-3 whitespace-nowrap">My Order</span>
-         </a>
-      </li>
+         <div class="flex items-center gap-3">
+            <button type="button" id="shrink-sidebar" class="hidden lg:block text-gray-500 hover:text-gray-700 transition">
+               <svg id="shrink-icon" class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+               </svg>
+            </button>
 
-         
-         <li>
-            <a href="{{ route('order-billing') }}"
-                  class="flex items-center px-2 py-1.5 rounded-base group
-                     {{ request()->routeIs('order-billing') 
-                           ? 'bg-neutral-tertiary text-fg-brand font-semibold'
-                           : 'text-body hover:bg-neutral-tertiary hover:text-fg-brand'
-                     }}">
-                  
-                  <svg class="shrink-0 w-5 h-5 transition duration-75
-                        {{ request()->routeIs('order-billing') ? 'text-fg-brand' : 'group-hover:text-fg-brand' }}"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                           d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+            <button type="button" id="close-sidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+               </svg>
+            </button>
+         </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-6 space-y-1">
+         <ul class="space-y-1">
+            <!-- Dashboard -->
+            <li>
+               <a href="{{ route('dashboard') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                              {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('dashboard') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                   </svg>
-
-                  <span class="flex-1 ms-3 whitespace-nowrap">Billing</span>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Dashboard</span>
                </a>
             </li>
 
-         @endif
-         @endauth
-         {{--<li>
-            <a href="#" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z"/></svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Products</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H4m12 0-4 4m4-4-4-4m3-4h2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-2"/></svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Sign In</span>
-            </a>
-         </li>
-      </ul>
-      <ul class="space-y-2 font-medium border-t border-default pt-4 mt-4">
-         <li>
-            <a href="#" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4"/></svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Documentation</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13.46 8.291 3.849-3.849a1.5 1.5 0 0 1 2.122 0l.127.127a1.5 1.5 0 0 1 0 2.122l-3.84 3.838a4 4 0 0 0-2.258-2.238Zm0 0a4 4 0 0 1 2.263 2.238l3.662-3.662a8.961 8.961 0 0 1 0 10.27l-3.676-3.676m-2.25-5.17 3.678-3.676a8.961 8.961 0 0 0-10.27 0l3.662 3.662a4 4 0 0 0-2.238 2.258L4.615 6.863a8.96 8.96 0 0 0 0 10.27l3.662-3.662a4 4 0 0 0 2.258 2.238l-3.672 3.676a8.96 8.96 0 0 0 10.27 0l-3.662-3.662a4.001 4.001 0 0 0 2.238-2.262m0 0 3.849 3.848a1.5 1.5 0 0 1 0 2.122l-.127.126a1.499 1.499 0 0 1-2.122 0l-3.838-3.838a4 4 0 0 0 2.238-2.258Zm.29-1.461a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-7.718 1.471-3.84 3.838a1.5 1.5 0 0 0 0 2.122l.128.126a1.5 1.5 0 0 0 2.122 0l3.848-3.848a4 4 0 0 1-2.258-2.238Zm2.248-5.19L6.69 4.442a1.5 1.5 0 0 0-2.122 0l-.127.127a1.5 1.5 0 0 0 0 2.122l3.849 3.848a4 4 0 0 1 2.238-2.258Z"/></svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Support</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10.051 8.102-3.778.322-1.994 1.994a.94.94 0 0 0 .533 1.6l2.698.316m8.39 1.617-.322 3.78-1.994 1.994a.94.94 0 0 1-1.595-.533l-.4-2.652m8.166-11.174a1.366 1.366 0 0 0-1.12-1.12c-1.616-.279-4.906-.623-6.38.853-1.671 1.672-5.211 8.015-6.31 10.023a.932.932 0 0 0 .162 1.111l.828.835.833.832a.932.932 0 0 0 1.111.163c2.008-1.102 8.35-4.642 10.021-6.312 1.475-1.478 1.133-4.77.855-6.385Zm-2.961 3.722a1.88 1.88 0 1 1-3.76 0 1.88 1.88 0 0 1 3.76 0Z"/></svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">PRO version</span>
-            </a>
-         </li>
-      </ul>--}}
+            <!-- Blog -->
+            <li>
+               <a href="{{ route('blog.index') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                              {{ request()->routeIs('blog.index','blog.viewMail','find.niches') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('blog.index','blog.viewMail','find.niches') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V9l-7-5-7 5v11a2 2 0 002 2h14z" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Blog</span>
+               </a>
+            </li>
+
+            <!-- Mail History -->
+            <li>
+               <a href="{{ route('blog.mailHistory', encrypt($loggedUserId)) }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                              {{ request()->routeIs('blog.mailHistory','blog.view-mail') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('blog.mailHistory','blog.view-mail') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Mail History</span>
+               </a>
+            </li>
+
+            @auth
+            @if(Auth::user()->hasVerifiedEmail())
+            <li>
+               <a href="{{ route('my-orders') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                                      {{ request()->routeIs('my-orders','view-my-order') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('my-orders','view-my-order') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">My Orders</span>
+               </a>
+            </li>
+
+            <li>
+               <a href="{{ route('order-billing') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                                      {{ request()->routeIs('order-billing') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('order-billing') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Billing</span>
+               </a>
+            </li>
+            @endif
+            @endauth
+         </ul>
+      </nav>
+
+      <!-- Footer Links -->
+      <div class="border-t border-gray-200 px-4 py-5 space-y-1">
+         <a href="/logout" class="inline-flex w-full justify-center items-center gap-3 px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-300">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span class="sidebar-text hide-when-collapsed">Logout</span> <!-- THIS WAS MISSING -->
+         </a>
+
+      </div>
    </div>
 </aside>
+
+<!-- Backdrop (Mobile Only) -->
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+<!-- Mobile Open Button -->
+<button id="open-sidebar" class="lg:hidden fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-2xl hover:bg-blue-700 transition-all">
+   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+   </svg>
+</button>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const shrinkBtn = document.getElementById('shrink-sidebar');
+      const shrinkIcon = document.getElementById('shrink-icon');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      const openBtn = document.getElementById('open-sidebar');
+      const closeBtn = document.getElementById('close-sidebar');
+      const wholeHeaderWrapper = document.getElementById('whole-heade-wrapper');
+
+      // === MOBILE: Open Sidebar ===
+      const openSidebar = () => {
+         
+         sidebar.classList.remove('-translate-x-full');
+         backdrop.classList.remove('hidden');
+         document.body.style.overflow = 'hidden';
+         
+          // Prevent background scroll
+      };
+
+      // === MOBILE: Close Sidebar ===
+      const closeSidebar = () => {
+         
+         sidebar.classList.add('-translate-x-full');
+         backdrop.classList.add('hidden');
+         document.body.style.overflow = 'auto';
+      };
+
+      // === DESKTOP: Shrink / Expand Sidebar ===
+      shrinkBtn?.addEventListener('click', () => {
+         const currentState = sidebar.getAttribute('data-state');
+
+         if (currentState === 'collapsed') {
+            wholeHeaderWrapper.style.width = 'calc(100% - 256px)';
+            // Expand it
+            sidebar.setAttribute('data-state', 'expanded');
+            shrinkIcon.style.transform = 'rotate(0deg)';
+            localStorage.setItem('sidebarState', 'expanded');
+         } else {
+            wholeHeaderWrapper.style.width = 'calc(100% - 80px)';
+            // Collapse it
+            sidebar.setAttribute('data-state', 'collapsed');
+            shrinkIcon.style.transform = 'rotate(180deg)';
+            localStorage.setItem('sidebarState', 'collapsed');
+         }
+      });
+
+      // === Load Saved Preference on Page Load (Desktop Only) ===
+      if (window.innerWidth >= 992) {
+         const savedState = localStorage.getItem('sidebarState');
+         if (savedState === 'collapsed') {
+            wholeHeaderWrapper.style.width = 'calc(100% - 80px)';
+            sidebar.setAttribute('data-state', 'collapsed');
+            shrinkIcon.style.transform = 'rotate(180deg)';
+         } else {
+            wholeHeaderWrapper.style.width = 'calc(100% - 256px)';
+            sidebar.setAttribute('data-state', 'expanded');
+            shrinkIcon.style.transform = 'rotate(0deg)';
+         }
+      }
+
+      // === Mobile Controls ===
+      openBtn?.addEventListener('click', openSidebar);
+      closeBtn?.addEventListener('click', closeSidebar);
+      backdrop?.addEventListener('click', closeSidebar);
+
+      // Close mobile sidebar when clicking a link (on mobile)
+      document.querySelectorAll('#sidebar a').forEach(link => {
+         link.addEventListener('click', () => {
+            if (window.innerWidth < 992) {
+               closeSidebar();
+            }
+         });
+      });
+
+      // Auto-close mobile sidebar when resizing to desktop
+      window.addEventListener('resize', () => {
+         if (window.innerWidth >= 992) {
+            closeSidebar();
+         }
+      });
+
+      // Optional: Close mobile sidebar with Escape key
+      document.addEventListener('keydown', (e) => {
+         if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+            closeSidebar();
+         }
+      });
+   });
+</script>
+
+
+
 
 {{-- <div class="p-4 sm:ml-64">
    <div class="p-4 border-1 border-default border-dashed rounded-base">

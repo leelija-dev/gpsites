@@ -24,10 +24,7 @@
         }
     </style>
     <div class="d-flex min-vh-100" style="background: white;">
-        <!-- Sidebar -->
-        <div class="w-64 border-end p-4 ">
-            @include('web.sidebar')
-        </div>
+        
 
         <!-- Main content -->
         <div class="flex-grow-1 p-4">
