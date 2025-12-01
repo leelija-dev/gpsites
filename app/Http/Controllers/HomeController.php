@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $APP_NAME = env('APP_NAME');
+        $APP_NAME = config('app.name', 'Laravel');
         dd($APP_NAME);
         $APPURL  = env('API_BASE_URL') .'/api/niches';
         dd($APPURL);
