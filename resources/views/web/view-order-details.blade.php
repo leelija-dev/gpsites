@@ -67,7 +67,7 @@
                             </tr>
                             <tr>
                                 <th class="text-secondary">Amount:</th>
-                                <td class="fw-medium">{{ $order->currency }} {{ number_format($order->amount, 2) }}</td>
+                                <td class="fw-medium">{{ $order->currency ?? '$' }} {{ number_format($order->amount, 2) }}</td>
                                 <th class="text-secondary">Transaction ID:</th>
                                 <td class="fw-medium">{{ $order->transaction_id ?? '' }}</td>
                             </tr>

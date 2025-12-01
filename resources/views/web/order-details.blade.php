@@ -68,23 +68,31 @@
                                 @php $page=isset($_GET['page'])?$_GET['page'] : 1; @endphp
                                 <td class="text-center">{{ $page * 10 - 9 + $loop->iteration - 1 }}</td>
                                 <td class="text-center">{{ $order->plan->name }}</td>
-                                <td class="text-center " >
+                                <td class="text-center " >$
                                     {{$order->amount}}
                                 </td>
-                                <td class="text-center">
+                                {{-- <td class="text-center">
                                     {{$order->status ?? 'incomplete'}}
-                                </td>
-                                
-                                
-                                <td class="text-center">{{$order->mailAvailable->total_mail ?? 0}}</td>
+                                </td> --}}
+                                <td class="text-center">
+                                <span @class([
+                                    'px-3 py-1 rounded-full text-xs font-semibold',
+                                    'bg-success text-white' => $order->status === 'completed',
+                                    'bg-warning text-white' => $order->status === 'pending',
+                                    'bg-danger text-white' => !in_array($order->status, ['completed','pending']),
+                                ])>
+                                    {{ ucfirst($order->status ?? 'incomplete') }}
+                                </span>
+                            </td>
+                            <td class="text-center">{{$order->mailAvailable->total_mail ?? 0}}</td>
                                 <td class="text-center">{{$order->mailAvailable->available_mail ?? 0}}</td>
                                 <td class="text-center">{{ $order->created_at->format('d M Y') }}</td>
                                 <td class="text-center" style="position: relative">
                                     @if($order->status == 'completed')
                                         @if($isActive)
-                                        Active
+                                       <span class="bg-success text-white text-xs px-3 py-1 rounded-full"> Active</span>
                                         @else
-                                        Expired
+                                         <span class="bg-secondary text-white text-xs px-3 py-1 rounded-full"> Expired</span>
                                         @endif
                                     @else
                                      

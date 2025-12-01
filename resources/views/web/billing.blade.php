@@ -68,9 +68,9 @@
 
                             <td class="text-center">
                                 @if ($isActive)
-                                    Active
+                                    <span class="bg-success text-white text-xs px-3 py-1 rounded-full">Active</span>
                                 @else
-                                    Expired
+                                   <span class="bg-secondary text-white text-xs px-3 py-1 rounded-full"> Expired</span>
                                 @endif
                             </td>
                             <td class="text-center">{{$bill->plan->duration}} day</td>

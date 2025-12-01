@@ -101,7 +101,7 @@
                                             <td class="text-center">
                                                 {{ is_array($blog['website_niche']) 
                                                     ? implode(', ', $blog['website_niche']) 
-                                                    : implode(', ', json_decode($blog['website_niche'], true) ?? []  ) 
+                                                    : implode(', ', json_decode($blog['website_niche'], true) ?? []  )
                                                 }}
                                             </td>
                                             <td class="text-center">{{ $blog['moz_da'] ?? '' }}</td>
@@ -122,12 +122,15 @@
                                             style="display:none;">
                                             <td colspan="9" class="bg-light">
                                                 <div>
-                                                    <b>Website Name:</b> {{ $blog['website_name'] ?? '—' }} <br>
-                                                    <b>Site URL:</b> {{ $blog['site_url'] ?? '—' }} <br>
-                                                    <b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }} <br>
-                                                    <b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }} <br>
-                                                    <b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }} <br>
-                                                    <b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}
+                                                    <b>Website Name:</b> {{ $blog['website_name'] ?? '' }} <br>
+                                                    <b>Site URL:</b> {{ $blog['site_url'] ?? '' }} <br>
+                                                    <b>Website Niche:</b>  {{ is_array($blog['website_niche']) 
+                                                    ? implode(', ', $blog['website_niche']) 
+                                                    : implode(', ', json_decode($blog['website_niche'], true) ?? []  ) 
+                                                }} <br>
+                                                    <b>Moz DA:</b> {{ $blog['moz_da'] ?? '' }} <br>
+                                                    <b>DR:</b> {{ $blog['ahrefs_dr'] ?? '' }} <br>
+                                                    <b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '' }}
                                                 </div>
                                             </td>
                                         </tr>
