@@ -417,10 +417,16 @@
                     <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
                 </form>
                 @else
-                <form method="POST" action="{{ route('intent.plan') }}" class="w-full">
+                {{-- <form method="POST" action="{{ route('intent.plan') }}" class="w-full">
                     @csrf
                     <input type="hidden" name="plan" value="{{ $plan->id }}">
                     <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                </form> --}}
+                <form method="GET" action="{{ route('login') }}" class="w-full">
+                    <input type="hidden" name="redirect" value="{{ route('checkout') }}?plan={{ $plan->id }}">
+                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">
+                        Get Started
+                    </button>
                 </form>
                 @endauth
             </div>

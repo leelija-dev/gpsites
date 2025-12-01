@@ -39,15 +39,16 @@ class AuthenticatedSessionController extends Controller
         }
         //start
         // Check if login was directly clicked
-        // $previousUrl = url()->previous();
-        // $loginUrl = route('login');
-        // if ($previousUrl === $loginUrl) {
+        $previousUrl = url()->previous();
+        $loginUrl = route('login');
+        if ($previousUrl === $loginUrl) {
         // User clicked login manually
-       return redirect()->intended(route('dashboard'));
-        // }
-        // return redirect()->intended();
+       return redirect()->intended();
+        }
+        // 
         // //end
-
+            
+        return redirect()->intended(route('dashboard'));
         //return redirect()->intended(route('dashboard', absolute: false));
     }
 
