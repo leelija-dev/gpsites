@@ -92,9 +92,9 @@
                                     ?>
                                         @if($order->status === 'completed')                              
                                             @if($isActive)
-                                            <span class="status-badge bg-success">Active</span>
+                                            <span class="status-badge bg-success text-white">Active</span>
                                             @else
-                                            <span class="status-badge bg-secondary">Expired</span>
+                                            <span class="status-badge bg-secondary text-white">Expired</span>
                                             @endif
                                         
                                         @endif

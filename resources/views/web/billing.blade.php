@@ -40,7 +40,7 @@
                          </tr>
                         <tr>
                             <th scope="col">SL No</th>
-                            <th scope="col">Plan Order ID</th>
+                            <th scope="col">Order ID</th>
                             <th scope="col">Total Mail</th>
                             <th scope="col">Plan Status</th>
                             <th scop="col">Validity</th>

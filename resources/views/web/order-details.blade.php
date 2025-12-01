@@ -68,8 +68,7 @@
                                 @php $page=isset($_GET['page'])?$_GET['page'] : 1; @endphp
                                 <td class="text-center">{{ $page * 10 - 9 + $loop->iteration - 1 }}</td>
                                 <td class="text-center">{{ $order->plan->name }}</td>
-                                <td class="text-center " >$
-                                    {{$order->amount}}
+                                <td class="text-center " >${{$order->amount}}
                                 </td>
                                 {{-- <td class="text-center">
                                     {{$order->status ?? 'incomplete'}}
