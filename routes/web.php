@@ -67,6 +67,11 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
+Route::get('/',[HomeController::class,'index'])->name('home');
+
+// Public route to store intended plan in session for guests
+Route::post('/intent/plan', [HomeController::class, 'storeIntentPlan'])->name('intent.plan');
+
 Route::middleware(['web'])->group(function () {
     Route::post('/checkout/create-order', [CheckoutController::class, 'createOrder'])->name('checkout.create-order');
     Route::post('/checkout/capture-payment', [CheckoutController::class, 'capturePayment'])->name('checkout.capture-payment');
@@ -76,7 +81,7 @@ Route::middleware(['web'])->group(function () {
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
 // Checkout routes (require authentication AND email verification)
-
+Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('/checkout/{plan?}', [CheckoutController::class, 'show'])->name('checkout');
     Route::match(['GET', 'POST'], '/checkout/{plan?}', [CheckoutController::class, 'show'])->name('checkout');
@@ -128,6 +133,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Start Trial (no email verification required)
+    Route::post('/trial/start', [HomeController::class, 'startTrial'])->name('trial.start');
+    // Complete Trial (commit trial to DB)
+    Route::post('/trial/complete', [HomeController::class, 'completeTrial'])->name('trial.complete');
 });
 
 // In routes/web.php, ensure this route is outside auth middleware

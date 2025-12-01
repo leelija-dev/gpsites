@@ -36,6 +36,15 @@
                 <a href="/contact"><button class="btn-secondary">
                         Contact Us
                     </button></a>
+                @auth
+                <form method="POST" action="{{ route('trial.start') }}">
+                    @csrf
+                    <button type="submit" class="btn-secondary">Start Trial</button>
+                </form>
+                @endauth
+                @guest
+                <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="btn-secondary">Start Trial</a>
+                @endguest
             </div>
 
             <!-- Stats -->
@@ -400,22 +409,21 @@
                 @else
                 <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
                 @endauth -->
-                <div class="mt-8">
-                    @auth
-                    <form method="POST" action="{{ route('checkout') }}" class="w-full">
-                        @csrf
-                        <input type="hidden" name="plan" value="{{ $plan->id }}">
-                        <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block  ">Get Started</button>
-                    </form>
-                    @else
-                    {{-- <form method="POST" action="{{ route('login') }}" class="w-full">
+            <div class="mt-8">
+                @auth
+                <form method="POST" action="{{ route('checkout') }}" class="w-full">
                     @csrf
-                    <input type="hidden" name="redirect" value="{{ route('checkout', ['plan' => $plan->id]) }}">
+                    <input type="hidden" name="plan" value="{{ $plan->id }}">
                     <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
-                    </form> --}}
-                    <a href="{{ route('login', ['redirect' => route('checkout', ['plan' => $plan->id])]) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block text-center"> Get Started</a>
-                    @endauth
-                </div>
+                </form>
+                @else
+                <form method="POST" action="{{ route('intent.plan') }}" class="w-full">
+                    @csrf
+                    <input type="hidden" name="plan" value="{{ $plan->id }}">
+                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                </form>
+                @endauth
+            </div>
             </div>
             @endforeach
         </div>

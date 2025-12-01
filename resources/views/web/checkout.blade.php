@@ -30,6 +30,10 @@
 
 <section class="flex justify-center items-center min-h-screen w-full h-auto px-6 py-12">
     <div class="max-w-7xl w-full">
+        @php 
+            $trialMode = session()->has('trial_mode');
+            $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
+        @endphp
 
         <form class="flex gap-10 lg:flex-row flex-col " novalidate>
             <div class="w-full">
@@ -128,6 +132,7 @@
 
                 <div class="space-y-6">
                     <!-- Order Review -->
+                    @unless($trialMode)
                     <div class="bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 ">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold">Order Review</h2>
@@ -139,9 +144,11 @@
 
                         </div>
                     </div>
+                    @endunless
 
 
                     <!-- Discount Codes -->
+                    @unless($trialMode)
                     <div class="bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 ">
                         <!-- <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold">Discount Codes</h2>
@@ -159,7 +166,9 @@
 
 
                     </div>
+                    @endunless
 
+                    @unless($trialMode)
                     <div class=" w-full bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 border">
                         <!-- Header -->
                         <div class="flex items-center justify-between">
@@ -212,6 +221,24 @@
                             Pay
                         </button>
                     </div>
+                    @endunless
+
+                    @if($trialMode)
+                    <div class=" w-full bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 border">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">Trial Checkout</h2>
+                        </div>
+                        <p class="text-gray-600 mt-4">No payment required for the trial.</p>
+
+                        @if($trialUsed)
+                            <div class="mt-4 p-3 rounded-md bg-red-50 text-red-700 border border-red-200">
+                                You have already used your trial. No further trial activations are available.
+                            </div>
+                        @else
+                            <button type="submit" form="trial-complete-form" class="btn-primary w-full block text-center mt-6">Complete Purchase</button>
+                        @endif
+                    </div>
+                    @endif
 
                 </div>
 
@@ -220,6 +247,11 @@
             </div>
         </form>
     </div>
+    <!-- Hidden detached form for trial completion (to avoid nested forms) -->
+    <form id="trial-complete-form" method="POST" action="{{ route('trial.complete') }}" class="hidden">
+        @csrf
+    </form>
+
 </section>
 
 
@@ -407,6 +439,7 @@
         // Pass plan data from PHP to JavaScript
         // const planData = @json($plan ?? null);
         const planData = @json($planModel ?? null);
+        const trialMode = @json(session()->has('trial_mode'));
 
         const form = document.querySelector('form');
         const inputs = document.querySelectorAll('.floating-label-group input, .floating-label-group select');
@@ -466,6 +499,7 @@
         let selectedPackage = null;
 
         function initPayPalButtons() {
+            if (trialMode) { return; }
             // Destroy existing buttons if they exist
             if (paypalButtons) {
                 paypalButtons.close();
@@ -837,9 +871,9 @@
                 updateTotals();
 
                 if (selectedWrapper.children.length === 0) {
-                    subtotalEl.textContent = '$0.00';
-                    grandTotalEl.textContent = '$0.00';
-                    payBtn.textContent = 'Pay $0.00';
+                    if (subtotalEl) subtotalEl.textContent = '$0.00';
+                    if (grandTotalEl) grandTotalEl.textContent = '$0.00';
+                    if (payBtn) payBtn.textContent = 'Pay $0.00';
                     // Remove PayPal buttons when no package selected
                     const paypalContainer = document.getElementById('paypal-button-container');
                     if (paypalContainer) {
@@ -855,9 +889,9 @@
                 total += parseFloat(el.dataset.price || 0);
             });
             const amount = fmt.format(total);
-            subtotalEl.textContent = amount;
-            grandTotalEl.textContent = amount;
-            payBtn.textContent = `Pay ${amount}`;
+            if (subtotalEl) subtotalEl.textContent = amount;
+            if (grandTotalEl) grandTotalEl.textContent = amount;
+            if (payBtn) payBtn.textContent = `Pay ${amount}`;
         }
 
         // Collapsible Summary
@@ -898,8 +932,8 @@
             });
         }
 
-        // Form Submit
-        form.addEventListener('submit', async function(e) {
+        // Form Submit (skip in trial mode)
+        if (!trialMode) form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             let isValid = true;
@@ -994,7 +1028,7 @@
         });
 
         // Auto-select package if plan data is available
-        if (planData) {
+        if (planData && !trialMode) {
             const autoSelectedPackage = {
                 id: planData.id.toString(),
                 name: planData.name,

@@ -23,7 +23,9 @@
             <p><strong>Date:</strong> {{ $order->paid_at ? $order->paid_at->format('M d, Y H:i') : 'N/A' }}</p>
         </div>
         @else
+        @if(!session()->has('trial_completed'))
         <p class="text-gray-600 mb-4">Your transaction ID: {{ $transactionId ?? 'N/A' }}</p>
+        @endif
         @endif
         
         <div class="space-y-3">
