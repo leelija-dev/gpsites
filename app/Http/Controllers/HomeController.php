@@ -10,8 +10,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $response = Http::get(env('API_BASE_URL') .'/api/niches');
-        print_r($response);die;
+        $APPURL  = env('API_BASE_URL') .'/api/niches';
+        dd($APPURL);
+        $response = Http::get($APPURL);
         if ($response->successful()) {
             $niches_data = $response->json() ?? [];
             if (is_array($niches_data)) {
