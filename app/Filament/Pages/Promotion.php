@@ -14,6 +14,7 @@ use App\Models\User;
 use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Support\HtmlString;
+use App\Models\Newsletter;
 
 
 use BackedEnum;
@@ -50,6 +51,7 @@ class Promotion extends Page implements HasForms
                 ->options([
                     'all_users' => 'All Users',
                     'custom_mail' => 'Custom Email',
+                    'newsletter' => 'Newsletters',
                 ])
                 
                 ->rules(['required'])
@@ -112,6 +114,9 @@ class Promotion extends Page implements HasForms
             $emails = User::pluck('email');
         } elseif ($data['send_to'] === 'premium_users') {
             //$emails = User::where('is_premium', true)->pluck('email');
+        }
+        elseif($data['send_to'] === 'newsletter'){
+            $emails=Newsletter::where('status','subscribed')->pluck('email');
         } elseif ($data['send_to'] === 'custom_mail') {
             if (empty($data['email'])) {
                 Notification::make()->title('Email is required for Custom')->danger()->send();
