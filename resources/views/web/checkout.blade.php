@@ -82,12 +82,11 @@
                         <!-- State / City -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="floating-label-group">
-                                <select id="state" class="has-value" required>
-                                    <!-- <option value="" disabled>select a city</option> -->
-                                    <option value="CA">California</option>
-                                    <option value="NY">New York</option>
+                                <select id="country" required>
+                                    <option value="" disabled selected>Select a country</option>
+                                    <!-- Countries will be loaded via API -->
                                 </select>
-                                <label for="state">Country</label>
+                                <label for="country">Country</label>
                             </div>
 
                             <div class="floating-label-group">
@@ -432,7 +431,7 @@
 
 @endsection
 @section('scripts')
-<script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=USD&components=buttons"></script>
+<script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=USD&components=buttons&enable-funding=venmo&disable-funding=paylater"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -456,6 +455,73 @@
         });
         // Track validation-blocked PayPal attempts to avoid showing payment error
         let validationBlocked = false;
+
+        // === LOAD COUNTRIES FROM API ===
+        async function loadCountries() {
+            const countrySelect = document.getElementById('country');
+            if (!countrySelect) return;
+
+            try {
+                // Show loading state
+                countrySelect.innerHTML = '<option value="" disabled>Loading countries...</option>';
+
+                // Fetch countries from REST Countries API
+                const response = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch countries');
+                }
+
+                const countries = await response.json();
+
+                // Sort countries alphabetically by common name
+                countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+                // Clear and add default option
+                countrySelect.innerHTML = '<option value="" disabled selected>Select a country</option>';
+
+                // Add countries to select
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.cca2; // Use ISO 3166-1 alpha-2 code
+                    option.textContent = country.name.common;
+                    countrySelect.appendChild(option);
+                });
+
+                console.log(`Loaded ${countries.length} countries successfully`);
+
+            } catch (error) {
+                console.error('Error loading countries:', error);
+
+                // Fallback: Add some common countries if API fails
+                const fallbackCountries = [
+                    { code: 'US', name: 'United States' },
+                    { code: 'CA', name: 'Canada' },
+                    { code: 'GB', name: 'United Kingdom' },
+                    { code: 'AU', name: 'Australia' },
+                    { code: 'DE', name: 'Germany' },
+                    { code: 'FR', name: 'France' },
+                    { code: 'IT', name: 'Italy' },
+                    { code: 'ES', name: 'Spain' },
+                    { code: 'NL', name: 'Netherlands' },
+                    { code: 'BE', name: 'Belgium' },
+                    { code: 'IN', name: 'India' },
+                    { code: 'JP', name: 'Japan' },
+                    { code: 'CN', name: 'China' },
+                    { code: 'BR', name: 'Brazil' },
+                    { code: 'MX', name: 'Mexico' }
+                ];
+
+                countrySelect.innerHTML = '<option value="" disabled selected>Select a country</option>';
+                fallbackCountries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.code;
+                    option.textContent = country.name;
+                    countrySelect.appendChild(option);
+                });
+
+                console.log('Using fallback countries due to API error');
+            }
+        }
 
         // === PREVENT UNWANTED CHARACTERS IN PHONE FIELD WHILE TYPING ===
         const phoneInput = document.getElementById('phone');
@@ -502,6 +568,19 @@
 
         function initPayPalButtons() {
             if (trialMode) { return; }
+
+            // Check if PayPal SDK is loaded
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Service Unavailable',
+                    text: 'PayPal payment service is currently unavailable. Please try again later.',
+                    confirmButtonColor: '#ef4444'
+                });
+                return;
+            }
+
             // Destroy existing buttons if they exist
             if (paypalButtons) {
                 paypalButtons.close();
@@ -533,6 +612,7 @@
                     }
 
                     if (!isValid) {
+                        const errorMessage = 'Please complete all required fields and accept the terms before proceeding with payment.';
                         Swal.fire({
                             icon: 'error',
                             title: 'Please Complete the Form',
@@ -545,7 +625,7 @@
                             confirmButtonColor: '#ef4444'
                         });
                         validationBlocked = true;
-                        return actions.reject();
+                        throw new Error(errorMessage);
                     }
 
                     // Create order via AJAX
@@ -560,12 +640,30 @@
                                 billing_info: getBillingInfo()
                             })
                         })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                if (response.status === 419) {
+                                    throw new Error('Session expired. Please refresh the page and try again.');
+                                } else if (response.status >= 500) {
+                                    throw new Error('Server error. Please try again later.');
+                                } else {
+                                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                }
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             if (!data.success) {
                                 throw new Error(data.message || 'Failed to create order');
                             }
                             return data.order_id;
+                        })
+                        .catch(error => {
+                            // Re-throw with more user-friendly message
+                            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                                throw new Error('Network error. Please check your internet connection and try again.');
+                            }
+                            throw error;
                         });
                 },
                 onApprove: function(data, actions) {
@@ -635,8 +733,16 @@
                         });
                 },
                 onCancel: function(data) {
-                    // Redirect to cancel page or show message
-                    window.location.href = '/checkout/cancel';
+                    // Show cancellation message before redirect
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Payment Cancelled',
+                        text: 'You have cancelled the payment process.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = '/checkout/cancel';
+                    });
                 },
                 // onError: function(err) {
                 //     console.error('PayPal error:', err);
@@ -650,19 +756,33 @@
                 onError: function(err) {
                     console.error('PayPal error:', err);
                     // Suppress PayPal error UI if the flow was blocked by client-side validation
-                    if (validationBlocked) { validationBlocked = false; return; }
+                    if (validationBlocked) {
+                        validationBlocked = false;
+                        return;
+                    }
 
                     let errorMessage = 'There was an error with PayPal. Please try again.';
+                    let errorTitle = 'Payment Error';
 
-                    if (err.message && err.message.includes('419')) {
-                        errorMessage = 'Session expired. Please refresh the page and try again.';
-                    } else if (err.message && err.message.includes('authentication')) {
-                        errorMessage = 'Payment service temporarily unavailable. Please try again later.';
+                    if (err && err.message) {
+                        if (err.message.includes('Could not resolve host') || err.message.includes('network') || err.message.includes('connection')) {
+                            errorTitle = 'Connection Error';
+                            errorMessage = 'Unable to connect to payment service. Please check your internet connection and try again.';
+                        } else if (err.message.includes('419') || err.message.includes('session')) {
+                            errorTitle = 'Session Expired';
+                            errorMessage = 'Your session has expired. Please refresh the page and try again.';
+                        } else if (err.message.includes('authentication') || err.message.includes('unauthorized')) {
+                            errorTitle = 'Authentication Error';
+                            errorMessage = 'Payment service authentication failed. Please try again later.';
+                        } else if (err.message.includes('Failed to create order')) {
+                            errorTitle = 'Order Creation Failed';
+                            errorMessage = 'Unable to create payment order. Please try again.';
+                        }
                     }
 
                     Swal.fire({
                         icon: 'error',
-                        title: 'Payment Error',
+                        title: errorTitle,
                         text: errorMessage,
                         confirmButtonColor: '#ef4444'
                     });
@@ -680,7 +800,7 @@
                 address1: document.getElementById('address1').value,
                 address2: document.getElementById('address2').value,
                 city: document.getElementById('city').value,
-                state: document.getElementById('state').value,
+                country: document.getElementById('country').value,
                 zip: document.getElementById('zip').value,
                 phone: document.getElementById('phone').value
             };
@@ -1036,6 +1156,9 @@
             };
             replacePackage(autoSelectedPackage);
         }
+
+        // Load countries on page load
+        loadCountries();
 
         updateTotals();
     });

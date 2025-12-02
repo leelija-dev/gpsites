@@ -33,9 +33,6 @@
             <div class="flex flex-col sm:flex-row gap-4 lg:justify-start sm:justify-center items-center">
                 <!-- Hero CTA -->
                 <button type="button" id="see-pricing" class="btn-primary"> See Pricing </button>
-                <a href="/contact"><button class="btn-secondary">
-                        Contact Us
-                    </button></a>
                 @auth
                 <form method="POST" action="{{ route('trial.start') }}">
                     @csrf
@@ -110,8 +107,8 @@
                             <span class="tooltip right-tooltip" id="da-max-tooltip">0</span>
 
                             <!-- IMPORTANT: value="0" or remove value entirely -->
-                            <input type="range" min="0" max="90" value="0" class="thumb-right" id="da-max">
-                            <input type="range" min="0" max="90" value="0" class="thumb-left" id="da-min">
+                            <input type="range" min="0" max="100" value="0" class="thumb-right" id="da-max">
+                            <input type="range" min="0" max="100" value="0" class="thumb-left" id="da-min">
                         </div>
                     </div>
 
@@ -128,8 +125,8 @@
                             <span class="tooltip left-tooltip" id="dr-min-tooltip">0</span>
                             <span class="tooltip right-tooltip" id="dr-max-tooltip">0</span>
 
-                            <input type="range" min="0" max="85" value="0" class="thumb-right" id="dr-max">
-                            <input type="range" min="0" max="85" value="0" class="thumb-left" id="dr-min">
+                            <input type="range" min="0" max="100" value="0" class="thumb-right" id="dr-max">
+                            <input type="range" min="0" max="100" value="0" class="thumb-left" id="dr-min">
                         </div>
                     </div>
 
