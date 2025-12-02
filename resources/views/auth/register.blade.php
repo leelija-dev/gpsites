@@ -64,24 +64,28 @@
                         <p class="mt-3 text-gray-600 text-center lg:text-left">Start your journey today — it's free forever.</p>
 
                         <!-- Email Verification Notice -->
-                        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        @error('error')
+                        <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
                             <div class="flex">
-                                <div class="flex-shrink-0">
+                                {{-- <div class="flex-shrink-0">
                                     <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                     </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-blue-800">
+                                </div> --}}
+                                <div class="">
+                                    {{-- <h3 class="text-sm font-medium text-blue-800">
                                         Email Verification Required
-                                    </h3>
+                                    </h3> --}}
                                     <div class="mt-1 text-sm text-blue-700">
-                                        <p>After registration, you'll receive an email with a verification link. Please check your inbox and click the link to activate your account.</p>
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        {{-- <p>After registration, you'll receive an email with a verification link. Please check your inbox and click the link to activate your account.</p> --}}
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        @enderror
+
 
                         <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-6">
                             @csrf

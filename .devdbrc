@@ -1,0 +1,6 @@
+[
+  {
+    "type": "sqlite",
+    "path": "d:\\Projects\\Laravel\\gpsites\\database\\database.sqlite"
+  }
+]

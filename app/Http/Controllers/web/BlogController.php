@@ -340,9 +340,10 @@ class BlogController extends Controller
         $id = (int)$request->id;
         // print_r($id);
 
-
+         $APIURL  = $this->APIBASEURL ."/api/blogs/$id";
+       
         // $response = Http::get(env('API_BASE_URL') . "/api/blogs/$id");
-        $response = Http::get(env('API_BASE_URL') . "/api/blogs/$id");
+        $response = Http::get($APIURL);
 
         if ($response->failed()) {
             return 'API Request Failed: ' . $response->status();
@@ -513,7 +514,8 @@ class BlogController extends Controller
         // }
 
         // Build API Request
-        $response = Http::get(env('API_BASE_URL') . '/api/blogs/search', [
+        $APIURL  = $this->APIBASEURL .'/api/blogs/search';
+        $response = Http::get($APIURL, [
             'niche' => implode(',', $niches),
             'da_max' => $request->get('da_max'),
             'da_min' => $request->get('da_min'),

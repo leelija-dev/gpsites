@@ -14,9 +14,7 @@
     <body>
    
     <div class="py-12">
-        <div class="w-64 border-r p-4">
-                    @include('web.sidebar')
-                </div>
+        
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- Email Verification Success Message -->

@@ -23,6 +23,15 @@ class SubscriberResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'subscriber';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Promotion';
+    }
+    public static function getNavigationSort(): int
+    {
+        return 7;  // Position of the group in the sidebar
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SubscriberForm::configure($schema);

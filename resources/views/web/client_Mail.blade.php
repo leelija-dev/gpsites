@@ -1,196 +1,197 @@
 @php
     use Illuminate\Support\Facades\Auth;
-    $loggedUserId = Auth::id(); // or Auth::user()->id
+    $loggedUserId = Auth::id();
 @endphp
+
 <x-app-layout>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> --}}
-    <!-- jQuery -->
+    <!-- jQuery (required for Summernote) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Bootstrap 4 (required for Summernote) -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Summernote CSS & JS (Bootstrap-free version works fine with Tailwind) -->
+  <!-- Use summernote-lite (no Bootstrap dependency) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
 
-    <!-- Summernote -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-4">
+        <div class="w-full ">
 
-
-    <div class="flex min-h-screen ">
-
-        <!-- Sidebar -->
-        <div class="w-64 border-r p-4 bg-gray-100">
-            @include('web.sidebar')
-            {{-- < ?php require_once ROOT .'..../web/sidebar.blade.php'; ?> --}}
-
-        </div>
-
-
-        <!-- Main content -->
-        @if ($isValidPlan)
-            @if ($total_mail_available != 0)
-                <div class="flex-1 p-6 " style="background: white;">
-                    <form action="{{ route('blog.singleMail') }}" method="post" enctype="multipart/form-data"
-                        id="mailForm">
-                        @csrf
-                        <input type="hidden" id="id" value="{{ $id }}" name="id">
-                        <input type="hidden" id="userId" value="{{ $loggedUserId }}" name="userId">
-                        <p class="text-muted">From: {{ env('MAIL_USERNAME') }}</p>
-                        <div class="form-group">
-                            <label for="subject">Subject<sup class="text-danger">*</sup></label>
-                            <input type="text" class="form-control" name="subject" id="subject" required>
+            @if ($isValidPlan)
+                @if ($total_mail_available != 0)
+                    <!-- Mail Form Card -->
+                    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-6">
+                            <h2 class="text-2xl font-bold">Send New Mail</h2>
+                            <p class="text-indigo-100">You have <strong>{{ $total_mail_available }}</strong> mail(s) available</p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="message">Message<sup class="text-danger">*</sup></label><br>
-                            <textarea id="summernote" name="message" placeholder="Write your message..." required></textarea>
-                            <!-- Multiple file input -->
-                            <input type="file" name="attachments[]" id="attachments" multiple style="display:none">
+                        <div class="p-8">
+                            <form action="{{ route('blog.singleMail') }}" method="POST" enctype="multipart/form-data" id="mailForm" class="space-y-8">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $id }}">
+                                <input type="hidden" name="userId" value="{{ $loggedUserId }}">
+
+                                <!-- Subject Field -->
+                                <div>
+                                    <label for="subject" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Subject <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" name="subject" id="subject" required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition duration-200 outline-none text-gray-800 placeholder-gray-400"
+                                           placeholder="Enter email subject">
+                                </div>
+
+                                <!-- Message Editor -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Message <span class="text-red-500">*</span>
+                                    </label>
+                                    <textarea id="summernote" name="message" required></textarea>
+
+                                    <!-- Hidden file input -->
+                                    <input type="file" name="attachments[]" id="attachments" multiple class="hidden">
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                            class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl shadow-lg transform hover:scale-105 transition duration-300">
+                                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                        </svg>
+                                        Send Mail
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-
-                        <!-- Display selected files for debugging -->
-                        <div id="selectedFiles" class="mt-2"></div>
-
-                        <button type="submit" class="btn btn-primary">Send Mail</button>
-                    </form>
-                </div>
+                    </div>
+                @else
+                    <!-- No Mail Available -->
+                    <div class="text-center py-20 bg-white rounded-2xl shadow-xl">
+                        <div class="max-w-md mx-auto">
+                            <div class="bg-red-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">No Mail Credits Left!</h3>
+                            <p class="text-gray-600 mb-8">You've used all your available mail credits.</p>
+                            <a href="/#pricing"
+                               class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg transform hover:scale-105 transition">
+                                Buy More Credits
+                            </a>
+                        </div>
+                    </div>
+                @endif
             @else
-                <div
-                    style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
-                    <p>
-                    <h4>You have already used all mail services!</h4>
-                    </p>
-                    <a href="/#pricing" id="nav-pricing"
-                        class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
-                        <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
-                    </a>
+                <!-- No Active Plan -->
+                <div class="text-center py-20 bg-white rounded-2xl shadow-xl">
+                    <div class="max-w-md mx-auto">
+                        <div class="bg-yellow-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-16 h-16 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 3h18v18H3V3zM12 8v8m-4-4h8"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">No Active Plan Found</h3>
+                        <p class="text-gray-600 mb-8">Please purchase a plan to start sending emails.</p>
+                        <a href="/#pricing"
+                           class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl shadow-lg transform hover:scale-105 transition">
+                            View Pricing Plans
+                        </a>
+                    </div>
                 </div>
             @endif
-        @else
-            <div  class="text-center"
-                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 20vh; text-align: center; gap: 5x;background:rgb(245, 243, 243);">
-                <p>
-                <h4>You have not purchased any plan.</h4>
-                </p>
-                <a href="/#pricing" id="nav-pricing"
-                    class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
-                    <button class="btn btn-primary" style="width: 100px; height: 40px;">Buy</button>
-                </a>
-            </div>
-        @endif
+        </div>
     </div>
-    {{-- <script>
+
+    <!-- Summernote + File Attachment Script (Enhanced & Clean) -->
+    <script>
     $(document).ready(function() {
         $('#summernote').summernote({
-            placeholder: 'Write your message...',
-            height: 200,    // Editor height
+            placeholder: 'Write your message here...',
+            height: 300,
+            tabsize: 2,
+            // THIS IS THE KEY: Disable Bootstrap tooltips completely
+            disableDragAndDrop: false,
             toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['fontname', 'fontsize']],
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video','fileUpload']],
-                // ['view', ['fullscreen', 'codeview', 'help']]
-            ]
-        });
-    });
-// </script> --}}
-    <script>
-        $('#summernote').summernote({
-            placeholder: 'Write your message...',
-            height: 200,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', ['fontname', 'fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video', 'fileUpload']]
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video', 'attachFile']],
+                ['view', ['fullscreen', 'codeview', 'help']]
             ],
             buttons: {
-                fileUpload: function(context) {
+                attachFile: function(context) {
                     var ui = $.summernote.ui;
                     var button = ui.button({
-                        contents: '<i class="fa fa-paperclip"/> File',
-                        tooltip: 'Attach File',
+                        contents: '<i class="note-icon-paperclip"></i>',
+                        tooltip: 'Attach files',
                         click: function() {
-                            $('#attachments').click();
+                            $('#attachments').trigger('click');
                         }
                     });
                     return button.render();
                 }
+            },
+            // CRITICAL: Disable all Bootstrap tooltip/popover usage
+            popover: {
+                image: [],
+                link: [],
+                air: []
+            },
+            // Optional: Use native title instead of Bootstrap tooltips
+            hint: false,
+            // Prevent Summernote from trying to use Bootstrap tooltips
+            callbacks: {
+                onInit: function() {
+                    // Force native browser tooltips (title attribute)
+                    $('.note-toolbar btn').each(function() {
+                        if ($(this).attr('data-original-title')) {
+                            $(this).removeAttr('data-original-title');
+                        }
+                    });
+                }
             }
         });
 
+        // File attachment logic (unchanged)
         let selectedFiles = [];
 
         $('#attachments').on('change', function() {
             let files = this.files;
-
             for (let i = 0; i < files.length; i++) {
                 let file = files[i];
+                if (selectedFiles.find(f => f.name === file.name && f.size === file.size)) continue;
 
-                // Check if file already exists
-                const fileExists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
-                if (!fileExists) {
-                    selectedFiles.push(file);
+                selectedFiles.push(file);
 
-                    // Create file badge in Summernote
-                    var container = document.createElement('span');
-                    container.style.cssText =
-                        'display:inline-block;margin:2px 5px;padding:2px 5px;border:1px solid #ccc;border-radius:4px;background:#f1f1f1;';
-                    container.setAttribute('contenteditable', 'false');
+                let badge = `
+                    <span class="inline-block m-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium border border-blue-300" contenteditable="false">
+                        ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                        <span class="ml-2 cursor-pointer text-red-600 hover:text-red-800" 
+                              onclick="this.parentElement.remove(); selectedFiles = selectedFiles.filter(f => f.name !== '${file.name}' || f.size !== ${file.size})">×</span>
+                    </span>`;
 
-                    var fileName = document.createElement('span');
-                    fileName.innerText = file.name;
-                    fileName.style.marginRight = '5px';
-
-                    var removeBtn = document.createElement('span');
-                    removeBtn.innerHTML = '&times;';
-                    removeBtn.style.color = 'red';
-                    removeBtn.style.cursor = 'pointer';
-                    removeBtn.style.marginLeft = '5px';
-                    removeBtn.addEventListener('click', function() {
-                        // Remove file from selectedFiles array
-                        selectedFiles = selectedFiles.filter(f => f !== file);
-                        container.remove();
-                        updateFileInput(); // Update the actual file input
-                    });
-
-                    container.appendChild(fileName);
-                    container.appendChild(removeBtn);
-
-                    $('#summernote').next('.note-editor').find('.note-editable').append(container).append(' ');
-                }
+                $('#summernote').summernote('pasteHTML', badge + ' ');
             }
-
-            updateFileInput(); // Update the actual file input after adding new files
+            updateFileInput();
         });
 
-        // Function to update the actual file input with selected files
         function updateFileInput() {
-            const input = document.getElementById("attachments");
-            const dataTransfer = new DataTransfer();
-
-            selectedFiles.forEach(file => {
-                dataTransfer.items.add(file);
-            });
-
-            input.files = dataTransfer.files;
-
-            // Log for debugging
-            console.log('Files in input:', input.files.length);
+            const input = document.getElementById('attachments');
+            const dt = new DataTransfer();
+            selectedFiles.forEach(f => dt.items.add(f));
+            input.files = dt.files;
         }
 
-        // Update file input before form submission
-        document.querySelector("mailForm").addEventListener("submit", function(e) {
-            // Ensure files are updated before submission
+        $('#mailForm').on('submit', function() {
             updateFileInput();
-
-            // Optional: Add a small delay to ensure the update happens
-            setTimeout(() => {
-                console.log('Final files before submit:', $('#attachments')[0].files);
-            }, 100);
         });
-    </script>
-
+    });
+</script>
 </x-app-layout>

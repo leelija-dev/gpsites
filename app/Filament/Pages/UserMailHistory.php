@@ -7,7 +7,7 @@ use BackedEnum;
 use Filament\Support\Icons\Heroicon;
 class UserMailHistory extends Page
 {
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Envelope;
 
     protected string $view = 'filament.pages.user-mail-history';

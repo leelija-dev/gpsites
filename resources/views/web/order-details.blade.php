@@ -1,127 +1,125 @@
 @php
     use Illuminate\Support\Facades\Auth;
     $loggedUserId = Auth::id();
-    // or Auth::user()->id
 @endphp
+
 <x-app-layout>
-
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- External CSS/JS (keep if needed) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        /* Remove underline from all links */
-        a {
-            text-decoration: none !important;
-        }
-
-        /* Optional: hover effect for links */
-        a:hover {
-            text-decoration: none !important;
-        }
-        
+        a { text-decoration: none !important; }
+        a:hover { text-decoration: none !important; }
     </style>
-    <div class="d-flex min-vh-100" style="background: white;">
-        <!-- Sidebar -->
-        <div class="w-64 border-end p-4 ">
-            @include('web.sidebar')
-        </div>
 
-        <!-- Main content -->
+    <div class="min-h-screen bg-white flex">
+        <!-- Main Content Area -->
+        <div class="flex-1 p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto">
 
-        <div class="flex-grow-1 p-4">
-           <div class="table-responsive">
-            <table class="table  table-hover ">
-                
-
-                <thead class="table-success text-center">
-
-                    <tr>
-                        <th scope="col">SL No</th>
-                        <th scope="col">Plan Name</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Payment Status</th>
-                        <th scope="col">Total Mail</th>
-                        <th scope="col">Mail Available</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Plan Status</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    @if($orders->isNotEmpty())
-                        
-                        @foreach ($orders as $order)
-                                @php
-                                    $expiryDate = \Carbon\Carbon::parse($order->created_at)->addDays($order->plan->duration);
-                                    $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
-                                @endphp
-                                @if(!$isActive)
-                                <tr class="table-secondary">
-                                @else
-                                <tr>
-                                @endif
-                                @php $page=isset($_GET['page'])?$_GET['page'] : 1; @endphp
-                                <td class="text-center">{{ $page * 10 - 9 + $loop->iteration - 1 }}</td>
-                                <td class="text-center">{{ $order->plan->name }}</td>
-                                <td class="text-center " >${{$order->amount}}
-                                </td>
-                                {{-- <td class="text-center">
-                                    {{$order->status ?? 'incomplete'}}
-                                </td> --}}
-                                <td class="text-center">
-                                <span @class([
-                                    'px-3 py-1 rounded-full text-xs font-semibold',
-                                    'bg-success text-white' => $order->status === 'completed',
-                                    'bg-warning text-white' => $order->status === 'pending',
-                                    'bg-danger text-white' => !in_array($order->status, ['completed','pending']),
-                                ])>
-                                    {{ ucfirst($order->status ?? 'incomplete') }}
-                                </span>
-                            </td>
-                            <td class="text-center">{{$order->mailAvailable->total_mail ?? 0}}</td>
-                                <td class="text-center">{{$order->mailAvailable->available_mail ?? 0}}</td>
-                                <td class="text-center">{{ $order->created_at->format('d-m-Y') }}</td>
-                                <td class="text-center" style="position: relative">
-                                    @if($order->status == 'completed')
-                                        @if($isActive)
-                                       <span class="bg-success text-white text-xs px-3 py-1 rounded-full"> Active</span>
-                                        @else
-                                         <span class="bg-secondary text-white text-xs px-3 py-1 rounded-full"> Expired</span>
-                                        @endif
-                                    @else
-                                     
-                                    @endif
-
-                                </td>
-                                <td class="text-center"><a href="{{route('view-my-order',encrypt(['id'=>$order->id]))}}">view</a></td>
-                                
+                <!-- Table Container -->
+                <div class="overflow-x-auto shadow-xl rounded-lg border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-[#f0f0f0] text-[#575757]">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">SL No</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan ID</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Payment Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Total Mail</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Mail Available</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Created At</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Action</th>
                             </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="9" class="p-4 text-center">No order yet!</td>
-                        </tr>
-                    @endif
+                        </thead>
 
-                </tbody>
-                
-            </table>
-               <div class="d-flex justify-content-center mt-3">
-                    {{ $orders->links('pagination::bootstrap-5') }}
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @if($orders->isNotEmpty())
+                                @foreach ($orders as $order)
+                                    @php
+                                        $expiryDate = \Carbon\Carbon::parse($order->created_at)->addDays($order->plan->duration);
+                                        $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
+                                        $isCompleted = $order->status === 'completed';
+                                        $page = request()->get('page', 1);
+                                        $serial = ($page - 1) * $orders->perPage() + $loop->iteration;
+                                    @endphp
+
+                                    <tr class="{{ !$isActive && $isCompleted ? 'bg-gray-100' : '' }} hover:bg-gray-50 transition-all duration-200">
+                                        <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">
+                                            {{ $serial }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center text-sm text-gray-700">
+                                            {{ $order->plan_id }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center text-sm font-semibold text-gray-800">
+                                            ${{ number_format($order->amount, 2) }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            @if($order->status === 'completed')
+                                                <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800">
+                                                    Completed
+                                                </span>
+                                            @else
+                                                <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-800">
+                                                    {{ ucfirst($order->status ?? 'Incomplete') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-center text-sm text-gray-700">
+                                            {{ $order->mailAvailable->total_mail ?? 0 }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center text-sm font-medium text-blue-600">
+                                            {{ $order->mailAvailable->available_mail ?? 0 }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center text-sm text-gray-600">
+                                            {{ $order->created_at->format('d M Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            @if($isCompleted)
+                                                @if($isActive)
+                                                    <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">
+                                                        Active
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800">
+                                                        Expired
+                                                    </span>
+                                                @endif
+                                            @else
+                                                <span class="text-gray-400 text-xs">—</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <a href="{{ route('view-my-order', encrypt(['id' => $order->id])) }}"
+                                               class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition shadow">
+                                                View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="9" class="px-6 py-16 text-center text-gray-500 text-lg font-medium">
+                                        No orders yet!
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
                 </div>
 
-
+                <!-- Pagination -->
+                @if($orders->hasPages())
+                    <div class="mt-10 flex justify-center">
+                        {{ $orders->onEachSide(2)->links() }}
+                        <!-- Or use: {{ $orders->links('pagination::tailwind') }} for custom style -->
+                    </div>
+                @endif
             </div>
-            {{-- <div class="d-flex justify-content-center mt-3">
-                {{ $mails->links('pagination::bootstrap-5') }}
-
-            </div> --}}
-        </div>
         </div>
     </div>
 </x-app-layout>
