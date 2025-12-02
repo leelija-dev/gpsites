@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use App\Filament\Pages\UserMail;
+use Filament\Actions\ViewAction;
 
 class UsersTable
 {
@@ -51,9 +52,18 @@ class UsersTable
             ->filters([
                 //
             ])
+            // ->recordActions([
+            //     EditAction::make(),
+
+            // ])
             ->recordActions([
-                EditAction::make(),
-            ])
+            EditAction::make(),
+            ViewAction::make('view_mail_history')
+                ->label('Mail History')
+                ->icon('heroicon-o-inbox-stack')
+                ->url(fn ($record) => route('filament.admin.pages.client-mail-history', ['user_id' => $record->id]))
+                ->openUrlInNewTab(false),
+        ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
