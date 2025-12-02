@@ -23,8 +23,10 @@ class PlansTable
                     ->label('Plan Name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('price')->searchable()->sortable(),
-                TextColumn::make('duration'),
+                TextColumn::make('price')->searchable()->sortable()
+                 ->money('USD', true),
+                TextColumn::make('duration')
+                    ->label('Duration(days)'),
                   TextColumn::make('mail_available')
                     ->label('Mail limit'),
                 ToggleColumn::make('is_active')
