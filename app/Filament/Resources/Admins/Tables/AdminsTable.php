@@ -28,7 +28,8 @@ class AdminsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                ->visible(fn ($record) => auth()->user()->isSuperAdmin),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

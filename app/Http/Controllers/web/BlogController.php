@@ -19,11 +19,17 @@ use Carbon\Carbon;
 
 class BlogController extends Controller
 {
-
-    public function index(Request $request)
+    protected $APIBASEURL;
+    public function __construct()
     {
+        $this->APIBASEURL = config('app.api_url');
+    }
+    public function index(Request $request)
+    {   
+        $APPURL  = $this->APIBASEURL .'/api/blogs';
+
         // $response = Http::get(env('API_BASE_URL') . '/api/blogs');
-        $response = Http::get(env('API_BASE_URL') . '/api/blogs', [
+        $response = Http::get($APPURL , [
             'page' => $request->get('page', 1) // pass current page to API
         ]);
 
@@ -147,7 +153,8 @@ class BlogController extends Controller
             'message' => 'required|string',
             'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,txt|max:20480|nullable',
         ]);
-        $response = Http::get(env('API_BASE_URL') . '/api/blogs');
+        $APIURL  = $this->APIBASEURL .'/api/blogs';
+        $response = Http::get($APIURL);
 
         if ($response->failed()) {
             return 'API Request Failed: ' . $response->status();

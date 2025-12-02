@@ -24,32 +24,21 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
+    $request->session()->regenerate();
 
-        $request->session()->regenerate();
-
-        // Check if user has verified email
-        // if (!Auth::user()->hasVerifiedEmail()) {
-        if (is_null(Auth::user()->email_verified_at)){
-            Auth::logout();
-            return redirect()->route('login')
+    // Check email verification
+    if (is_null(Auth::user()->email_verified_at)) {
+        Auth::logout();
+        return redirect()->route('login')
             ->with('error', 'Please verify your email address before logging in.');
-            //return redirect()->route('verification.notice')->with('error', 'Please verify your email address before logging in.');
-        }
-        //start
-        // Check if login was directly clicked
-        $previousUrl = url()->previous();
-        $loginUrl = route('login');
-        if ($previousUrl === $loginUrl) {
-        // User clicked login manually
-        return redirect()->route('dashboard');
-        }
-        return redirect()->intended();
-        //end
-
-        //return redirect()->intended(route('dashboard', absolute: false));
     }
+
+    // ALWAYS redirect intended URL first if exists
+    return redirect()->intended(route('dashboard'));
+}
+
 
     /**
      * Destroy an authenticated session.

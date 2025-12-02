@@ -40,7 +40,7 @@
                          </tr>
                         <tr>
                             <th scope="col">SL No</th>
-                            <th scope="col">Plan Order ID</th>
+                            <th scope="col">Order ID</th>
                             <th scope="col">Total Mail</th>
                             <th scope="col">Plan Status</th>
                             <th scop="col">Validity</th>
@@ -61,20 +61,21 @@
                                 @else
                                 <tr class="table-secondary">
                             @endif
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            @php $page=isset($_GET['page'])?$_GET['page'] : 1; @endphp
+                            <td class="text-center">{{ $page * 10 - 9 + $loop->iteration - 1 }}</td>
                             <td class="text-center">{{ $bill->id ?? '' }}</td>
                             <td class="text-center">{{ $bill->mailAvailable->total_mail ?? 0}}</td>
 
                             <td class="text-center">
                                 @if ($isActive)
-                                    Active
+                                    <span class="bg-success text-white text-xs px-3 py-1 rounded-full">Active</span>
                                 @else
-                                    Expired
+                                   <span class="bg-secondary text-white text-xs px-3 py-1 rounded-full"> Expired</span>
                                 @endif
                             </td>
                             <td class="text-center">{{$bill->plan->duration}} day</td>
-                            <td class="text-center">{{ $bill->created_at->format('M d, Y h:i a') ?? '' }}</td>
-                            <td class="text-center">{{$expiryDate->format('M d, Y h:i a') ?? ''}}</td>    
+                            <td class="text-center">{{ $bill->created_at->format( 'd-m-Y h:i a') ?? '' }}</td>
+                            <td class="text-center">{{$expiryDate->format('d-m-Y h:i a') ?? ''}}</td>    
                         </tr>
                         @endforeach
                         @else

@@ -25,9 +25,7 @@
                 @if ($pagination->isNotEmpty())
                     @foreach ($pagination as $blog)
                         <!-- Row -->
-                        <tr class="hover:bg-gray-50 cursor-pointer transition"
-                            data-target="#expandRow{{ $blog['blog_id'] }}"
-                            data-blog-id="{{ $blog['blog_id'] }}">
+                        <tr class="hover:bg-gray-50 transition">
                             
                            
 
@@ -36,19 +34,24 @@
                             </td> --}}
 
                             <td class="px-4 py-3 font-medium text-gray-700">
-                                {{ $blog['website_name'] ?? '—' }}
+                                {{ $blog['website_name'] ?? '' }}
                             </td>
 
                             <td class="px-4 py-3">
-                                 {{ $blog['site_url'] ?? '—' }}
+                                 {{ $blog['site_url'] ?? '' }}
                             </td>
 
-                            <td class="px-4 py-3">{{ $blog['website_niche'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['moz_da'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['ahrefs_dr'] ?? '—' }}</td>
-                            <td class="px-4 py-3">{{ $blog['ahrefs_traffic'] ?? '—' }}</td>
+                            {{-- <td class="px-4 py-3">{{ $blog['website_niche'] ?? '' }}</td> --}}
+                             <td class="px-4 py-3">{{ is_array($blog['website_niche']) 
+                                                    ? implode(', ', $blog['website_niche']) 
+                                                    : implode(', ', json_decode($blog['website_niche'], true) ?? []  ) 
+                                                }} 
+                             </td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['moz_da'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_dr'] ?? '' }}</td>
+                            <td class="px-4 py-3 blur-sm">{{ $blog['ahrefs_traffic'] ?? '' }}</td>
 
-                            <td class="px-4 py-3" onclick="event.stopPropagation();">
+                            <td class="px-4 py-3" >
                             
                                 <a href="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}" ><button class="bg-primary hover:bg-purple-800 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-md transition">
                                     Send Mail

@@ -18,6 +18,9 @@ class OrdersTable
             ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('id')->label('Order Id')->searchable()->sortable(),
+                TextColumn::make('user_id')
+                    ->label('User ID')
+                    ->searchable(),
                 TextColumn::make('user.name')
                     ->label('User Name')
                     ->searchable(),
@@ -25,15 +28,35 @@ class OrdersTable
                 //     ->label('Plan ID')
                 //     ->searchable(),
                 TextColumn::make('amount')
+                    ->money('USD', true)
                     ->searchable(),
                 // TextColumn::make('paid_at')
                 //     ->searchable()
                 //     ->dateTime(),
-
+                TextColumn::make('plan.name')
+                    ->label('Plan Name')
+                    ,
                 TextColumn::make('transaction_id')
                     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->searchable()
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match (strtolower($state)) {
+                        'completed' => 'Completed',
+                        'pending' => 'Pending',
+                        'failed' => 'Failed',
+                        'incomplete' => 'Incomplete',
+                        'processing' => 'Processing',
+                        default => ucfirst($state ?? ''),
+                    })
+                    ->color(fn ($state) => match (strtolower($state)) {
+                        'completed' => 'success',
+                        'pending' => 'warning',
+                        'failed' => 'danger',
+                        'incomplete' => 'danger',
+                        'processing' => 'warning',
+                        default => 'gray',
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
             ])

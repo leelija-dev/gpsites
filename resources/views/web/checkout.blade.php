@@ -852,7 +852,8 @@
                 const pkg = {
                     id: this.dataset.packageId,
                     name: this.dataset.packageName,
-                    price: parseFloat(this.dataset.packagePrice)
+                    price: parseFloat(this.dataset.packagePrice),
+                    validity: this.dataset.duration
                 };
 
                 replacePackage(pkg);

@@ -32,7 +32,7 @@
 
             <div class="flex flex-col sm:flex-row gap-4 lg:justify-start sm:justify-center items-center">
                 <!-- Hero CTA -->
-        <button type="button" id="see-pricing" class="btn-primary"> See Pricing </button>
+                <button type="button" id="see-pricing" class="btn-primary"> See Pricing </button>
                 <a href="/contact"><button class="btn-secondary">
                         Contact Us
                     </button></a>
@@ -90,69 +90,65 @@
                             <!-- Items will be injected here by JavaScript -->
                         </ul>
                     </div>
-                        <div id="selected-niches" class="flex flex-wrap gap-2 mb-2"></div>
+                    <div id="selected-niches" class="flex flex-wrap gap-2 mb-2"></div>
 
                 </div>
 
                 <!-- Sliders -->
                 <div class="">
-
-
                     <!-- DA Slider -->
                     <div class="mb-3">
-                        <div class="flex justify-between text-2xl font-bold  text-darkPrimary mb-3">
+                        <div class="flex justify-between text-2xl font-bold text-darkPrimary mb-3">
                             <span>DA</span>
-                            <span class="text-purple-600 font-bold hidden" id="da-values">25 – 70</span>
+                            <span class="text-purple-600 font-bold " style="display: none !important;" id="da-values">0 – 0</span>
                         </div>
                         <div class="range-slider">
                             <div class="track"></div>
                             <div class="fill" id="da-fill"></div>
-                            <!-- Tooltip for left thumb -->
-                            <span class="tooltip left-tooltip" id="da-min-tooltip">25</span>
-                            <!-- Tooltip for right thumb -->
-                            <span class="tooltip right-tooltip" id="da-max-tooltip">70</span>
 
-                            <!-- Right thumb (higher value) - MUST BE FIRST -->
-                            <input type="range" min="15" max="90" value="70" class="thumb-right" id="da-max">
-                            <!-- Left thumb (lower value) -->
-                            <input type="range" min="15" max="90" value="25" class="thumb-left" id="da-min">
+                            <span class="tooltip left-tooltip" id="da-min-tooltip">0</span>
+                            <span class="tooltip right-tooltip" id="da-max-tooltip">0</span>
+
+                            <!-- IMPORTANT: value="0" or remove value entirely -->
+                            <input type="range" min="0" max="90" value="0" class="thumb-right" id="da-max">
+                            <input type="range" min="0" max="90" value="0" class="thumb-left" id="da-min">
                         </div>
                     </div>
+
+                    <!-- DR Slider -->
                     <div class="mb-3">
-                        <div class="flex justify-between text-2xl font-bold  text-darkPrimary mb-3">
+                        <div class="flex justify-between text-2xl font-bold text-darkPrimary mb-3">
                             <span>DR</span>
-                            <span class="text-purple-600 font-bold hidden" id="dr-values">12 – 70</span>
+                            <span class="text-purple-600 font-bold " style="display: none !important;" id="dr-values">0 – 0</span>
                         </div>
                         <div class="range-slider">
                             <div class="track"></div>
                             <div class="fill" id="dr-fill"></div>
 
-                            <!-- Tooltip for left thumb -->
-                            <span class="tooltip left-tooltip" id="dr-min-tooltip">25</span>
-                            <!-- Tooltip for right thumb -->
-                            <span class="tooltip right-tooltip" id="dr-max-tooltip">70</span>
+                            <span class="tooltip left-tooltip" id="dr-min-tooltip">0</span>
+                            <span class="tooltip right-tooltip" id="dr-max-tooltip">0</span>
 
-                            <input type="range" min="12" max="85" value="70" class="thumb-right" id="dr-max">
-                            <input type="range" min="12" max="85" value="12" class="thumb-left" id="dr-min">
+                            <input type="range" min="0" max="85" value="0" class="thumb-right" id="dr-max">
+                            <input type="range" min="0" max="85" value="0" class="thumb-left" id="dr-min">
                         </div>
                     </div>
+
+                    <!-- Traffic Slider -->
                     <div class="mb-3">
-                        <div class="flex justify-between text-2xl font-bold  text-darkPrimary mb-3">
+                        <div class="flex justify-between text-2xl font-bold text-darkPrimary mb-3">
                             <span>Traffic</span>
-                            <span class="text-purple-600 font-bold hidden" id="tar-values">12 – 70</span>
+                            <span class="text-purple-600 font-bold" id="tar-values">0</span>
                         </div>
-                        <div class="range-slider">
+                        <div class="range-slider single">
                             <div class="track"></div>
                             <div class="fill" id="tar-fill"></div>
-                            <!-- Tooltip for left thumb -->
-                            <span class="tooltip left-tooltip" id="tar-min-tooltip">25</span>
-                            <!-- Tooltip for right thumb -->
-                            <span class="tooltip right-tooltip" id="tar-max-tooltip">70</span>
-                            <input type="range" min="12" max="85" value="70" class="thumb-right" id="tar-max">
-                            <input type="range" min="12" max="85" value="12" class="thumb-left" id="tar-min">
+
+                            <span class="tooltip single-tooltip" id="tar-tooltip">0</span>
+
+                            <input type="range" min="0" max="250000" value="0" step="1000"
+                                class="thumb" id="tar-single">
                         </div>
                     </div>
-
                 </div>
 
                 <!-- CTA Button -->
@@ -160,22 +156,22 @@
                     Find Now
                 </button> --}}
                 {{-- <form  action="{{ route('find.niches') }}" method="GET" > --}}
-                    <form id="searchForm" action="{{ route('find.niches') }}" method="GET">
+                <form id="searchForm" action="{{ route('find.niches') }}" method="GET">
 
-                        <!-- Hidden Inputs for Niches + Filters -->
-                        <input type="hidden" id="niche-values" name="niches">
-                        <input type="hidden" id="da-min-input" name="da_min">
-                        <input type="hidden" id="da-max-input" name="da_max">
-                        <input type="hidden" id="dr-min-input" name="dr_min">
-                        <input type="hidden" id="dr-max-input" name="dr_max">
-                        <input type="hidden" id="traffic-min-input" name="traffic_min">
-                        <input type="hidden" id="traffic-max-input" name="traffic_max">
+                    <!-- Hidden Inputs for Niches + Filters -->
+                    <input type="hidden" id="niche-values" name="niches">
+                    <input type="hidden" id="da-min-input" name="da_min">
+                    <input type="hidden" id="da-max-input" name="da_max">
+                    <input type="hidden" id="dr-min-input" name="dr_min">
+                    <input type="hidden" id="dr-max-input" name="dr_max">
+                    <input type="hidden" id="traffic-min-input" name="traffic_min">
+                    <input type="hidden" id="traffic-max-input" name="traffic_max">
 
-                        <button type="submit"
-                            class="mt-10 w-full bg-primary hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition text-lg">
-                            Find Now
-                        </button>
-                    </form>
+                    <button type="submit"
+                        class="mt-10 w-full bg-primary hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition text-lg">
+                        Find Now
+                    </button>
+                </form>
 
             </div>
         </div>
@@ -332,7 +328,7 @@
 
 <!-- pricing plan section  -->
 {{-- <section id="pricing" class="lg:py-16 py-12 px-6"> --}}
-    <section id="pricing" class="scroll-mt-24 lg:py-16 py-12 px-6">
+<section id="pricing" class="scroll-mt-24 lg:py-16 py-12 px-6">
     <div class="container mx-auto">
         <!-- Header -->
         <div class="w-full text-center mb-12">
@@ -377,25 +373,25 @@
                     <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30) 
                     : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}}
 
-                    {{-- <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">--}}{{$plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
+                            {{-- <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">--}}{{$plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
                         {{ $plan->mail_available ?? '0' }} Mail
                     </span>
                 </div>
                 <div class="flex-1 mt-6">
-                @if($plan->features && $plan->features->count() > 0)
-                <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
-                    @foreach($plan->features->where('is_active', true) as $feature)
-                    <li>• {{ $feature->feature }}</li>
-                    @endforeach
-                </ul>
-                {{-- @else
+                    @if($plan->features && $plan->features->count() > 0)
+                    <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
+                        @foreach($plan->features->where('is_active', true) as $feature)
+                        <li>• {{ $feature->feature }}</li>
+                        @endforeach
+                    </ul>
+                    {{-- @else
                 <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
                     <li>• Feature 1</li>
                     <li>• Feature 2</li>
                     <li>• Feature 3</li>
-                </ul> --}}
-                @endif
+                    </ul> --}}
+                    @endif
                 </div>
 
                 <!-- <div class="text-center my-10">
@@ -611,33 +607,33 @@
             <!-- RIGHT FORM -->
             <div class="w-full lg:w-2/3 lg:p-6 p-4">
                 <form id="contact-us" method="POST" action="{{ route('contact.store') }}" class="space-y-6" novalidate>
-                    
+
                     <!-- Success Message -->
                     @if(session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ session('success') }}
-                            </div>
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ session('success') }}
                         </div>
+                    </div>
                     @endif
-                    
+
                     <!-- Error Message -->
                     @if(session('error'))
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                {{ session('error') }}
-                            </div>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ session('error') }}
                         </div>
+                    </div>
                     @endif
-                    
+
                     @csrf
-                    
+
                     <!-- NAME ROW -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -645,7 +641,7 @@
                             <input type="text" id="full_name" name="name" value="{{ old('name') }}" placeholder="John Doe" required
                                 class="mt-1 w-full border-t-0 border-l-0 border-r-0 @error('name') border-red-500 @else border-gray-300 @enderror form-input-cus outline-none py-2 transition" />
                             @error('name')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -654,7 +650,7 @@
                             <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="email@example.com" required
                                 class="mt-1 w-full border-t-0 border-l-0 border-r-0 @error('email') border-red-500 @else border-gray-300 @enderror form-input-cus outline-none py-2 transition" />
                             @error('email')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -672,7 +668,7 @@
                             <option value="Feedback" {{ old('subject') == 'Feedback' ? 'selected' : '' }}>Feedback</option>
                         </select>
                         @error('subject')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -682,7 +678,7 @@
                         <textarea id="message" placeholder="Write your message..." name="message" required
                             class="mt-1 w-full border-t-0 border-l-0 min-h-[150px] @error('message') border-red-500 @else border-r-0 border-gray-300 @enderror form-input-cus outline-none py-2 h-24 transition">{{ old('message') }}</textarea>
                         @error('message')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -704,271 +700,263 @@
 
 <x-web.faq />
 <script>
+    // ================================================================
+    // 1. FORCE ALL SLIDERS TO 0 ON PAGE LOAD (MOST IMPORTANT PART)
+    // ================================================================
+    // 1. FORCE SLIDERS TO INITIAL VALUES ON PAGE LOAD
+    // ================================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        const slidersToReset = ['da-min', 'da-max', 'dr-min', 'dr-max', 'tar-single'];
+
+        slidersToReset.forEach(id => {
+            const slider = document.getElementById(id);
+            if (slider) {
+                // DA & DR: min = 0, max = maximum
+                if (id.includes('-min')) {
+                    slider.value = slider.min || 0;
+                } else if (id.includes('-max')) {
+                    slider.value = slider.max || 100;        // fallback to 100 if no max
+                } 
+                // Traffic: always full (200k+)
+                else if (id === 'tar-single') {
+                    slider.value = slider.max || 200000;
+                }
+
+                // Trigger visual update
+                slider.dispatchEvent(new Event('input'));
+            }
+        });
+
+        // Now initialize everything
+        initDualSlider('da-min', 'da-max', 'da-values', 'da-fill', 'da-min-tooltip', 'da-max-tooltip');
+        initDualSlider('dr-min', 'dr-max', 'dr-values', 'dr-fill', 'dr-min-tooltip', 'dr-max-tooltip');
+        initTrafficSlider();
+    });
+
+    // ================================================================
+    // 2. DUAL RANGE SLIDER – Starts FULL (0 to max) → shows "Any"
+    // ================================================================
     function initDualSlider(minId, maxId, displayId, fillId, minTooltipId, maxTooltipId) {
         const minThumb = document.getElementById(minId);
         const maxThumb = document.getElementById(maxId);
-        const display = document.getElementById(displayId);
-        const fill = document.getElementById(fillId);
-        const minTooltip = document.getElementById(minTooltipId);
-        const maxTooltip = document.getElementById(maxTooltipId);
+        const display  = document.getElementById(displayId);
+        const fill     = document.getElementById(fillId);
+        const minTip   = document.getElementById(minTooltipId);
+        const maxTip   = document.getElementById(maxTooltipId);
 
-        const updateSlider = () => {
+        function update() {
             let minVal = parseInt(minThumb.value);
             let maxVal = parseInt(maxThumb.value);
 
             // Prevent crossing
             if (minVal > maxVal) {
                 if (document.activeElement === minThumb) {
-                    maxVal = minVal;
-                    maxThumb.value = minVal;
+                    maxVal = minVal; maxThumb.value = minVal;
                 } else {
-                    minVal = maxVal;
-                    minThumb.value = maxVal;
+                    minVal = maxVal; minThumb.value = minVal;
                 }
             }
 
-            // Update main display
-            display.textContent = `${minVal} – ${maxVal}`;
+            const minAtStart = minVal <= parseInt(minThumb.min);
+            const maxAtEnd   = maxVal >= parseInt(maxThumb.max);
 
-            // Update tooltips text
-            minTooltip.textContent = minVal;
-            maxTooltip.textContent = maxVal;
+            if (minAtStart && maxAtEnd) {
+                display.textContent = 'Any';
+            } else if (minAtStart) {
+                display.textContent = `≤ ${maxVal}`;
+            } else if (maxAtEnd) {
+                display.textContent = `≥ ${minVal}`;
+            } else {
+                display.textContent = `${minVal} – ${maxVal}`;
+            }
 
-            // Position tooltips exactly above thumbs
-            const minPercent = ((minVal - minThumb.min) / (minThumb.max - minThumb.min)) * 100;
-            const maxPercent = ((maxVal - maxThumb.min) / (maxThumb.max - maxThumb.min)) * 100;
+            minTip.textContent = minVal;
+            maxTip.textContent = maxVal;
 
-            minTooltip.style.left = minPercent + '%';
-            maxTooltip.style.left = maxPercent + '%';
+            const range = parseInt(minThumb.max) - parseInt(minThumb.min);
+            const minPercent = ((minVal - minThumb.min) / range) * 100;
+            const maxPercent = ((maxVal - minThumb.min) / range) * 100;
 
-            // Update fill bar
-            fill.style.left = minPercent + '%';
-            fill.style.width = (maxPercent - minPercent) + '%';
+            minTip.style.left = `${minPercent}%`;
+            maxTip.style.left = `${maxPercent}%`;
+            fill.style.left = `${minPercent}%`;
+            fill.style.width = `${maxPercent - minPercent}%`;
+
+            display.classList.remove('hidden');
+        }
+
+        minThumb.addEventListener('input', update);
+        maxThumb.addEventListener('input', update);
+
+        // Tooltip logic unchanged …
+        minThumb.addEventListener('input', () => { minTip.classList.add('active'); maxTip.classList.remove('active'); });
+        maxThumb.addEventListener('input', () => { maxTip.classList.add('active'); minTip.classList.remove('active'); });
+
+        const hideTooltips = () => {
+            minTip.classList.remove('active');
+            maxTip.classList.remove('active');
         };
 
-        // Show/hide tooltip on interaction
-        const showTooltip = (tooltip) => tooltip.classList.add('active');
-        const hideTooltip = (tooltip) => tooltip.classList.remove('active');
-
-        minThumb.addEventListener('input', () => {
-            updateSlider();
-            showTooltip(minTooltip);
-            hideTooltip(maxTooltip);
-        });
-        maxThumb.addEventListener('input', () => {
-            updateSlider();
-            showTooltip(maxTooltip);
-            hideTooltip(minTooltip);
+        ['mouseup', 'touchend', 'mouseleave'].forEach(ev => {
+            minThumb.addEventListener(ev, hideTooltips);
+            maxThumb.addEventListener(ev, hideTooltips);
         });
 
-        // Hide tooltip when mouse leaves or touch ends
-        minThumb.addEventListener('mouseup', () => hideTooltip(minTooltip));
-        minThumb.addEventListener('touchend', () => hideTooltip(minTooltip));
-        maxThumb.addEventListener('mouseup', () => hideTooltip(maxTooltip));
-        maxThumb.addEventListener('touchend', () => hideTooltip(maxTooltip));
-
-        // Also hide when mouse leaves the slider area
-        minThumb.closest('.range-slider').addEventListener('mouseleave', () => {
-            hideTooltip(minTooltip);
-            hideTooltip(maxTooltip);
-        });
-
-        // Initial update
-        updateSlider();
+        update(); // Initial render → fill is full, shows "Any"
     }
 
-    // Initialize both sliders with tooltips
-    initDualSlider(
-        'da-min', 'da-max', 'da-values', 'da-fill',
-        'da-min-tooltip', 'da-max-tooltip'
-    );
+    // ================================================================
+    // 3. TRAFFIC SINGLE SLIDER – Starts at 200k+ (full)
+    // ================================================================
+    function initTrafficSlider() {
+        const slider  = document.getElementById('tar-single');
+        const display = document.getElementById('tar-values');
+        const tooltip = document.getElementById('tar-tooltip');
+        const fill    = document.getElementById('tar-fill');
 
-    initDualSlider(
-        'dr-min', 'dr-max', 'dr-values', 'dr-fill',
-        'dr-min-tooltip', 'dr-max-tooltip'
-    );
-    initDualSlider(
-        'tar-min', 'tar-max', 'tar-values', 'tar-fill',
-        'tar-min-tooltip', 'tar-max-tooltip'
-    );
-</script>
+        const format = (v) => {
+            if (v === 0) return '0';
+            if (v >= 200000) return '200k+';
+            return Math.round(v / 1000) + 'k';
+        };
 
+        function update() {
+            const val = parseInt(slider.value);
+            const percent = (val / slider.max) * 100;
+            const text = format(val);
 
-<!-- search and select  -->
-<script>
-    // Your list of niches (you can replace or fetch this from API)
-  // Your Niche List
-// const niches = [
-//     "Artificial Intelligence", "Digital Marketing", "E-commerce", "Health & Fitness",
-//     "Personal Finance", "Cryptocurrency", "Web Development", "Graphic Design",
-//     "Travel Blogging", "SaaS Products", "Online Education", "Real Estate",
-//     "Fashion & Beauty", "Gaming", "Mental Health", "Sustainable Living",
-//     "Parenting", "Photography", "Food & Cooking", "Home Decor","General","Technology",
-// ];
-const niches_data = @json($niches_data);
- const niches = niches_data.map(n => n.niche_name).filter(n => n && n.trim() !== "");
+            display.textContent = text;
+            tooltip.textContent = text;
+            tooltip.style.left = `${percent}%`;
+            fill.style.width = `${percent}%`;
+        }
 
-const searchInput = document.getElementById('niche-search');
-const dropdown = document.getElementById('niche-dropdown');
-const nicheList = document.getElementById('niche-list');
-const selectedBox = document.getElementById('selected-niches'); // ADD in HTML
-const hiddenInput = document.getElementById('niche-values'); // ADD in HTML
+        slider.addEventListener('input', () => {
+            tooltip.classList.add('active');
+            update();
+        });
 
-let selectedIndex = -1;
-let selectedValues = [];  // store selected niches
+        const hide = () => tooltip.classList.remove('active');
+        ['mouseup', 'touchend', 'mouseleave'].forEach(e => slider.addEventListener(e, hide));
+        ['mousemove', 'touchmove'].forEach(e => slider.addEventListener(e, () => tooltip.classList.add('active')));
 
-// function renderSelected() {
-//     selectedBox.innerHTML = '';
-//     selectedValues.forEach(niche => {
-//         const tag = document.createElement('div');
-//         tag.className = "flex items-center gap-2 text-white bg-primary px-3 py-1 rounded-full text-sm";
-//         tag.innerHTML = `
-//             ${niche}
-//             <span class="cursor-pointer px-1" onclick="removeNiche('${niche}')">×</span>
-//         `;
-//         selectedBox.appendChild(tag);
-//     });
+        update(); // Shows "200k+" and full bar on load
+    }
 
-//     // store values in hidden field (JSON)
-//     hiddenInput.value = JSON.stringify(selectedValues);
-// }
-function renderSelected() {
-    selectedBox.innerHTML = '';
-    selectedValues.forEach(niche => {
-        const tag = document.createElement('div');
-        tag.className = "flex items-center gap-2 text-white bg-primary px-3 py-1 rounded-full text-sm";
-        tag.innerHTML = `
-            ${niche}
-            <span class="cursor-pointer px-1" onclick="removeNiche('${niche}')">×</span>
-        `;
-        selectedBox.appendChild(tag);
-    });
+    // ================================================================
+    // 4. NICHE SEARCH & SELECT (unchanged + safe)
+    // ================================================================
+    const niches_data = @json($niches_data);
+    const niches = niches_data.map(n => n.niche_name).filter(n => n && n.trim() !== "");
 
-    // FIX: Convert to comma-separated format for API
-    hiddenInput.value = selectedValues.join(",");
-}
+    const searchInput   = document.getElementById('niche-search');
+    const dropdown      = document.getElementById('niche-dropdown');
+    const nicheList     = document.getElementById('niche-list');
+    const selectedBox   = document.getElementById('selected-niches');
+    const hiddenInput   = document.getElementById('niche-values');
 
-function removeNiche(niche) {
-    selectedValues = selectedValues.filter(item => item !== niche);
-    renderSelected();
-}
+    let selectedIndex = -1;
+    let selectedValues = [];
 
-function selectNiche(niche) {
-    if (!selectedValues.includes(niche)) {
-        selectedValues.push(niche);
+    function renderSelected() {
+        selectedBox.innerHTML = '';
+        selectedValues.forEach(niche => {
+            const tag = document.createElement('div');
+            tag.className = "flex items-center gap-2 text-white bg-primary px-3 py-1 rounded-full text-sm";
+            tag.innerHTML = `${niche} <span class="cursor-pointer px-1" onclick="removeNiche('${niche.replace(/'/g, "\\'")}')">×</span>`;
+            selectedBox.appendChild(tag);
+        });
+        hiddenInput.value = selectedValues.join(",");
+    }
+
+    window.removeNiche = (niche) => {
+        selectedValues = selectedValues.filter(item => item !== niche);
         renderSelected();
-    }
-    searchInput.value = "";
-    closeDropdown();
-}
+    };
 
-function renderNiches(items) {
-    nicheList.innerHTML = '';
-
-    if (items.length === 0) {
-        nicheList.innerHTML = '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>';
-        return;
-    }
-
-    items.forEach((niche, index) => {
-        const li = document.createElement('li');
-        li.className = `
-            px-6 py-3 hover:bg-primary/10 cursor-pointer transition-colors
-            ${index === selectedIndex ? 'bg-primary/10 text-primary font-medium' : 'text-gray-700'}
-        `;
-        li.textContent = niche;
-        li.dataset.index = index;
-
-        li.addEventListener('click', () => {
-            selectNiche(niche);
-        });
-
-        nicheList.appendChild(li);
-    });
-}
-
-function filterNiches(query) {
-    return query.trim()
-        ? niches.filter(n => n.toLowerCase().includes(query.toLowerCase()))
-        : niches;
-}
-
-function openDropdown() {
-    dropdown.classList.remove('hidden');
-    selectedIndex = -1;
-    renderNiches(filterNiches(searchInput.value));
-}
-
-function closeDropdown() {
-    dropdown.classList.add('hidden');
-    selectedIndex = -1;
-}
-
-// Events
-searchInput.addEventListener('input', () => {
-    const filtered = filterNiches(searchInput.value);
-    renderNiches(filtered);
-    filtered.length ? openDropdown() : closeDropdown();
-});
-
-searchInput.addEventListener('focus', () => {
-    renderNiches(niches);
-    openDropdown();
-});
-
-// Click outside hide dropdown
-document.addEventListener('click', (e) => {
-    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+    function selectNiche(niche) {
+        if (!selectedValues.includes(niche)) {
+            selectedValues.push(niche);
+            renderSelected();
+        }
+        searchInput.value = "";
         closeDropdown();
     }
-});
 
-// Keyboard Navigation
-searchInput.addEventListener('keydown', (e) => {
-    const items = nicheList.querySelectorAll('li');
-    if (!items.length) return;
+    function renderNiches(items) {
+        nicheList.innerHTML = items.length === 0
+            ? '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>'
+            : '';
 
-    if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        selectedIndex = (selectedIndex + 1) % items.length;
-        highlightItems(items);
-        items[selectedIndex].scrollIntoView({ block: 'nearest' });
+        items.forEach((niche, i) => {
+            const li = document.createElement('li');
+            li.className = `px-6 py-3 hover:bg-primary/10 cursor-pointer transition-colors ${i === selectedIndex ? 'bg-primary/10 text-primary font-medium' : 'text-gray-700'}`;
+            li.textContent = niche;
+            li.addEventListener('click', () => selectNiche(niche));
+            nicheList.appendChild(li);
+        });
     }
 
-    if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
-        highlightItems(items);
-        items[selectedIndex].scrollIntoView({ block: 'nearest' });
+    function filterNiches(q) {
+        return q.trim() ? niches.filter(n => n.toLowerCase().includes(q.toLowerCase())) : niches;
     }
 
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        if (selectedIndex >= 0 && items[selectedIndex]) {
+    function openDropdown() { dropdown.classList.remove('hidden'); renderNiches(filterNiches(searchInput.value)); }
+    function closeDropdown() { dropdown.classList.add('hidden'); selectedIndex = -1; }
+
+    searchInput.addEventListener('input', () => {
+        const filtered = filterNiches(searchInput.value);
+        renderNiches(filtered);
+        filtered.length ? openDropdown() : closeDropdown();
+    });
+
+    searchInput.addEventListener('focus', () => { renderNiches(niches); openDropdown(); });
+
+    document.addEventListener('click', e => {
+        if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
+    });
+
+    searchInput.addEventListener('keydown', e => {
+        const items = nicheList.querySelectorAll('li');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedIndex = (selectedIndex + 1) % items.length;
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
+        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+            e.preventDefault();
             selectNiche(items[selectedIndex].textContent);
         }
-    }
-});
 
-function highlightItems(items) {
-    items.forEach((item, i) => {
-        item.classList.toggle('bg-primary/10', i === selectedIndex);
-        item.classList.toggle('text-primary', i === selectedIndex);
-        item.classList.toggle('font-medium', i === selectedIndex);
+        items.forEach((el, i) => {
+            el.classList.toggle('bg-primary/10', i === selectedIndex);
+            el.classList.toggle('text-primary', i === selectedIndex);
+            el.classList.toggle('font-medium', i === selectedIndex);
+        });
+
+        items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
     });
-}
-document.getElementById("searchForm").addEventListener("submit", function () {
-    document.getElementById("da-min-input").value = document.getElementById("da-min").value;
-    document.getElementById("da-max-input").value = document.getElementById("da-max").value;
 
-    document.getElementById("dr-min-input").value = document.getElementById("dr-min").value;
-    document.getElementById("dr-max-input").value = document.getElementById("dr-max").value;
+    // ================================================================
+    // 5. FORM SUBMIT – Sync all values
+    // ================================================================
+    document.getElementById('searchForm')?.addEventListener('submit', function () {
+        // DA
+        document.getElementById('da-min-input').value = document.getElementById('da-min').value;
+        document.getElementById('da-max-input').value = document.getElementById('da-max').value;
 
-    document.getElementById("traffic-min-input").value = document.getElementById("tar-min").value;
-    document.getElementById("traffic-max-input").value = document.getElementById("tar-max").value;
-});
+        // DR
+        document.getElementById('dr-min-input').value = document.getElementById('dr-min').value;
+        document.getElementById('dr-max-input').value = document.getElementById('dr-max').value;
 
-
+        // Traffic
+        const trafficVal = document.getElementById('tar-single').value;
+        document.getElementById('traffic-min-input').value = trafficVal;
+        document.getElementById('traffic-max-input').value = trafficVal >= 200000 ? 999999 : trafficVal;
+    });
 </script>
 
 
@@ -977,66 +965,70 @@ document.getElementById("searchForm").addEventListener("submit", function () {
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const btn = document.getElementById('see-pricing');
-    const target = document.getElementById('pricing');
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('see-pricing');
+        const target = document.getElementById('pricing');
 
-    if (!btn || !target) return;
+        if (!btn || !target) return;
 
-    btn.addEventListener('click', function () {
-        const nav = document.querySelector('nav');
-        const navHeight = nav ? nav.offsetHeight : 0;
+        btn.addEventListener('click', function() {
+            const nav = document.querySelector('nav');
+            const navHeight = nav ? nav.offsetHeight : 0;
 
-        const offset = target.getBoundingClientRect().top
-                     + window.pageYOffset
-                     - navHeight;
+            const offset = target.getBoundingClientRect().top +
+                window.pageYOffset -
+                navHeight;
 
-        window.scrollTo({
-            top: offset,
-            behavior: 'smooth'
+            window.scrollTo({
+                top: offset,
+                behavior: 'smooth'
+            });
         });
     });
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const pricingSection = document.getElementById('pricing');
+    document.addEventListener('DOMContentLoaded', function() {
+        const pricingSection = document.getElementById('pricing');
 
-    // If URL contains #pricing and we are on home page -> auto scroll
-    if (pricingSection && window.location.hash === '#pricing') {
-        setTimeout(() => {
-            const nav = document.querySelector('nav');
-            const navHeight = nav ? nav.offsetHeight : 0;
+        // If URL contains #pricing and we are on home page -> auto scroll
+        if (pricingSection && window.location.hash === '#pricing') {
+            setTimeout(() => {
+                const nav = document.querySelector('nav');
+                const navHeight = nav ? nav.offsetHeight : 0;
 
-            const offset = pricingSection.getBoundingClientRect().top
-                         + window.pageYOffset
-                         - navHeight;
+                const offset = pricingSection.getBoundingClientRect().top +
+                    window.pageYOffset -
+                    navHeight;
 
-            window.scrollTo({ top: offset, behavior: 'smooth' });
-        }, 200);
+                window.scrollTo({
+                    top: offset,
+                    behavior: 'smooth'
+                });
+            }, 200);
 
-        // Remove hash so URL stays clean
-        history.replaceState(null, null, ' ');
-    }
-
-    // When clicking Pricing while already on Home page
-    const navPricing = document.getElementById('nav-pricing');
-    if (navPricing && pricingSection) {
-        navPricing.addEventListener('click', function (e) {
-            e.preventDefault();
-            const nav = document.querySelector('nav');
-            const navHeight = nav ? nav.offsetHeight : 0;
-
-            const offset = pricingSection.getBoundingClientRect().top
-                         + window.pageYOffset
-                         - navHeight;
-
-            window.scrollTo({ top: offset, behavior: 'smooth' });
-
+            // Remove hash so URL stays clean
             history.replaceState(null, null, ' ');
-        });
-    }
-});
+        }
 
+        // When clicking Pricing while already on Home page
+        const navPricing = document.getElementById('nav-pricing');
+        if (navPricing && pricingSection) {
+            navPricing.addEventListener('click', function(e) {
+                e.preventDefault();
+                const nav = document.querySelector('nav');
+                const navHeight = nav ? nav.offsetHeight : 0;
 
+                const offset = pricingSection.getBoundingClientRect().top +
+                    window.pageYOffset -
+                    navHeight;
+
+                window.scrollTo({
+                    top: offset,
+                    behavior: 'smooth'
+                });
+
+                history.replaceState(null, null, ' ');
+            });
+        }
+    });
 </script>
 
 
