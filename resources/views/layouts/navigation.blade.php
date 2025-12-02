@@ -1,9 +1,15 @@
-<nav x-data="{ open: false }" class="bg-white  border-b border-gray-100 sticky top-[1px] z-50">
+<nav x-data="{ open: false }" class="bg-white  border-b border-gray-100 sticky top-0 z-50 py-1">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                
+                <!-- Mobile Open Button -->
+                <button id="open-sidebar" class="lg:hidden  text-gray-500   hover:text-blue-600 transition-all">
+                    <svg  class="w-6 h-6 transition-transform duration-300 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+               </svg>
+                </button>
+
 
                 <!-- Navigation Links -->
                 <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -38,7 +44,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -84,7 +90,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
