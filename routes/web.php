@@ -18,11 +18,19 @@ use App\Http\Controllers\web\OrderController;
 use App\Http\Controllers\web\NewsletterController;  
 use Illuminate\Support\Facades\Route;
 use App\Models\Plan;
+use App\Models\PlanOrder;
+use App\Models\MailAvailable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 // ... existing routes ...
 
-
-
+Route::post('/start-trial', function (Request $request) {
+    session(['trial_plan' => 14]);
+    return redirect()->route('checkout');
+})->name('start.trial');
 
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
@@ -82,8 +90,10 @@ Route::middleware(['web'])->group(function () {
 });
 // Checkout routes (require authentication AND email verification)
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
+
+// Define specific checkout routes before the parameterized one
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Route::get('/checkout/{plan?}', [CheckoutController::class, 'show'])->name('checkout');
+    Route::post('/checkout/free-complete', [CheckoutController::class, 'completeTrial'])->name('checkout.free-complete');
     Route::match(['GET', 'POST'], '/checkout/{plan?}', [CheckoutController::class, 'show'])->name('checkout');
 
 
