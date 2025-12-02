@@ -1,85 +1,110 @@
 <x-app-layout>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- External Scripts (keep only if needed elsewhere) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote@0.8.18/summernote.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <div class="d-flex min-vh-100">
-        <!-- Sidebar -->
-        <div class="w-64 border-end p-4 bg-light">
-            @include('web.sidebar')
-        </div>
-        <style>
-            /* Remove underline from all links */
-            a {
-                text-decoration: none !important;
-            }
+    <style>
+        a { text-decoration: none !important; }
+        a:hover { text-decoration: none !important; }
+    </style>
 
-            /* Optional: hover effect for links */
-            a:hover {
-                text-decoration: none !important;
-            }
-        </style>
-        <div class="flex-grow-1 p-4">
-            <div class="table-responsive">
-            <table class="table  table-hover bg-white">
-                
+    <div class="min-h-screen bg-gray-50">
+        <!-- Main Content -->
+        <div class="p-6 lg:p-10">
+            <div class="max-w-7xl mx-auto">
 
-                <thead class="table-success text-center">
 
-                    <tr>
-                        <th scope="col">SL No</th>
-                        <th scope="col">Site url</th>
-                        <th scope="col">Subject</th>
-                        <th scope="col">Message</th>
-                        <th scope="col">Sent At</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if($mails->isNotEmpty())
-                        
-                        @foreach ($mails as $mail)
-                            <tr>
-                                @php $page=isset($_GET['page'])?$_GET['page'] : 1; @endphp
-                                <td class="text-center">{{ $page * 10 - 9 + $loop->iteration - 1 }}</td>
-                                <td class="text-center">{{ $mail->site_url }}</td>
-                                <td class="text-center">
-                                    @if (strlen($mail->subject) > 20)
-                                        {{ substr($mail->subject, 0, 8) . '...' . substr($mail->subject, -8) }}
-                                    @else
-                                        {{ $mail->subject }}
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <?php $message = strip_tags($mail->message); ?>
-                                    @if (strlen($message) > 20)
-                                        {{ substr($message, 0, 8) . '...' . substr($message, -8) }}
-                                    @else
-                                        {!! $message !!}
-                                    @endif
-                                </td>
-                                <td class="text-center">{{ $mail->created_at->format('d M Y') }}</td>
-                                <td class="text-center"><a href="{{ route('blog.view-mail', encrypt($mail->id)) }}"
-                                        class="btn btn-primary" title="blog.view-mail">view</a></td>
+                <!-- Table Container -->
+                <div class="bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-[#f0f0f0] text-[#575757]">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">SL No</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Site URL</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Subject</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Message</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Sent At</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
 
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="7" class="p-4 text-center">No mail history found.</td>
-                        </tr>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                @if($mails->isNotEmpty())
+                                    @php
+                                        $page = request()->get('page', 1);
+                                        $perPage = $mails->perPage();
+                                        $serialStart = ($page - 1) * $perPage;
+                                    @endphp
+
+                                    @foreach ($mails as $mail)
+                                        @php
+                                            $cleanMessage = strip_tags($mail->message);
+                                            $shortSubject = strlen($mail->subject) > 30
+                                                ? substr($mail->subject, 0, 15) . '...' . substr($mail->subject, -10)
+                                                : $mail->subject;
+
+                                            $shortMessage = strlen($cleanMessage) > 40
+                                                ? substr($cleanMessage, 0, 20) . '...' . substr($cleanMessage, -15)
+                                                : $cleanMessage;
+                                        @endphp
+
+                                        <tr class="hover:bg-gray-50 transition duration-150 ease-in-out">
+                                            <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">
+                                                {{ $serialStart + $loop->iteration }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-700">
+                                                <a href="{{ $mail->site_url }}" target="_blank" class="text-blue-600 hover:underline break-all">
+                                                    {{ Str::limit($mail->site_url, 40) }}
+                                                </a>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-800 font-medium" title="{{ $mail->subject }}">
+                                                {{ $shortSubject }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-600" title="{{ $cleanMessage }}">
+                                                {{ $shortMessage }}
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-sm text-gray-600">
+                                                {{ $mail->created_at->format('d M Y') }}
+                                                <span class="block text-xs text-gray-400">
+                                                    {{ $mail->created_at->format('h:i A') }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-center">
+                                                <a href="{{ route('blog.view-mail', encrypt($mail->id)) }}"
+                                                   class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-lg shadow-md transition transform hover:scale-105">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-16 text-center text-gray-500 text-lg font-medium">
+                                            No mail history found.
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if($mails->hasPages())
+                        <div class="bg-white px-6 py-5 border-t border-gray-200">
+                            <div class="flex justify-center">
+                                {{ $mails->onEachSide(2)->links() }}
+                                <!-- Or: {{ $mails->links('pagination::tailwind') }} for custom style -->
+                            </div>
+                        </div>
                     @endif
-
-                </tbody>
-                
-            </table>
-            </div>
-            <div class="d-flex justify-content-center mt-3">
-                {{ $mails->links('pagination::bootstrap-5') }}
-
+                </div>
             </div>
         </div>
     </div>
