@@ -23,6 +23,14 @@ class PermissionResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Setup';
+    }
+    public static function getNavigationSort(): int
+    {
+        return 100;  // Position of the group in the sidebar
+    }
     public static function form(Schema $schema): Schema
     {
         return PermissionForm::configure($schema);

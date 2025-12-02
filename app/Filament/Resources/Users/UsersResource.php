@@ -28,6 +28,10 @@ class UsersResource extends Resource
     {
         return 'User Management';
     }
+    public static function getNavigationSort(): int
+    {
+        return 5;  // Position of the group in the sidebar
+    }
     public static function form(Schema $schema): Schema
     {
         return UsersForm::configure($schema);

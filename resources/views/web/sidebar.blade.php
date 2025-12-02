@@ -68,14 +68,14 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
 </style>
 
 <aside id="sidebar"
-   class=" lg:relative fixed z-[51] top-0 left-0  h-screen bg-white shadow-2xl border-r border-gray-200
+   class=" lg:sticky fixed z-[51] top-0 left-0  h-screen bg-white shadow-2xl border-r border-gray-200
               lg:translate-x-0 -translate-x-full
               transition-all duration-300 ease-in-out"
    data-state="expanded" style="transition: 0.2s all ease-in-out !important;">
    <!-- Your existing sidebar content (unchanged) -->
    <div class="h-full flex flex-col overflow-y-auto">
       <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <div class="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100 min-h-[73px]">
          <div class="flex items-center space-x-3 transition-all duration-300 hide-when-collapsed">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
                <x-application-logo class="h-10 w-10 fill-current text-blue-600 flex-shrink-0" />
@@ -182,12 +182,7 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
 <!-- Backdrop (Mobile Only) -->
 <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
 
-<!-- Mobile Open Button -->
-<button id="open-sidebar" class="lg:hidden fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-2xl hover:bg-blue-700 transition-all">
-   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-   </svg>
-</button>
+
 
 <script>
    document.addEventListener('DOMContentLoaded', function() {

@@ -6,26 +6,43 @@ $loggedUserId = Auth::id();
 <x-app-layout>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- include summernote css/js -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* Fix for Summernote Bootstrap 5 compatibility */
+        /* Fix for Summernote compatibility */
         .note-editor .dropdown-toggle::after {
             display: none !important;
         }
 
         .note-editor .dropdown-menu {
-            z-index: 1050 !important;
+            z-index: 9999 !important;
+        }
+
+        .note-modal {
+            z-index: 99999 !important;
+        }
+
+        .note-editor.note-frame .note-btn-group .note-btn {
+            padding: 0.375rem 0.75rem !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
         }
 
         /* Ensure Summernote editor is visible */
         .note-editor.note-frame {
             display: block !important;
             visibility: visible !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 0.375rem !important;
+        }
+
+        .note-editor.note-frame .note-toolbar {
+            background-color: #f9fafb !important;
+            border-bottom: 1px solid #d1d5db !important;
+            padding: 0.5rem !important;
         }
 
         /* Remove underline from all links */
@@ -43,15 +60,28 @@ $loggedUserId = Auth::id();
             background-color: #e8f4fd !important;
         }
 
-        /* Summernote custom styles */
-        .note-editor.note-frame {
-            border: 1px solid #d1d5db !important;
-            border-radius: 0.375rem !important;
+        /* Custom Modal Styles */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 9999;
         }
 
-        .note-editor.note-frame .note-toolbar {
-            background-color: #f9fafb !important;
-            border-bottom: 1px solid #d1d5db !important;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
         /* Pagination styling */
@@ -133,7 +163,17 @@ $loggedUserId = Auth::id();
                 gap: 1rem;
                 align-items: center !important;
             }
+        }
 
+        /* Fix for Summernote tooltips */
+        .note-popover .popover .arrow,
+        .note-popover .popover .popover-content,
+        .note-toolbar .note-btn-group .note-btn {
+            z-index: 10000 !important;
+        }
+
+        .note-editable {
+            min-height: 150px !important;
         }
     </style>
 
@@ -303,32 +343,45 @@ $loggedUserId = Auth::id();
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="sendMailModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- Background overlay -->
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <!-- Custom Modal -->
+    <div id="sendMailModal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 hidden">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+             onclick="closeModal()"></div>
+        
+        <!-- Modal container -->
+        <div class="modal-container relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="flex flex-col h-full">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        Send Mail
+                    </h3>
+                    <button type="button" 
+                            onclick="closeModal()"
+                            class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
 
-            <!-- Modal panel -->
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-                <form id="sendMailForm" class="mail-validation" method="POST" action="{{ route('blog.sendMail') }}"
-                    enctype="multipart/form-data" novalidate>
-                    @csrf
-                    <input type="hidden" name="selected_ids" id="selectedIdsInput">
-                    <input type="hidden" name="userId" id="userId" value="{{ $loggedUserId }}">
-                    <input type="hidden" name="availableMail" id="availableMail"
-                        value="{{ $total_mail_available->available_mail ?? 0 }}">
+                <!-- Modal body -->
+                <div class="flex-1 overflow-y-auto p-6">
+                    <form id="sendMailForm" class="mail-validation" method="POST" action="{{ route('blog.sendMail') }}"
+                        enctype="multipart/form-data" novalidate>
+                        @csrf
+                        <input type="hidden" name="selected_ids" id="selectedIdsInput">
+                        <input type="hidden" name="userId" id="userId" value="{{ $loggedUserId }}">
+                        <input type="hidden" name="availableMail" id="availableMail"
+                            value="{{ $total_mail_available->available_mail ?? 0 }}">
 
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                    Send Mail
-                                </h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500 mb-4">
-                                        Selected Site: <span id="modalSelectedCount" class="font-semibold">0</span>
-                                    </p>
+                        <div class="space-y-6">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-4">
+                                    Selected Site: <span id="modalSelectedCount" class="font-semibold text-gray-900">0</span>
+                                </p>
+                            </div>
 
                                     <div class="space-y-4">
                                         <div>
@@ -346,525 +399,603 @@ $loggedUserId = Auth::id();
                                             @enderror
                                         </div>
 
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                Message
-                                            </label>
-                                            <textarea id="summernote"
-                                                name="message"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                                required></textarea>
-                                            <div class="mt-1 text-sm text-red-600 hidden">Message can not be blank!</div>
-                                            @error('message')
-                                            <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        Message
+                                    </label>
+                                    <!-- Hidden textarea for form submission -->
+                                    <textarea id="summernote" name="message" style="display: none;"></textarea>
+                                    <!-- Div container for Summernote -->
+                                    <div id="summernote-editor"></div>
+                                    <div class="mt-1 text-sm text-red-600 hidden">Message can not be blank!</div>
+                                    @error('message')
+                                    <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                Attachments
-                                            </label>
-                                            <div class="flex items-center space-x-2">
-                                                <input type="file"
-                                                    name="attachments[]"
-                                                    id="attachments"
-                                                    multiple
-                                                    class="block w-full text-sm text-gray-500
-                                                              file:mr-4 file:py-2 file:px-4
-                                                              file:rounded-md file:border-0
-                                                              file:text-sm file:font-medium
-                                                              file:bg-blue-50 file:text-blue-700
-                                                              hover:file:bg-blue-100">
-                                                <button type="button"
-                                                    id="clearAttachmentsBtn"
-                                                    class="px-3 py-2 text-sm text-red-600 hover:text-red-800 hidden">
-                                                    Clear All
-                                                </button>
-                                            </div>
-                                            <div id="fileList" class="mt-2 space-y-1"></div>
-                                        </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        Attachments
+                                    </label>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="file"
+                                            name="attachments[]"
+                                            id="attachments"
+                                            multiple
+                                            class="block w-full text-sm text-gray-500
+                                                      file:mr-4 file:py-2 file:px-4
+                                                      file:rounded-md file:border-0
+                                                      file:text-sm file:font-medium
+                                                      file:bg-blue-50 file:text-blue-700
+                                                      hover:file:bg-blue-100">
+                                        <button type="button"
+                                            id="clearAttachmentsBtn"
+                                            class="px-3 py-2 text-sm text-red-600 hover:text-red-800 hidden">
+                                            Clear All
+                                        </button>
                                     </div>
+                                    <div id="fileList" class="mt-2 space-y-1"></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm transition">
-                            Send Mail
-                        </button>
-                        <button type="button"
-                            id="closeModalBtn"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex justify-end space-x-3 p-6 border-t border-gray-200">
+                    <button type="button"
+                        onclick="closeModal()"
+                        class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        form="sendMailForm"
+                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                        Send Mail
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Storage key for selected blogs
-        const SELECTED_BLOGS_STORAGE_KEY = 'selectedBlogs';
+   <script>
+    // Storage key for selected blogs
+    const SELECTED_BLOGS_STORAGE_KEY = 'selectedBlogs';
+    
+    // Global variable to track Summernote state
+    let summernoteInitialized = false;
+    let isModalOpen = false;
 
-        // Function to get selected blogs from localStorage
-        function getSelectedBlogs() {
-            const stored = localStorage.getItem(SELECTED_BLOGS_STORAGE_KEY);
-            return stored ? JSON.parse(stored) : [];
-        }
+    // Function to get selected blogs from localStorage
+    function getSelectedBlogs() {
+        const stored = localStorage.getItem(SELECTED_BLOGS_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+    }
 
-        // Function to save selected blogs to localStorage
-        function saveSelectedBlogs(selectedBlogs) {
-            localStorage.setItem(SELECTED_BLOGS_STORAGE_KEY, JSON.stringify(selectedBlogs));
-        }
+    // Function to save selected blogs to localStorage
+    function saveSelectedBlogs(selectedBlogs) {
+        localStorage.setItem(SELECTED_BLOGS_STORAGE_KEY, JSON.stringify(selectedBlogs));
+    }
 
-        // Function to update selected count display
-        function updateSelectedCount() {
-            const selectedBlogs = getSelectedBlogs();
-            const count = selectedBlogs.length;
-            $('#selectedCount').text(count);
-            $('#modalSelectedCount').text(count);
-        }
+    // Function to update selected count display
+    function updateSelectedCount() {
+        const selectedBlogs = getSelectedBlogs();
+        const count = selectedBlogs.length;
+        $('#selectedCount').text(count);
+        $('#modalSelectedCount').text(count);
+    }
 
-        // Function to restore checkbox states on page load
-        function restoreCheckboxStates() {
-            const selectedBlogs = getSelectedBlogs();
+    // Function to restore checkbox states on page load
+    function restoreCheckboxStates() {
+        const selectedBlogs = getSelectedBlogs();
 
-            // Check checkboxes for selected blogs on current page
-            $('.selectSiteCheckbox').each(function() {
-                const blogId = $(this).val();
-                if (selectedBlogs.includes(blogId)) {
-                    $(this).prop('checked', true);
-                    $(this).closest('tr').addClass('selected-row');
-                } else {
-                    $(this).prop('checked', false);
-                    $(this).closest('tr').removeClass('selected-row');
-                }
-            });
-
-            updateSelectedCount();
-        }
-
-        // Function to handle checkbox change
-        function handleCheckboxChange() {
+        // Check checkboxes for selected blogs on current page
+        $('.selectSiteCheckbox').each(function() {
             const blogId = $(this).val();
-            const isChecked = $(this).is(':checked');
-            let selectedBlogs = getSelectedBlogs();
-
-            if (isChecked) {
-                // Add to selection if not already there
-                if (!selectedBlogs.includes(blogId)) {
-                    selectedBlogs.push(blogId);
-                    $(this).closest('tr').addClass('selected-row');
-                }
+            if (selectedBlogs.includes(blogId)) {
+                $(this).prop('checked', true);
+                $(this).closest('tr').addClass('selected-row');
             } else {
-                // Remove from selection
-                selectedBlogs = selectedBlogs.filter(id => id !== blogId);
+                $(this).prop('checked', false);
                 $(this).closest('tr').removeClass('selected-row');
             }
+        });
 
-            saveSelectedBlogs(selectedBlogs);
-            updateSelectedCount();
-        }
+        updateSelectedCount();
+    }
 
-        // Function to clear all selections
-        function clearAllSelections() {
-            Swal.fire({
-                title: 'Clear All Selections?',
-                text: "This will remove all selected blogs across all pages.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, clear all!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem(SELECTED_BLOGS_STORAGE_KEY);
-                    $('.selectSiteCheckbox').prop('checked', false);
-                    $('.main-row').removeClass('selected-row');
-                    updateSelectedCount();
+    // Function to handle checkbox change
+    function handleCheckboxChange() {
+        const blogId = $(this).val();
+        const isChecked = $(this).is(':checked');
+        let selectedBlogs = getSelectedBlogs();
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cleared!',
-                        text: 'All selections have been cleared.',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                }
-            });
-        }
-
-        // Summernote state management
-        let summernoteInitialized = false;
-
-        function initializeSummernote() {
-            console.log('Initializing Summernote...');
-
-            // Remove any existing Summernote instance first
-            if ($('#summernote').summernote('instance')) {
-                $('#summernote').summernote('destroy');
+        if (isChecked) {
+            // Add to selection if not already there
+            if (!selectedBlogs.includes(blogId)) {
+                selectedBlogs.push(blogId);
+                $(this).closest('tr').addClass('selected-row');
             }
+        } else {
+            // Remove from selection
+            selectedBlogs = selectedBlogs.filter(id => id !== blogId);
+            $(this).closest('tr').removeClass('selected-row');
+        }
 
-            // Also remove any existing .note-editor divs
-            $('.note-editor').remove();
+        saveSelectedBlogs(selectedBlogs);
+        updateSelectedCount();
+    }
 
-            // Show the textarea
-            $('#summernote').show().css('display', 'block');
+    // Function to clear all selections
+    function clearAllSelections() {
+        Swal.fire({
+            title: 'Clear All Selections?',
+            text: "This will remove all selected blogs across all pages.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, clear all!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem(SELECTED_BLOGS_STORAGE_KEY);
+                $('.selectSiteCheckbox').prop('checked', false);
+                $('.main-row').removeClass('selected-row');
+                updateSelectedCount();
 
-            // Initialize Summernote
-            $('#summernote').summernote({
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cleared!',
+                    text: 'All selections have been cleared.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+    }
+
+    // Summernote initialization function with tooltip workaround
+    function initializeSummernote() {
+        console.log('Initializing Summernote...');
+        
+        if (summernoteInitialized) {
+            console.log('Summernote already initialized, destroying first...');
+            try {
+                $('#summernote-editor').summernote('destroy');
+            } catch (e) {
+                console.log('Error destroying previous instance:', e);
+            }
+            summernoteInitialized = false;
+        }
+        
+        // Clear the editor container
+        $('#summernote-editor').empty();
+        
+        // Create a workaround for jQuery tooltip to prevent errors
+        if (typeof $.fn.tooltip === 'undefined') {
+            $.fn.tooltip = function() {
+                // Return the jQuery object to allow chaining
+                return this;
+            };
+            console.log('Created dummy tooltip function');
+        }
+        
+        // Initialize Summernote with minimal configuration
+        try {
+            $('#summernote-editor').summernote({
                 placeholder: 'Write your message...',
                 height: 200,
-                focus: true,
-                dialogsInBody: true, // Important for modals
+                focus: false,
+                dialogsInBody: true,
+                disableResizeEditor: true,
                 toolbar: [
-                    ['style', ['bold', 'italic', 'underline']],
-                    ['font', ['fontname', 'fontsize']],
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
                     ['color', ['color']],
                     ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture', 'video']]
+                    ['height', ['height']],
+                    ['insert', ['link', 'picture']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
                 ],
                 callbacks: {
                     onInit: function() {
                         console.log('Summernote initialized successfully');
                         summernoteInitialized = true;
-
-                        // Fix for Bootstrap 5 compatibility
-                        $('.note-editor .dropdown-toggle').attr('data-bs-toggle', 'dropdown');
-                        $('.note-editor .dropdown-toggle').removeAttr('data-toggle');
+                        
+                        // Remove all title attributes that might trigger tooltips
+                        setTimeout(() => {
+                            $('.note-btn, .note-btn-group').removeAttr('title');
+                            $('.note-btn').off('mouseenter mouseleave');
+                        }, 500);
+                    },
+                    onChange: function(contents) {
+                        // Update the hidden textarea with the content
+                        $('#summernote').val(contents);
                     },
                     onBlur: function() {
                         // Update the hidden textarea value
-                        $('#summernote').val($('#summernote').summernote('code'));
+                        $('#summernote').val($('#summernote-editor').summernote('code'));
                     }
                 }
             });
-        }
-
-        function destroySummernote() {
-            console.log('Destroying Summernote...');
-            if ($('#summernote').summernote('instance')) {
-                $('#summernote').summernote('destroy');
-            }
-            summernoteInitialized = false;
-            // Make sure textarea is visible after destroying
-            $('#summernote').show().css('display', 'block');
-        }
-
-        // Modal functions
-        function openModal() {
-            console.log('Opening modal...');
-
-            // Show the modal
-            const modal = document.getElementById('sendMailModal');
-            modal.classList.remove('hidden');
-
-            // Reset form
-            $('#sendMailForm')[0].reset();
-            selectedFiles = [];
-            $('#fileList').empty();
-            $('#clearAttachmentsBtn').addClass('hidden');
-
-            // Initialize Summernote after a brief delay to ensure DOM is ready
+            
+            // Force remove any tooltip data attributes
             setTimeout(() => {
-                initializeSummernote();
-            }, 100);
+                $('[data-toggle="tooltip"]').removeAttr('data-toggle');
+                $('[data-original-title]').removeAttr('data-original-title');
+                $('[aria-describedby]').removeAttr('aria-describedby');
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Summernote initialization error:', error);
+            // Try a simpler initialization if the first fails
+            try {
+                $('#summernote-editor').summernote({
+                    placeholder: 'Write your message...',
+                    height: 200,
+                    toolbar: []
+                });
+                summernoteInitialized = true;
+            } catch (simpleError) {
+                console.error('Simple Summernote initialization also failed:', simpleError);
+            }
         }
+    }
 
-        function closeModal() {
-            console.log('Closing modal...');
+    // Clean up Summernote
+    function destroySummernote() {
+        console.log('Destroying Summernote...');
+        
+        if (summernoteInitialized) {
+            try {
+                // Store the original tooltip function if it exists
+                const originalTooltip = $.fn.tooltip;
+                
+                // Temporarily override tooltip to prevent errors during destruction
+                $.fn.tooltip = function() { return this; };
+                
+                $('#summernote-editor').summernote('destroy');
+                
+                // Restore original tooltip if it was a function
+                if (typeof originalTooltip === 'function') {
+                    $.fn.tooltip = originalTooltip;
+                }
+            } catch (e) {
+                console.log('Error destroying Summernote:', e);
+            }
+        }
+        
+        // Clean up DOM elements
+        $('.note-editor, .note-modal, .note-popover, .note-tooltip').remove();
+        $('#summernote-editor').empty().show();
+        $('#summernote').val('');
+        
+        summernoteInitialized = false;
+    }
 
-            // Hide the modal
-            const modal = document.getElementById('sendMailModal');
+    // Modal functions
+    function openModal() {
+        console.log('Opening modal...');
+        isModalOpen = true;
+
+        // Show the modal
+        const modal = document.getElementById('sendMailModal');
+        modal.classList.remove('hidden');
+        
+        // Trigger animation
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+
+        // Reset form
+        $('#sendMailForm')[0].reset();
+        selectedFiles = [];
+        $('#fileList').empty();
+        $('#clearAttachmentsBtn').addClass('hidden');
+        $('#summernote').val('');
+        
+        // Initialize Summernote after a short delay to ensure modal is visible
+        setTimeout(() => {
+            if (isModalOpen && !summernoteInitialized) {
+                initializeSummernote();
+            }
+        }, 500);
+    }
+
+    function closeModal() {
+        console.log('Closing modal...');
+        isModalOpen = false;
+
+        // Hide the modal with animation
+        const modal = document.getElementById('sendMailModal');
+        modal.classList.remove('active');
+        
+        // Wait for animation to complete before hiding
+        setTimeout(() => {
             modal.classList.add('hidden');
-
+            
             // Destroy Summernote
             destroySummernote();
+        }, 300);
+    }
+
+    // File attachment handling
+    let selectedFiles = [];
+
+    function updateFileInput() {
+        const input = document.getElementById("attachments");
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+        input.files = dataTransfer.files;
+    }
+
+    $(document).ready(function() {
+        console.log('Document ready...');
+        
+        // Store original tooltip function if it exists
+        if (typeof $.fn.tooltip === 'function') {
+            window.originalTooltip = $.fn.tooltip;
         }
 
-        // File attachment handling
-        let selectedFiles = [];
+        // Restore checkbox states when page loads
+        restoreCheckboxStates();
 
-        function updateFileInput() {
-            const input = document.getElementById("attachments");
-            const dataTransfer = new DataTransfer();
-            selectedFiles.forEach(file => {
-                dataTransfer.items.add(file);
-            });
-            input.files = dataTransfer.files;
-        }
+        // Handle checkbox changes
+        $(document).on('change', '.selectSiteCheckbox', handleCheckboxChange);
 
-        $(document).ready(function() {
-            console.log('Document ready...');
+        // Clear all selections button
+        $('#clearSelectionBtn').click(clearAllSelections);
 
-            // Initial debug check
-            console.log('Summernote instances on load:', $('.note-editor').length);
-            console.log('Textarea visible on load?', $('#summernote').is(':visible'));
+        // Open modal button
+        $('#openMailModalBtn').click(function(event) {
+            event.preventDefault();
+            console.log('Open modal button clicked');
 
-            // Restore checkbox states when page loads
-            restoreCheckboxStates();
+            const availableMail = $(this).data('available-mail');
+            const total_mail = $(this).data('total-mail');
+            const selectedBlogs = getSelectedBlogs();
 
-            // Handle checkbox changes
-            $('.selectSiteCheckbox').on('change', handleCheckboxChange);
-
-            // Clear all selections button
-            $('#clearSelectionBtn').click(clearAllSelections);
-
-            // Open modal button
-            $('#openMailModalBtn').click(function(event) {
-                event.preventDefault();
-                console.log('Open modal button clicked');
-
-                const availableMail = $(this).data('available-mail');
-                const total_mail = $(this).data('total-mail');
-                const selectedBlogs = getSelectedBlogs();
-
-                // Validation checks
-                if (selectedBlogs.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Please select at least one site!',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 2500
-                    });
-                    return;
-                }
-
-                if (availableMail <= 0 && availableMail <= total_mail) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No Mail Available!',
-                        text: 'Please purchase a package to send emails',
-                        confirmButtonText: 'Buy Now',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "#";
-                        }
-                    });
-                    return;
-                }
-
-                if (availableMail > total_mail) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Mail Available Issue!',
-                        text: 'Please check available mail and total mail',
-                        confirmButtonText: 'Buy Now',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "#";
-                        }
-                    });
-                    return;
-                }
-
-                if (selectedBlogs.length > availableMail && availableMail <= total_mail) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Mail Limit Exceeded!',
-                        text: `You can only send ${availableMail} mails. You selected ${selectedBlogs.length}.`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    return;
-                }
-
-                // Set selected IDs in hidden field and open modal
-                $('#selectedIdsInput').val(JSON.stringify(selectedBlogs));
-                openModal();
-            });
-
-            // Close modal button
-            $('#closeModalBtn').click(closeModal);
-
-            // Close modal when clicking outside
-            document.getElementById('sendMailModal').addEventListener('click', function(e) {
-                if (e.target.id === 'sendMailModal') {
-                    closeModal();
-                }
-            });
-
-            // Individual row Send Mail button
-            $('.rowMailBtn').click(function(event) {
-                let availableMail = $(this).data('available-mail');
-                let total_mail = $(this).data('total-mail');
-                let url = $(this).data('url');
-
-                if (availableMail > total_mail) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Mail Available Issue!',
-                        text: 'Please check available mail and total mail',
-                        confirmButtonText: 'Buy Now',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "#";
-                        }
-                    });
-                    return;
-                }
-
-                if (availableMail <= 0 && availableMail <= total_mail) {
-                    event.preventDefault();
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No Mail Available!',
-                        text: 'Please purchase a package to send emails.',
-                        confirmButtonText: 'Buy Now',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "#";
-                        }
-                    });
-                } else {
-                    window.location.href = url;
-                }
-            });
-
-            // File attachment handling
-            $('#attachments').on('change', function() {
-                let files = Array.from(this.files);
-
-                files.forEach(file => {
-                    const fileExists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
-                    if (!fileExists) {
-                        selectedFiles.push(file);
-
-                        // Add to file list display
-                        $('#fileList').append(`
-                        <div class="file-item" data-file-name="${file.name}">
-                            <span class="text-sm text-gray-700">${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>
-                            <button type="button" 
-                                    class="remove-file-btn"
-                                    data-file-name="${file.name}">
-                                &times;
-                            </button>
-                        </div>
-                    `);
-                    }
+            // Validation checks
+            if (selectedBlogs.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Please select at least one site!',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500
                 });
-
-                updateFileInput();
-                $('#clearAttachmentsBtn').toggleClass('hidden', selectedFiles.length === 0);
-            });
-
-            // Remove individual file
-            $(document).on('click', '.remove-file-btn', function() {
-                const fileName = $(this).data('file-name');
-                selectedFiles = selectedFiles.filter(file => file.name !== fileName);
-                $(`[data-file-name="${fileName}"]`).remove();
-                updateFileInput();
-                $('#clearAttachmentsBtn').toggleClass('hidden', selectedFiles.length === 0);
-            });
-
-            // Clear all files
-            $('#clearAttachmentsBtn').click(function() {
-                selectedFiles = [];
-                $('#fileList').empty();
-                updateFileInput();
-                $(this).addClass('hidden');
-            });
-
-            // Toggle expandable row on main row click
-            $('.main-row').click(function() {
-                var targetId = $(this).data('target');
-                var $targetRow = $(targetId);
-                $('.expandable-row').not($targetRow).slideUp();
-                $targetRow.slideToggle();
-            });
-
-            // Search functionality
-            function filterBlogs() {
-                let value = $("#searchInput").val().toLowerCase();
-                let matched = 0;
-
-                $("table tbody tr.main-row").each(function() {
-                    let rowText = $(this).text().toLowerCase();
-                    let targetRow = $($(this).data("target"));
-
-                    if (rowText.indexOf(value) > -1) {
-                        $(this).show();
-                        targetRow.hide();
-                        matched++;
-                    } else {
-                        $(this).hide();
-                        targetRow.hide();
-                    }
-                });
-
-                if (matched === 0) {
-                    $("#noResultsRow").show();
-                } else {
-                    $("#noResultsRow").hide();
-                }
+                return;
             }
 
-            $("#searchBtn").click(function() {
-                filterBlogs();
-            });
+            if (availableMail <= 0 && availableMail <= total_mail) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Mail Available!',
+                    text: 'Please purchase a package to send emails',
+                    confirmButtonText: 'Buy Now',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "#";
+                    }
+                });
+                return;
+            }
 
-            $("#searchInput").on("keyup", function() {
-                filterBlogs();
-            });
+            if (availableMail > total_mail) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Mail Available Issue!',
+                    text: 'Please check available mail and total mail',
+                    confirmButtonText: 'Buy Now',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "#";
+                    }
+                });
+                return;
+            }
 
-            // Form validation
-            $('#sendMailForm').on('submit', function(e) {
-                let isValid = true;
-                const form = $(this);
+            if (selectedBlogs.length > availableMail && availableMail <= total_mail) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Mail Limit Exceeded!',
+                    text: `You can only send ${availableMail} mails. You selected ${selectedBlogs.length}.`,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
 
-                // Reset previous validation
-                form.find('.text-red-600').addClass('hidden');
-                form.find('input, textarea').removeClass('border-red-500').addClass('border-gray-300');
-
-                // Check subject
-                const subject = form.find('input[name="subject"]').val().trim();
-                if (!subject) {
-                    form.find('input[name="subject"]').next('.text-red-600').removeClass('hidden');
-                    form.find('input[name="subject"]').removeClass('border-gray-300').addClass('border-red-500');
-                    isValid = false;
-                }
-
-                // Check message - get content from Summernote
-                let message = '';
-                if ($('#summernote').summernote('instance')) {
-                    message = $('#summernote').summernote('code').replace(/<[^>]*>/g, '').trim();
-                } else {
-                    message = $('#summernote').val().trim();
-                }
-
-                if (!message) {
-                    form.find('textarea[name="message"]').next('.text-red-600').removeClass('hidden');
-                    isValid = false;
-                }
-
-                if (!isValid) {
-                    e.preventDefault();
-                    return false;
-                }
-
-                // Clear selections only if form is valid and will be submitted
-                setTimeout(() => {
-                    localStorage.removeItem(SELECTED_BLOGS_STORAGE_KEY);
-                }, 1000);
-            });
-
-            // Debug function to check Summernote state
-            window.debugSummernote = function() {
-                console.log('Summernote debug:');
-                console.log('Instance exists:', $('#summernote').summernote('instance'));
-                console.log('Textarea visible:', $('#summernote').is(':visible'));
-                console.log('Textarea value:', $('#summernote').val());
-                console.log('Summernote HTML:', $('#summernote').summernote('code'));
-                console.log('Note editor elements:', $('.note-editor').length);
-            };
+            // Set selected IDs in hidden field and open modal
+            $('#selectedIdsInput').val(JSON.stringify(selectedBlogs));
+            openModal();
         });
-    </script>
+
+        // Individual row Send Mail button
+        $('.rowMailBtn').click(function(event) {
+            let availableMail = $(this).data('available-mail');
+            let total_mail = $(this).data('total-mail');
+            let url = $(this).data('url');
+
+            if (availableMail > total_mail) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Mail Available Issue!',
+                    text: 'Please check available mail and total mail',
+                    confirmButtonText: 'Buy Now',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "#";
+                    }
+                });
+                return;
+            }
+
+            if (availableMail <= 0 && availableMail <= total_mail) {
+                event.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Mail Available!',
+                    text: 'Please purchase a package to send emails.',
+                    confirmButtonText: 'Buy Now',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "#";
+                    }
+                });
+            } else {
+                window.location.href = url;
+            }
+        });
+
+        // File attachment handling
+        $('#attachments').on('change', function() {
+            let files = Array.from(this.files);
+
+            files.forEach(file => {
+                const fileExists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+                if (!fileExists) {
+                    selectedFiles.push(file);
+
+                    // Add to file list display
+                    $('#fileList').append(`
+                    <div class="file-item" data-file-name="${file.name}">
+                        <span class="text-sm text-gray-700">${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>
+                        <button type="button" 
+                                class="remove-file-btn"
+                                data-file-name="${file.name}">
+                            &times;
+                        </button>
+                    </div>
+                `);
+                }
+            });
+
+            updateFileInput();
+            $('#clearAttachmentsBtn').toggleClass('hidden', selectedFiles.length === 0);
+        });
+
+        // Remove individual file
+        $(document).on('click', '.remove-file-btn', function() {
+            const fileName = $(this).data('file-name');
+            selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+            $(`[data-file-name="${fileName}"]`).remove();
+            updateFileInput();
+            $('#clearAttachmentsBtn').toggleClass('hidden', selectedFiles.length === 0);
+        });
+
+        // Clear all files
+        $('#clearAttachmentsBtn').click(function() {
+            selectedFiles = [];
+            $('#fileList').empty();
+            updateFileInput();
+            $(this).addClass('hidden');
+        });
+
+        // Toggle expandable row on main row click
+        $('.main-row').click(function() {
+            var targetId = $(this).data('target');
+            var $targetRow = $(targetId);
+            $('.expandable-row').not($targetRow).slideUp();
+            $targetRow.slideToggle();
+        });
+
+        // Search functionality
+        function filterBlogs() {
+            let value = $("#searchInput").val().toLowerCase();
+            let matched = 0;
+
+            $("table tbody tr.main-row").each(function() {
+                let rowText = $(this).text().toLowerCase();
+                let targetRow = $($(this).data("target"));
+
+                if (rowText.indexOf(value) > -1) {
+                    $(this).show();
+                    targetRow.hide();
+                    matched++;
+                } else {
+                    $(this).hide();
+                    targetRow.hide();
+                }
+            });
+
+            if (matched === 0) {
+                $("#noResultsRow").show();
+            } else {
+                $("#noResultsRow").hide();
+            }
+        }
+
+        $("#searchBtn").click(function() {
+            filterBlogs();
+        });
+
+        $("#searchInput").on("keyup", function() {
+            filterBlogs();
+        });
+
+        // Form validation
+        $('#sendMailForm').on('submit', function(e) {
+            let isValid = true;
+            const form = $(this);
+
+            // Reset previous validation
+            form.find('.text-red-600').addClass('hidden');
+            form.find('input, textarea').removeClass('border-red-500').addClass('border-gray-300');
+
+            // Check subject
+            const subject = form.find('input[name="subject"]').val().trim();
+            if (!subject) {
+                form.find('input[name="subject"]').next('.text-red-600').removeClass('hidden');
+                form.find('input[name="subject"]').removeClass('border-gray-300').addClass('border-red-500');
+                isValid = false;
+            }
+
+            // Check message - get content from Summernote
+            let message = $('#summernote').val().trim();
+            if (!message || message === '<p><br></p>' || message === '<p></p>') {
+                form.find('textarea[name="message"]').next('.text-red-600').removeClass('hidden');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please fill in all required fields correctly.',
+                    confirmButtonText: 'OK'
+                });
+                return false;
+            }
+
+            // Clear selections only if form is valid and will be submitted
+            setTimeout(() => {
+                localStorage.removeItem(SELECTED_BLOGS_STORAGE_KEY);
+            }, 1000);
+        });
+
+        // Close modal with Escape key
+        $(document).keyup(function(e) {
+            if (e.key === "Escape" && isModalOpen) {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside
+        $(document).on('click', '#sendMailModal .fixed.inset-0', function(e) {
+            if (e.target === this && isModalOpen) {
+                closeModal();
+            }
+        });
+    });
+</script>
 
 </x-app-layout>

@@ -28,8 +28,6 @@ class Promotion extends Page implements HasForms
     protected static ?string $title = 'Promotion';
     // protected static ?int $navigationSort = 98;
     protected  static ?string $slug = 'mail'; 
-    protected static ?int $navigationSort = 98;
-
 
     public ?string $send_to = null;
     public ?string $email = null;
@@ -38,6 +36,10 @@ class Promotion extends Page implements HasForms
     public static function getNavigationGroup(): ?string
     {
         return 'Promotion';
+    }
+    public static function getNavigationSort(): int
+    {
+        return 8;  // Position of the group in the sidebar
     }
 
     protected function getFormSchema(): array

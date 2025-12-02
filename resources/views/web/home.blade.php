@@ -40,7 +40,10 @@
                 </form>
                 @endauth
                 @guest
-                <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="btn-secondary">Start Trial</a>
+                <form method="POST" action="{{ route('start.trial') }}" class="w-full">
+                    @csrf
+                    <button type="submit" class="btn-secondary w-full">Start Trial</button>
+                </form>
                 @endguest
             </div>
 

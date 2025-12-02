@@ -30,6 +30,10 @@
 
 <section class="flex justify-center items-center min-h-screen w-full h-auto px-6 py-12">
     <div class="max-w-7xl w-full">
+        @php
+            $trialMode = session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] === '14') || session('trial_plan') === 14;
+            $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
+        @endphp
         @php 
             $trialMode = session()->has('trial_mode');
             $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
@@ -131,19 +135,19 @@
 
                 <div class="space-y-6">
                     <!-- Order Review -->
-                    @unless($trialMode)
                     <div class="bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 ">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold">Order Review</h2>
                             <!-- <i class="fas fa-chevron-up text-gray-600"></i> -->
+                            @unless($trialMode)
                             <div id="modal-package-toggle" class="btn-primary text-[15px] px-3 py-1">Change</div>
+                            @endunless
                         </div>
 
                         <div id="selected-package-wrapper" class="space-y-6">
 
                         </div>
                     </div>
-                    @endunless
 
 
                     <!-- Discount Codes -->
@@ -167,7 +171,6 @@
                     </div>
                     @endunless
 
-                    @unless($trialMode)
                     <div class=" w-full bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 border">
                         <!-- Header -->
                         <div class="flex items-center justify-between">
@@ -210,34 +213,29 @@
                         </label>
 
                         <!-- Button -->
-                        <!-- PayPal Button Container -->
-                        <div id="paypal-button-container" class="mt-6">
-                            <p class="text-gray-500 text-sm mb-4">Please select a package to proceed with payment</p>
-                        </div>
-
-                        <!-- Hidden submit button (kept for form validation if needed) -->
-                        <button id="pay-btn" type="submit" class="hidden w-full mt-6 bg-blue-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-700 transition-all">
-                            Pay
-                        </button>
-                    </div>
-                    @endunless
-
-                    @if($trialMode)
-                    <div class=" w-full bg-white shadow-[0px_3px_32px_#dbd5d5] rounded-lg p-6 border">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-lg font-semibold">Trial Checkout</h2>
-                        </div>
-                        <p class="text-gray-600 mt-4">No payment required for the trial.</p>
-
-                        @if($trialUsed)
-                            <div class="mt-4 p-3 rounded-md bg-red-50 text-red-700 border border-red-200">
-                                You have already used your trial. No further trial activations are available.
-                            </div>
+                        @if($trialMode)
+                            @if($trialUsed)
+                                <div class="mt-6 p-3 rounded-md bg-red-50 text-red-700 border border-red-200">
+                                    You have already used your trial. No further trial activations are available.
+                                </div>
+                            @else
+                                <button type="button" id="trial-complete-btn" class="w-full mt-6 bg-green-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-green-700 transition-all">
+                                    Complete Purchase
+                                </button>
+                            @endif
                         @else
-                            <button type="submit" form="trial-complete-form" class="btn-primary w-full block text-center mt-6">Complete Purchase</button>
+                            <!-- PayPal Button Container -->
+                            <div id="paypal-button-container" class="mt-6">
+                                <p class="text-gray-500 text-sm mb-4">Please select a package to proceed with payment</p>
+                            </div>
+
+                            <!-- Hidden submit button (kept for form validation if needed) -->
+                            <button id="pay-btn" type="submit" class="hidden w-full mt-6 bg-blue-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-700 transition-all">
+                                Pay
+                            </button>
                         @endif
                     </div>
-                    @endif
+
 
                 </div>
 
@@ -246,11 +244,6 @@
             </div>
         </form>
     </div>
-    <!-- Hidden detached form for trial completion (to avoid nested forms) -->
-    <form id="trial-complete-form" method="POST" action="{{ route('trial.complete') }}" class="hidden">
-        @csrf
-    </form>
-
 </section>
 
 
@@ -1155,6 +1148,118 @@
                 price: parseFloat(planData.price)
             };
             replacePackage(autoSelectedPackage);
+        }
+
+        // Handle trial complete button for plan 14
+        const trialCompleteBtn = document.getElementById('trial-complete-btn');
+        if (trialCompleteBtn) {
+            trialCompleteBtn.addEventListener('click', async function() {
+                let isValid = true;
+
+                // Validate all inputs
+                inputs.forEach(input => {
+                    if (!validateField(input)) isValid = false;
+                });
+
+                // Terms checkbox
+                const termsCheckbox = document.querySelector('input[type="checkbox"][required]');
+                const termsLabel = termsCheckbox?.closest('label');
+
+                if (termsCheckbox && !termsCheckbox.checked) {
+                    isValid = false;
+                    if (termsLabel) {
+                        termsLabel.style.color = '#ef4444';
+                        termsLabel.style.fontWeight = '600';
+                    }
+                } else {
+                    if (termsLabel) {
+                        termsLabel.style.color = '';
+                        termsLabel.style.fontWeight = '';
+                    }
+                }
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Please Complete the Form',
+                        html: `
+                            <ul class="text-left text-sm">
+                                ${!termsCheckbox?.checked ? '<li>Accept Privacy & Terms Policy</li>' : ''}
+                                ${[...inputs].some(i => i.closest('.floating-label-group')?.classList.contains('error')) ? '<li>Fix highlighted fields</li>' : ''}
+                            </ul>
+                        `,
+                        confirmButtonColor: '#ef4444'
+                    });
+                    return;
+                }
+
+                // Show processing message
+                Swal.fire({
+                    title: 'Activating Trial...',
+                    text: 'Please wait while we activate your trial.',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                try {
+                    // Create trial order and activate trial
+                    const response = await fetch('/checkout/free-complete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            plan_id: '14',
+                            billing_info: getBillingInfo()
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to activate trial');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Redirect to success page
+                        window.location.href = '/checkout/success?trial=1';
+                    } else {
+                        throw new Error(data.message || 'Failed to activate trial');
+                    }
+
+                } catch (error) {
+                    console.error('Trial activation error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Trial Activation Failed',
+                        text: error.message || 'There was an error activating your trial. Please try again.',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            });
+        }
+
+        // Auto-select plan 14 for trial mode
+        if (@json($trialMode ?? false)) {
+            // Find plan with id 14 from allPlans
+            const allPlans = @json($allPlans ?? []);
+            const trialPlan = allPlans.find(plan => plan.id === 14);
+
+            if (trialPlan) {
+                console.log('Auto-selecting trial plan:', trialPlan.name);
+                replacePackage({
+                    id: trialPlan.id.toString(),
+                    name: trialPlan.name,
+                    price: parseFloat(trialPlan.price)
+                });
+                console.log('Trial plan selected successfully');
+            } else {
+                console.error('Trial plan (id: 14) not found');
+            }
         }
 
         // Load countries on page load

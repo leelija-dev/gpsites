@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
@@ -35,6 +37,9 @@ class CheckoutController extends Controller
      */
     public function show(Request $request, $plan = null): View
     {
+        // Check if this is trial mode from session, POST data, or session trial_plan
+        $trialMode = session()->has('trial_mode') || $request->input('plan') === '14' || session('trial_plan') === 14;
+
         // If plan is not provided in URL, check query parameter for backward compatibility
         if (!$plan) {
             $plan = $request->query('plan');
@@ -54,14 +59,19 @@ class CheckoutController extends Controller
             }
         }
 
-        if (!$plan) {
+        // For trial mode, we don't require a specific plan initially
+        if (!$plan && !$trialMode) {
             abort(404, 'Plan not specified');
         }
 
-        $planModel = Plan::with('features')->findOrFail($plan);
-
-        // Get all active plans for the modal
+        // Get all active plans for the modal (always needed)
         $allPlans = Plan::with('features')->where('is_active', true)->orderBy('price', 'asc')->get();
+
+        // For trial mode, we don't need a specific planModel initially
+        $planModel = null;
+        if ($plan) {
+            $planModel = Plan::with('features')->findOrFail($plan);
+        }
 
         return view('web.checkout', compact('planModel', 'allPlans'));
     }
@@ -126,7 +136,7 @@ class CheckoutController extends Controller
                 'status' => $response->result->status
             ]);
         } catch (\Exception $e) {
-            \Log::error('PayPal order creation failed: ' . $e->getMessage());
+            Log::error('PayPal order creation failed: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create order: ' . $e->getMessage()
@@ -134,6 +144,64 @@ class CheckoutController extends Controller
         }
     }
 
+    public function completeTrial(Request $request): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+            }
+
+            // Check if user already has trial
+            if ($user->is_trial) {
+                return response()->json(['success' => false, 'message' => 'You have already used your trial'], 400);
+            }
+
+            // Get plan details (plan ID 14)
+            $plan = Plan::find(14);
+            if (!$plan) {
+                return response()->json(['success' => false, 'message' => 'Trial plan not found'], 404);
+            }
+
+            // Create trial order record
+            $order = PlanOrder::create([
+                'user_id' => $user->id,
+                'plan_id' => $plan->id,
+                'amount' => 0, // Free trial
+                'currency' => $plan->currency,
+                'status' => 'completed',
+                'payment_status' => 'trial',
+                'paid_at' => now(),
+                'transaction_id' => 'TRIAL-' . uniqid(),
+                'billing_info' => $request->billing_info ?: [],
+                'payment_details' => json_encode(['type' => 'trial', 'activated_at' => now()])
+            ]);
+
+            // Create mail credits for trial
+            MailAvailable::create([
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'total_mail' => $plan->mail_available,
+                'available_mail' => $plan->mail_available,
+                'created_at' => now(),
+            ]);
+
+            // Activate trial
+            $user->is_trial = 1;
+            $user->valid_trial_date = Carbon::today()->addDays(7);
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'Trial activated successfully']);
+
+        } catch (\Exception $e) {
+            Log::error('Trial activation failed: ' . $e->getMessage(), [
+                'exception' => $e,
+                'user_id' => Auth::id(),
+                'request_data' => $request->all()
+            ]);
+            return response()->json(['success' => false, 'message' => 'Failed to activate trial'], 500);
+        }
+    }
 
     // public function capturePayment(Request $request): JsonResponse
     // {
@@ -221,7 +289,7 @@ class CheckoutController extends Controller
             $order = PlanOrder::with('plan')->where('paypal_order_id', $request->order_id)->first();
 
             if (!$order) {
-                \Log::warning('Order not found for PayPal order ID', [
+                Log::warning('Order not found for PayPal order ID', [
                     'paypal_order_id' => $request->order_id,
                     'user_id' => Auth::id()
                 ]);
@@ -312,7 +380,7 @@ class CheckoutController extends Controller
                     ]);
                 }
             } catch (\Exception $e) {
-                \Log::error('PayPal capture failed: ' . $e->getMessage(), [
+                Log::error('PayPal capture failed: ' . $e->getMessage(), [
                     'exception' => $e,
                     'order_id' => $request->order_id
                 ]);
@@ -334,7 +402,7 @@ class CheckoutController extends Controller
                 'message' => 'Payment processing failed. Please try again.'
             ], 500);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation failed for payment capture', [
+            Log::error('Validation failed for payment capture', [
                 'errors' => $e->errors(),
                 'request_data' => $request->all()
             ]);
@@ -343,7 +411,7 @@ class CheckoutController extends Controller
                 'message' => 'Invalid request data.'
             ], 422);
         } catch (\Exception $e) {
-            \Log::error('Payment processing failed: ' . $e->getMessage(), [
+            Log::error('Payment processing failed: ' . $e->getMessage(), [
                 'exception' => $e,
                 'request_data' => $request->all()
             ]);
