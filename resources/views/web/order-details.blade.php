@@ -26,12 +26,13 @@
                         <thead class="bg-[#f0f0f0] text-[#575757]">
                             <tr>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">SL No</th>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan ID</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan Name</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Amount</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Payment Status</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Total Mail</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Mail Available</th>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Created At</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Order Date</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan Expiring</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan Status</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Action</th>
                             </tr>
@@ -53,7 +54,7 @@
                                             {{ $serial }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-sm text-gray-700">
-                                            {{ $order->plan_id }}
+                                            {{ $order->plan->name }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-sm font-semibold text-gray-800">
                                             ${{ number_format($order->amount, 2) }}
@@ -76,8 +77,9 @@
                                             {{ $order->mailAvailable->available_mail ?? 0 }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-sm text-gray-600">
-                                            {{ $order->created_at->format('d M Y') }}
+                                            {{ $order->created_at->format('d-m-Y, h:i A') }}
                                         </td>
+                                        <td class="px-6 py-4 text-center text-sm text-gray-600">{{$expiryDate->format('d-m-Y, h:i A')}}</td>
                                         <td class="px-6 py-4 text-center">
                                             @if($isCompleted)
                                                 @if($isActive)

@@ -25,42 +25,52 @@ class BlogController extends Controller
         $this->APIBASEURL = config('app.api_url');
     }
     public function index(Request $request)
-    {   
-        $APPURL  = $this->APIBASEURL .'/api/blogs';
+    {
+        $APPURL  = $this->APIBASEURL . '/api/blogs';
 
         // $response = Http::get(env('API_BASE_URL') . '/api/blogs');
-        $response = Http::get($APPURL , [
+        $response = Http::get($APPURL, [
             'page' => $request->get('page', 1) // pass current page to API
         ]);
 
 
-        $mail_available = MailAvailable::where('user_id', Auth::user()->id)->get(); //->latest()->first(); // or ->orderBy('id','desc')
+        $user = Auth::user();
+        $mail_available = MailAvailable::where('user_id', $user->id)->get();
 
         $isValidPlan = false;
         $total_mail_available = 0;
         $total_mail = 0;
+
+        // Check for valid paid plans only (trial users should NOT have access to blog content)
         if ($mail_available && $mail_available->count() > 0) {
-            foreach ($mail_available as $mail_available) {
-
-                $plan_order_id = $mail_available->order_id;
-
+            foreach ($mail_available as $mail_available_record) {
+                $plan_order_id = $mail_available_record->order_id;
                 $plan_order = PlanOrder::where('id', $plan_order_id)->latest()->first();
 
-                $plan_id = Plan::where('id', $plan_order->plan_id)->first();
-                // $plan_expire=$plan_id->duration >=$plan_order->created_at;
-                $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_id->duration);
+                if ($plan_order) {
+                    $plan = Plan::where('id', $plan_order->plan_id)->first();
 
-                $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate) ? Carbon::now()->lessThanOrEqualTo($expiryDate) : false;
-                if (!$isValid) { // is expired 
+                    if ($plan) {
+                        // Exclude trial plan from valid plans
+                        if ($plan->id == config('paypal.trial_plan_id')) {
+                            continue; // Skip trial plan - trial users cannot access blog content
+                        }
 
-                    continue;
-                } else {
-                    $isValidPlan = true;
-                    $total_mail_available += $mail_available->available_mail;
-                    $total_mail += $mail_available->total_mail;
+                        $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                        $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+
+                        if ($isValid) {
+                            $isValidPlan = true;
+                            $total_mail_available += $mail_available_record->available_mail;
+                            $total_mail += $mail_available_record->total_mail;
+                        }
+                    }
                 }
             }
-        } else {
+        }
+
+        // If no valid paid plan, deny access (trial users cannot access blog content)
+        if (!$isValidPlan) {
             return view('web.blog', compact('isValidPlan'));
         }
         // $plan_expire=$plan_id->duration ?? 0;
@@ -153,7 +163,7 @@ class BlogController extends Controller
             'message' => 'required|string',
             'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,txt|max:20480|nullable',
         ]);
-        $APIURL  = $this->APIBASEURL .'/api/blogs';
+        $APIURL  = $this->APIBASEURL . '/api/blogs';
         $response = Http::get($APIURL);
 
         if ($response->failed()) {
@@ -219,6 +229,105 @@ class BlogController extends Controller
         }
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
     }
+    // public function singleMail(Request $request)
+    // {
+    //     $request->validate([
+    //         'message' => 'required|string',
+    //         'subject' => 'required|string',
+    //         'id' => 'required|string',
+    //         'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,txt|max:20480|nullable',
+    //     ]);
+
+    //     $id = (int)$request->id;
+    //     // print_r($id);
+
+
+    //     // $response = Http::get(env('API_BASE_URL') . "/api/blogs/$id");
+    //     $response = Http::get(env('API_BASE_URL') . "/api/blogs/$id");
+
+    //     if ($response->failed()) {
+    //         return 'API Request Failed: ' . $response->status();
+    //     }
+
+    //     $blog = $response->json();
+    //     // print_r($blog); die;
+
+    //     // $blog = collect($blogs['data'])->where('blog_id', (int) $id);
+
+    //     $email = $blog['updated_by'];
+    //     $subject = $request->input('subject');
+    //     $messageBody = $request->input('message');
+    //     $messageForDB = strip_tags($messageBody);
+    //     $user_id = $request->userId;
+
+
+    //     // Store attachments in public/attachment folder
+    //     $attachment = [];
+    //     $uploadPath = public_path('attachment'); // Folder path
+
+    //     // Create folder if it doesn't exist
+    //     if (!is_dir($uploadPath)) {
+    //         mkdir($uploadPath, 0755, true); // 0755 permissions, true for recursive
+    //     }
+    //     if ($request->hasFile('attachments')) {
+    //         foreach ($request->file('attachments') as $file) {
+    //             if ($file && $file->isValid()) {
+    //                 $fileName = time() . '_' . $file->getClientOriginalName();
+    //                 $file->move($uploadPath, $fileName);
+    //                 $attachment[] = 'attachment/' . $fileName; // relative path
+    //             }
+    //         }
+    //     }
+
+    //     // Check for valid paid plans only (trial users should NOT have access to blog functionality)
+    //     $authUser = Auth::user();
+    //     $hasPaidPlanCredit = false;
+    //     $mailPlans = MailAvailable::where('user_id', $authUser->id)->orderBy('id','asc')->get();
+    //     foreach ($mailPlans as $m) {
+    //         $order = PlanOrder::where('id', $m->order_id)->first();
+    //         if (!$order) continue;
+    //         $plan = Plan::where('id', $order->plan_id)->first();
+    //         if (!$plan) continue;
+
+        //         // Exclude trial plan from valid plans
+        //         if ($plan->id == config('paypal.trial_plan_id')) {
+    //             continue; // Skip trial plan - trial users cannot access blog functionality
+    //         }
+
+    //         $expiryDate = Carbon::parse($order->created_at)->addDays($plan->duration);
+    //         if (Carbon::now()->lte($expiryDate) && $m->available_mail > 0) { $hasPaidPlanCredit = true; break; }
+    //     }
+
+    //     // If no valid paid plan, deny access (trial users cannot send emails)
+    //     if (!$hasPaidPlanCredit) {
+    //         return back()->with('error', 'No valid paid plan available. Trial users cannot access blog functionality.');
+    //     }
+
+    //     // Send email
+    //     Mail::to($email)->send(new \App\Mail\MailWithAttachment(
+    //         $subject,
+    //         $messageBody,
+    //         $attachment // this is an array of strings (paths)
+    //     ));
+
+    //     // Save mail history
+    //     UserMailHistory::create([
+    //         'user_id' => $user_id,
+    //         'site_url' => $blog['site_url'],
+    //         'subject' => $subject,
+    //         'message' => $messageForDB,
+    //         'file' => !empty($attachment) ? implode(',', $attachment) : null,
+    //     ]);
+
+    //     // Decrement mail credits from paid plan
+    //     if ($hasPaidPlanCredit) {
+    //         $this->decrementMailCount();
+    //     }
+
+
+    //     return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
+    // }
+
     public function singleMail(Request $request)
     {
         $request->validate([
@@ -273,17 +382,21 @@ class BlogController extends Controller
         // Determine eligibility: prefer paid plan, else trial
         $authUser = Auth::user();
         $hasPaidPlanCredit = false;
-        $mailPlans = MailAvailable::where('user_id', $authUser->id)->orderBy('id','asc')->get();
+        $mailPlans = MailAvailable::where('user_id', $authUser->id)->orderBy('id', 'asc')->get();
         foreach ($mailPlans as $m) {
             $order = PlanOrder::where('id', $m->order_id)->first();
             if (!$order) continue;
             $plan = Plan::where('id', $order->plan_id)->first();
             if (!$plan) continue;
             $expiryDate = Carbon::parse($order->created_at)->addDays($plan->duration);
-            if (Carbon::now()->lte($expiryDate) && $m->available_mail > 0) { $hasPaidPlanCredit = true; break; }
+            if (Carbon::now()->lte($expiryDate) && $m->available_mail > 0) {
+                $hasPaidPlanCredit = true;
+                break;
+            }
         }
 
-        $usingTrial = false; $trialUser = null;
+        $usingTrial = false;
+        $trialUser = null;
         if (!$hasPaidPlanCredit) {
             $trialUser = User::find($user_id);
             $trialValid = $trialUser && (int)$trialUser->is_trial === 1 && $trialUser->valid_trial_date
@@ -310,13 +423,9 @@ class BlogController extends Controller
             'message' => $messageForDB,
             'file' => !empty($attachment) ? implode(',', $attachment) : null,
         ]);
-
+        $this->decrementMailCount();
         // Decrement correct credit source
-        if ($hasPaidPlanCredit) {
-            $this->decrementMailCount();
-        } elseif ($usingTrial && $trialUser) {
-            $trialUser->decrement('mail_available', 1);
-        }
+
 
 
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
@@ -372,18 +481,26 @@ class BlogController extends Controller
         //         ->with('error', 'Please login to see filtered blogs.');
         // }
 
+        $user = Auth::user();
+
         // Check active plan
-        $mailData = MailAvailable::where('user_id', Auth::id())->get();
+        $mailData = MailAvailable::where('user_id', $user->id)->get();
         $isValidPlan = false;
         $total_mail_available = 0;
         $total_mail = 0;
 
+        // Check for valid paid plans only (trial users should NOT have access to blog functionality)
         foreach ($mailData as $mail) {
             $order = PlanOrder::find($mail->order_id);
             if (!$order) continue;
 
             $plan = Plan::find($order->plan_id);
             if (!$plan) continue;
+
+            // Exclude trial plan from valid plans
+            if ($plan->id == config('paypal.trial_plan_id')) {
+                continue; // Skip trial plan - trial users cannot access blog content
+            }
 
             if (now()->lte($order->created_at->addDays($plan->duration))) {
                 $isValidPlan = true;

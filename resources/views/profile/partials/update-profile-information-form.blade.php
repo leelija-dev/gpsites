@@ -17,13 +17,14 @@
         @csrf
         @method('patch')
 
-        <div>
+        <div class="flex items-center gap-4">
+        <div class="flex-1">
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <div>
+        {{-- <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" readonly />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
@@ -45,12 +46,12 @@
                     @endif
                 </div>
             @endif
-        </div>
+        </div> --}}
 
-        <div class="flex items-center gap-4">
+        <div  class="pt-6">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
-            @if (session('status') === 'profile-updated')
+            {{-- @if (session('status') === 'profile-updated')
                 <p
                     x-data="{ show: true }"
                     x-show="show"
@@ -58,7 +59,24 @@
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
                 >{{ __('Saved.') }}</p>
+            @endif --}}
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (session('status') === 'profile-updated')
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Name updated successfully!',
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true,
+                        });
+                    });
+                </script>
             @endif
+        </div>
         </div>
     </form>
 </section>

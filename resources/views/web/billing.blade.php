@@ -59,14 +59,16 @@
                                     @php
                                         $expiryDate = \Carbon\Carbon::parse($bill->created_at)->addDays($bill->plan->duration);
                                         $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
+                                        $page=$_GET['page'] ?? 1;
                                     @endphp
-
+                                        
                                     <tr class="{{ $isActive ? 'bg-white hover:bg-gray-50' : 'bg-gray-100 hover:bg-gray-200' }} transition-colors">
+                                        
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
-                                            {{ $loop->iteration }}
+                                            {{ ($page - 1) * 10 + $loop->index + 1 }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
-                                            {{ $bill->id ?? '-' }}
+                                            #{{ $bill->id ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
                                             {{ $bill->mailAvailable->total_mail ?? 0 }}
@@ -86,10 +88,10 @@
                                             {{ $bill->plan->duration }} day{{ $bill->plan->duration > 1 ? 's' : '' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
-                                            {{ $bill->created_at->format('M d, Y h:i A') }}
+                                            {{ $bill->created_at->format('d-m-Y, h:i A') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
-                                            {{ $expiryDate->format('M d, Y h:i A') }}
+                                            {{ $expiryDate->format('d-m-y, h:i A') }}
                                         </td>
                                     </tr>
                                 @endforeach

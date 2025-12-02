@@ -33,7 +33,7 @@
                 <!-- Hero CTA -->
                 <button type="button" id="see-pricing" class="btn-primary whitespace-nowrap"> See Pricing </button>
                 @auth
-                <form method="POST" action="{{ route('trial.start') }}">
+                <form method="POST" action="{{ route('checkout') }}" class="w-full">
                     @csrf
                     <button type="submit" class="btn-secondary">Trial Now</button>
                 </form>
@@ -364,7 +364,7 @@
                     </div>
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
-                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30) 
+                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30)
                     : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}}
 
                             {{-- <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">--}}{{$plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
@@ -707,7 +707,7 @@
                     slider.value = slider.min || 0;
                 } else if (id.includes('-max')) {
                     slider.value = slider.max || 100;        // fallback to 100 if no max
-                } 
+                }
                 // Traffic: always full (200k+)
                 else if (id === 'tar-single') {
                     slider.value = slider.max || 200000;

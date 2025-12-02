@@ -66,17 +66,34 @@
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex justify-end items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
-            @if (session('status') === 'password-updated')
+            {{-- @if (session('status') === 'password-updated')
             <p
                 x-data="{ show: true }"
                 x-show="show"
                 x-transition
                 x-init="setTimeout(() => show = false, 2000)"
                 class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+            @endif --}}
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (session('status') === 'password-updated')
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Password updated successfully!',
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true,
+                        });
+                    });
+                </script>
             @endif
+
         </div>
 
     </form>

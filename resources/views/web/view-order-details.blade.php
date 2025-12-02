@@ -84,7 +84,7 @@
                                 <div class="flex justify-between">
                                     <span class="text-gray-500 font-medium">Payment Date</span>
                                     <span class="font-medium">
-                                        {{ $order->paid_at ? $order->paid_at->format('M d, Y h:i A') : '—' }}
+                                        {{ $order->paid_at ? $order->paid_at->format('d-m-Y, h:i A') : '' }}
                                     </span>
                                 </div>
 
@@ -92,7 +92,7 @@
                                     <span class="text-gray-500 font-medium">Expire Date</span>
                                     <span class="font-medium {{ $isActive ? 'text-green-600' : 'text-red-600' }}">
                                         @if($order->status === 'completed')
-                                            {{ $expiryDate->format('M d, Y h:i A') }}
+                                            {{ $expiryDate->format('d-m-Y, h:i A') }}
                                         @else
                                             —
                                         @endif

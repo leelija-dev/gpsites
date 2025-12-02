@@ -31,12 +31,8 @@
 <section class="flex justify-center items-center min-h-screen w-full h-auto px-6 py-12">
     <div class="max-w-7xl w-full">
         @php
-            $trialMode = session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] === '14') || session('trial_plan') === 14;
-            $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
-        @endphp
-        @php 
-            $trialMode = session()->has('trial_mode');
-            $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
+        $trialMode = session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] == config('paypal.trial_plan_id')) || session('trial_plan') == config('paypal.trial_plan_id');
+        $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
         @endphp
 
         <form class="flex gap-10 lg:flex-row flex-col " novalidate>
@@ -214,25 +210,25 @@
 
                         <!-- Button -->
                         @if($trialMode)
-                            @if($trialUsed)
-                                <div class="mt-6 p-3 rounded-md bg-red-50 text-red-700 border border-red-200">
-                                    You have already used your trial. No further trial activations are available.
-                                </div>
-                            @else
-                                <button type="button" id="trial-complete-btn" class="w-full mt-6 bg-green-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-green-700 transition-all">
-                                    Complete Purchase
-                                </button>
-                            @endif
+                        @if($trialUsed)
+                        <div class="mt-6 p-3 rounded-md bg-red-50 text-red-700 border border-red-200">
+                            You have already used your trial. No further trial activations are available.
+                        </div>
                         @else
-                            <!-- PayPal Button Container -->
-                            <div id="paypal-button-container" class="mt-6">
-                                <p class="text-gray-500 text-sm mb-4">Please select a package to proceed with payment</p>
-                            </div>
+                        <button type="button" id="trial-complete-btn" class="w-full mt-6 bg-green-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-green-700 transition-all">
+                            Complete Purchase
+                        </button>
+                        @endif
+                        @else
+                        <!-- PayPal Button Container -->
+                        <div id="paypal-button-container" class="mt-6">
+                            <p class="text-gray-500 text-sm mb-4">Please select a package to proceed with payment</p>
+                        </div>
 
-                            <!-- Hidden submit button (kept for form validation if needed) -->
-                            <button id="pay-btn" type="submit" class="hidden w-full mt-6 bg-blue-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-700 transition-all">
-                                Pay
-                            </button>
+                        <!-- Hidden submit button (kept for form validation if needed) -->
+                        <button id="pay-btn" type="submit" class="hidden w-full mt-6 bg-blue-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-700 transition-all">
+                            Pay
+                        </button>
                         @endif
                     </div>
 
@@ -431,7 +427,7 @@
         // Pass plan data from PHP to JavaScript
         // const planData = @json($plan ?? null);
         const planData = @json($planModel ?? null);
-        const trialMode = @json(session()->has('trial_mode'));
+        const trialMode = @json($trialMode ?? false);
 
         const form = document.querySelector('form');
         const inputs = document.querySelectorAll('.floating-label-group input, .floating-label-group select');
@@ -486,22 +482,66 @@
                 console.error('Error loading countries:', error);
 
                 // Fallback: Add some common countries if API fails
-                const fallbackCountries = [
-                    { code: 'US', name: 'United States' },
-                    { code: 'CA', name: 'Canada' },
-                    { code: 'GB', name: 'United Kingdom' },
-                    { code: 'AU', name: 'Australia' },
-                    { code: 'DE', name: 'Germany' },
-                    { code: 'FR', name: 'France' },
-                    { code: 'IT', name: 'Italy' },
-                    { code: 'ES', name: 'Spain' },
-                    { code: 'NL', name: 'Netherlands' },
-                    { code: 'BE', name: 'Belgium' },
-                    { code: 'IN', name: 'India' },
-                    { code: 'JP', name: 'Japan' },
-                    { code: 'CN', name: 'China' },
-                    { code: 'BR', name: 'Brazil' },
-                    { code: 'MX', name: 'Mexico' }
+                const fallbackCountries = [{
+                        code: 'US',
+                        name: 'United States'
+                    },
+                    {
+                        code: 'CA',
+                        name: 'Canada'
+                    },
+                    {
+                        code: 'GB',
+                        name: 'United Kingdom'
+                    },
+                    {
+                        code: 'AU',
+                        name: 'Australia'
+                    },
+                    {
+                        code: 'DE',
+                        name: 'Germany'
+                    },
+                    {
+                        code: 'FR',
+                        name: 'France'
+                    },
+                    {
+                        code: 'IT',
+                        name: 'Italy'
+                    },
+                    {
+                        code: 'ES',
+                        name: 'Spain'
+                    },
+                    {
+                        code: 'NL',
+                        name: 'Netherlands'
+                    },
+                    {
+                        code: 'BE',
+                        name: 'Belgium'
+                    },
+                    {
+                        code: 'IN',
+                        name: 'India'
+                    },
+                    {
+                        code: 'JP',
+                        name: 'Japan'
+                    },
+                    {
+                        code: 'CN',
+                        name: 'China'
+                    },
+                    {
+                        code: 'BR',
+                        name: 'Brazil'
+                    },
+                    {
+                        code: 'MX',
+                        name: 'Mexico'
+                    }
                 ];
 
                 countrySelect.innerHTML = '<option value="" disabled selected>Select a country</option>';
@@ -560,17 +600,30 @@
         let selectedPackage = null;
 
         function initPayPalButtons() {
-            if (trialMode) { return; }
+            if (trialMode) {
+                console.log('Skipping PayPal initialization for trial mode');
+                return;
+            }
 
             // Check if PayPal SDK is loaded
             if (typeof paypal === 'undefined') {
-                console.error('PayPal SDK not loaded');
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Payment Service Unavailable',
-                    text: 'PayPal payment service is currently unavailable. Please try again later.',
-                    confirmButtonColor: '#ef4444'
-                });
+                console.warn('PayPal SDK not loaded yet, retrying...');
+
+                // Retry after a short delay
+                setTimeout(() => {
+                    if (typeof paypal === 'undefined') {
+                        console.error('PayPal SDK failed to load');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Payment Service Unavailable',
+                            text: 'PayPal payment service is currently unavailable. Please refresh the page and try again.',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    } else {
+                        // Try to initialize again
+                        initPayPalButtons();
+                    }
+                }, 2000);
                 return;
             }
 
@@ -1213,7 +1266,7 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         },
                         body: JSON.stringify({
-                            plan_id: '14',
+                            plan_id: '{{ config("paypal.trial_plan_id") }}',
                             billing_info: getBillingInfo()
                         })
                     });
@@ -1247,7 +1300,7 @@
         if (@json($trialMode ?? false)) {
             // Find plan with id 14 from allPlans
             const allPlans = @json($allPlans ?? []);
-            const trialPlan = allPlans.find(plan => plan.id === 14);
+            const trialPlan = allPlans.find(plan => plan.id == {{ config('paypal.trial_plan_id') }});
 
             if (trialPlan) {
                 console.log('Auto-selecting trial plan:', trialPlan.name);
@@ -1258,7 +1311,7 @@
                 });
                 console.log('Trial plan selected successfully');
             } else {
-                console.error('Trial plan (id: 14) not found');
+                console.error('Trial plan (id: {{ config("paypal.trial_plan_id") }}) not found');
             }
         }
 

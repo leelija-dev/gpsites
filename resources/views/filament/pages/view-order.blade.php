@@ -8,34 +8,66 @@
     </div>
 
     {{-- Order Details Card --}}
-    <div class="bg-white shadow-md rounded-xl p-6">
-        <h3 class="text-lg font-bold text-gray-800 mb-4"><b>Order Summary</b></h3>
+    <div class="bg-white shadow-md rounded-xl p-12">
 
-        <table class="w-full text-left border-separate border-spacing-y-3">
-            <tr>
+        <table class="w-full text-left border-separate border-spacing-y-1">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th>Order Date</th>
+                    <th >Plan Expiring</th>
+                    <th >Total Mail</th>
+                    <th >Available Mail</th>
+                </tr>
+
+                <tr>
+                    <td>{{ $this->record->created_at->format('d-m-Y, h:i A') ?? ''}}</td>
+                    <?php
+                    $expiryDate = \Carbon\Carbon::parse($this->record->created_at)->addDays($record->plan->duration);
+                    $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
+                    ?>
+
+                    <td class="ms-2">{{$expiryDate->format('d-m-Y, h:i A') }}</td>
+
+                    <td> {{$record->MailAvailable->mail_available ?? ''}}</td>
+                    <td> {{$record->mailAvailable?? ''}}</td>
+
+
+                </tr>
+            </thead>
+
+
+
+            <tbody>
+                <tr>
+                <th><h3><b>Order Summary</b></h3></th>
+                <td></td>
+                </tr>
+                <tr>
+
                 <th class="text-gray-500 font-semibold w-1/4">Customer ID:</th>
+
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
-                    {{ $this->record->user->id }}
+                    {{ $this->record->user_id ?? 0}}
                 </td>
             </tr>
             <tr>
                 <th class="text-gray-500 font-semibold w-1/4">Order ID:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
-                    {{ $this->record->id }}
+                    {{ $this->record->id ?? ''}}
                 </td>
             </tr>
 
             <tr>
                 <th class="text-gray-500 font-semibold">Plan Name:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
-                    {{ $this->record->plan->name ?? 'N/A' }}
+                    {{ $this->record->plan->name ?? '' }}
                 </td>
             </tr>
 
             <tr>
                 <th class="text-gray-500 font-semibold">Amount:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
-                    ${{ number_format($this->record->amount, 2) }}
+                    ${{ number_format($this->record->amount, 2 ) ?? '' }}
                 </td>
             </tr>
 
@@ -63,9 +95,10 @@
             <tr>
                 <th class="text-gray-500 font-semibold">Order Date:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
-                    {{ $this->record->created_at->format('d-m-Y, h:i A') }}
+                    {{ $this->record->created_at->format('d-m-Y, h:i A') ?? '' }}
                 </td>
             </tr>
+            </tbody>
         </table>
     </div>
 
@@ -74,6 +107,7 @@
         <h3 class="text-lg font-bold text-gray-800"><strong>Bill Details</strong></h3>
 
         <table class="w-full text-left border-separate border-spacing-y-3">
+
             <tr>
                 <th class="text-gray-500 font-semibold w-1/4">Name:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
@@ -106,9 +140,9 @@
                 </td>
             </tr>
              <tr>
-                <th class="text-gray-500 font-semibold">State:</th>
+                <th class="text-gray-500 font-semibold">Country:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
-                    {{ ($this->record->billing_info['country']) }}
+                    {{ ($this->record->billing_info['country'] ?? $this->record->billing_info['state']  )  }}
                 </td>
             </tr>
              <tr>
