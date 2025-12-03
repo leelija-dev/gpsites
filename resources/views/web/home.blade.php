@@ -456,14 +456,14 @@
             <div class="w-full lg:w-1/2 p-8 smxl:block hidden">
                 <div class="block-contaning-wrapper relative w-full lg:h-full h-[390px] max-w-[600px] mx-auto">
                     <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[45%] lg:h-[36%] h-[53%] absolute bottom-[46%] left-0">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
+                        <img class="w-full h-full object-cover" src="{{asset('images/digital-marketing-planning.jpg')}}" alt="">
+                        {{-- <img class="w-full h-full object-cover" src="{{asset('images/digital-marketing-planning.jpg')}}" alt=""> --}}
                     </div>
                     <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[45%] lg:h-[36%] h-[53%] absolute bottom-[40%] right-0">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
+                        <img class="w-full h-full object-cover" src="{{asset('images/link-building-planning.jpg')}}" alt="">
                     </div>
                     <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[70%] lg:h-[50%] h-[64%] absolute bottom-0 left-[16%] border-white border-[4px]">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
+                        <img class="w-full h-full object-cover" src="{{asset('images/outreach-planning.jpg')}}" alt="">
                     </div>
 
                 </div>
