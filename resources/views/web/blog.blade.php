@@ -246,13 +246,10 @@ $loggedUserId = Auth::id();
                     <thead class="bg-[#f0f0f0] text-[#575757]">
                         <tr>
                             <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking"></th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">ID</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Website Name</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Site Url</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Website Niche</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">DA</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">DR</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Ahrefs Traffic</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Sl No</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking"></th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Metrics</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Traffic</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Mail</th>
                         </tr>
                     </thead>
@@ -274,24 +271,63 @@ $loggedUserId = Auth::id();
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 {{ ($page - 1) * 10 + $loop->index + 1 }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                {{ $blog['website_name'] ?? '' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                            {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                vcvcv{{ $blog['website_name'] ?? '' }}
+                            
+                            
                                 {{ $blog['site_url'] ?? '' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                            </td> --}}
+                             <td class="px-4 py-4">
+                                    <div class="flex items-start gap-3">
+                                       
+                                        <div>
+                                            <div class="font-semibold text-gray-900">
+                                                {{ $blog['website_name'] ?? '' }}
+                                            </div>
+                                           
+                                           <a href="{{ $blog['site_url'] ?? '' }}"
+                                                class="text-blue-600 text-xs break-all flex items-center gap-1"
+                                                target="_blank">
+
+                                                    <img src="https://thumbs.dreamstime.com/b/chain-link-icon-isolated-white-background-chain-link-icon-trendy-design-style-chain-link-vector-icon-modern-simple-flat-183702536.jpg"
+                                                        style="height:14px; width:14px;" />
+
+                                                    <span>{{ $blog['site_url'] ?? '' }}</span>
+                                                    
+                                                </a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 {{ $blog['website_niche'] ?? '' }}
-                            </td>
+                            </td> --}}
+                             <td class="px-4 py-4 text-center" style="min-width: 200px;">
+                                <div class="text-xs space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <img class="XNo5Ab" style="height: 20px; width: 20px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC" style="height:26px;width:26px" alt="" data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
+                                        <span class="font-medium text-gray-900">Domain Authority:</span>
+                                        <strong><span>{{ $blog['moz_da'] ?? '' }}</span></strong>
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        <img class="XNo5Ab" style="height: 20px; width: 20px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC" style="height:26px;width:26px" alt="" data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
+                                        <span class="font-medium text-gray-900">Domain Rating:</span>
+                                        <strong><span>{{ $blog['ahrefs_dr'] ?? '' }}</span></strong>
+                                    </div>
+                                </div>
+                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                {{ $blog['moz_da'] ?? '' }}
+                                <div class="flex items-center gap-2 justify-center">
+                                    <img src="https://t3.ftcdn.net/jpg/15/13/55/86/360_F_1513558693_ew5p2ThohA8SgdS0IiL4fHgWdrqncsmA.jpg"
+                                        style="width:20px; height:20px;" alt="Icon">
+
+                                    <span class="font-medium text-gray-900">Ahrefs Traffic:</span>
+
+                                    <strong>{{ $blog['ahrefs_traffic'] ?? '' }}</strong>
+                                </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                {{ $blog['ahrefs_dr'] ?? '' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                {{ $blog['ahrefs_traffic'] ?? '' }}
-                            </td>
+
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm" onclick="event.stopPropagation();">
                                 <button class="rowMailBtn px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
                                     data-available-mail="{{ $total_mail_available ?? 0 }}"
@@ -310,7 +346,7 @@ $loggedUserId = Auth::id();
                                 <div class="space-y-1">
                                     <div><b>Website Name:</b> {{ $blog['website_name'] ?? '—' }}</div>
                                     <div><b>Site URL:</b> {{ $blog['site_url'] ?? '—' }}</div>
-                                    <div><b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }}</div>
+                                    {{-- <div><b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }}</div> --}}
                                     <div><b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }}</div>
                                     <div><b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }}</div>
                                     <div><b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}</div>

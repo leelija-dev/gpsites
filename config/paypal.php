@@ -12,5 +12,5 @@ return [
 
     'webhook_id' => env('PAYPAL_WEBHOOK_ID'),
 
-    'trial_plan_id' => env('TRIAL_PLAN_ID', 14),
+    'trial_plan_id' => env('TRIAL_PLAN_ID'),
 ];
