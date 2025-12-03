@@ -9,8 +9,7 @@
     <x-filament::section>
         <div class="space-y-4">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold tracking-tight">Order Details</h2>
-                <h5>Order ID #{{ $this->record->id }}</h5>
+                #{{ $this->record->id }}
                 <x-filament::badge :color="$badgeColor" size="lg">
                     {{ $badgeText }}
                 </x-filament::badge>
@@ -18,56 +17,32 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-filament::fieldset>
-                    <x-slot name="heading">
-                        <h3 class="text-base font-medium">
-                            Order Information
-                        </h3>
-                    </x-slot>
-
                     <dl class="space-y-3">
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Order Date</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $this->record->created_at->format('M d, Y h:i A') }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Order Date: {{ $this->record->created_at->format('M d, Y h:i A') }}</dt>
                         </div>
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Plan Expires</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $expiryDate->format('M d, Y h:i A') }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Plan Expiry: {{ $expiryDate->format('M d, Y h:i A') }}</dt>
                         </div>
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Total Mail</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $record->MailAvailable['total_mail'] ?? '0' }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Mail: {{ $record->MailAvailable['total_mail'] ?? '0' }}/day</dt>
                         </div>
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Available Mail</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $record->mailAvailable['available_mail'] ?? '0' }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Available Mail: {{ $record->mailAvailable['available_mail'] ?? '0' }}</dt>
                         </div>
                     </dl>
                 </x-filament::fieldset>
 
                 <x-filament::fieldset>
-                    <x-slot name="heading">
-                        <h3 class="text-base font-medium">
-                            Order Summary
-                        </h3>
-                    </x-slot>
-
                     <dl class="space-y-3">
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Customer ID</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $this->record->user_id }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Plan: {{ $this->record->plan->name ?? 'N/A' }}</dt>
                         </div>
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Plan Name</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $this->record->plan->name ?? 'N/A' }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Amount: ${{ number_format($this->record->amount, 2) }}</dt>
                         </div>
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Amount</dt>
-                            <dd class="col-span-2 text-sm font-medium text-gray-900">${{ number_format($this->record->amount, 2) }}</dd>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Payment</dt>
-                            <dd class="col-span-2">
-                                <x-filament::badge
+                            <dt class="text-sm font-medium text-gray-500">Payment: <x-filament::badge
                                     :color="match($this->record->status) {
                                         'completed' => 'success',
                                         'pending' => 'warning',
@@ -76,12 +51,10 @@
                                     size="sm"
                                 >
                                     {{ ucfirst($this->record->status) }}
-                                </x-filament::badge>
-                            </dd>
+                                </x-filament::badge></dt>
                         </div>
                         <div class="grid grid-cols-3 gap-4 py-1">
-                            <dt class="text-sm font-medium text-gray-500">Transaction ID</dt>
-                            <dd class="col-span-2 text-sm text-gray-900">{{ $this->record->transaction_id ?? 'N/A' }}</dd>
+                            <dt class="text-sm font-medium text-gray-500">Transaction ID: {{ $this->record->transaction_id ?? 'N/A' }}</dt>
                         </div>
                     </dl>
                 </x-filament::fieldset>
@@ -92,14 +65,13 @@
     <x-filament::section>
         <x-slot name="heading">
             <h2 class="text-lg font-medium">
-                Billing Information
+                Billing Address
             </h2>
         </x-slot>
 
         <div class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-3">
-                    <h3 class="text-sm font-medium text-gray-900">Contact Information</h3>
                     <div class="space-y-1">
                         <p class="text-sm text-gray-900">
                             {{ ($this->record->billing_info['first_name'] ?? '') . ' ' . ($this->record->billing_info['last_name'] ?? '') }}
@@ -109,7 +81,6 @@
                     </div>
                 </div>
                 <div class="space-y-3">
-                    <h3 class="text-sm font-medium text-gray-900">Billing Address</h3>
                     <div class="space-y-1">
                         <p class="text-sm text-gray-500">{{ $this->record->billing_info['address1'] ?? 'N/A' }}</p>
                         <p class="text-sm text-gray-500">

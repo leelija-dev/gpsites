@@ -14,6 +14,7 @@ use Filament\Infolists\Components\TextEntry;
 class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
+    protected static ?string $title = 'Order Details';
     protected string $view = 'filament.pages.view-order';
     protected function getHeaderActions(): array
     {
