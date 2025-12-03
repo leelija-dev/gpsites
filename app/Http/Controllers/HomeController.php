@@ -8,19 +8,20 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Http\Controllers\HomeFaqs;
+
 class HomeController extends Controller
-{   
-     protected $APIBASEURL;
+{
+    protected $APIBASEURL;
     public function __construct()
-    {   
+    {
         $this->APIBASEURL = config('app.api_url');
     }
     public function index()
     {
-        $APPURL  = $this->APIBASEURL .'/api/niches';
+        $APPURL  = $this->APIBASEURL . '/api/niches';
 
         $response = Http::get($APPURL);
-        
+
         if ($response->successful()) {
             $niches_data = $response->json() ?? [];
             if (is_array($niches_data)) {
@@ -45,18 +46,20 @@ class HomeController extends Controller
         // print_r($response);die;
         $plans = Plan::with('features')
             ->where('is_active', true)
-            ->where('name', '!=', 'Trial') // Exclude trial plan from home page
+            ->where('price', '!=', '0') // Exclude trial plan from home page
+            ->where('name', 'NOT LIKE', '%trial%') // Exclude plans with 'trial' in name (case insensitive)
             ->orderBy('price', 'asc')
             ->get();
 
         // Get trial plan separately for the trial section
         $trialPlan = Plan::with('features')
             ->where('is_active', true)
-            ->where('name', 'Trial')
+            ->where('name', 'LIKE', '%trial%') // Exclude plans with 'trial' in name (case insensitive)
+
             ->first();
 
         $faqs = HomeFaqs::index();
-        return view('web.home', compact('plans','niches_data','faqs','trialPlan'));
+        return view('web.home', compact('plans', 'niches_data', 'faqs', 'trialPlan'));
     }
 
     public function startTrial(Request $request)
@@ -106,22 +109,20 @@ class HomeController extends Controller
         return redirect()->route('checkout.success')->with('trial_completed', true);
     }
 
-    
+
     public function storeIntentPlan(Request $request)
-{
-    $request->validate([
-        'plan' => 'required|integer|exists:plans,id'
-    ]);
+    {
+        $request->validate([
+            'plan' => 'required|integer|exists:plans,id'
+        ]);
 
-    // Store plan in session
-    session(['intent_plan' => $request->input('plan')]);
+        // Store plan in session
+        session(['intent_plan' => $request->input('plan')]);
 
-    // Force Laravel to remember /checkout as intended URL
-    redirect()->setIntendedUrl(route('checkout'));
+        // Force Laravel to remember /checkout as intended URL
+        redirect()->setIntendedUrl(route('checkout'));
 
-    // Then send to login
-    return redirect()->route('login');
+        // Then send to login
+        return redirect()->route('login');
+    }
 }
-
-}
-
