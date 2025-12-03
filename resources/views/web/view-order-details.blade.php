@@ -152,7 +152,7 @@
                     </div>
 
                     <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="grid sm:grid-cols-3 grid-cols-1 gap-4 text-center">
                         <div class="p-4 bg-blue-50 rounded-lg">
                             <p class="text-2xl font-bold text-blue-600">{{ $totalMail }}</p>
                             <p class="text-sm text-gray-600 mt-1">Total Emails</p>

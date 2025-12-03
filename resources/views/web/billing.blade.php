@@ -18,8 +18,8 @@
 
     <div class="min-h-screen bg-white flex">
         <!-- Main Content -->
-        <div class="flex-1 p-6 lg:p-8">
-            <div class="max-w-7xl mx-auto">
+        <div class="flex-1 p-6 lg:p-8 w-full">
+            <div class="">
                
 
                 <!-- Responsive Table Container -->

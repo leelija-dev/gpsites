@@ -13,8 +13,8 @@
 
     <div class="min-h-screen bg-white flex">
         <!-- Main Content Area -->
-        <div class="flex-1 p-6 lg:p-8">
-            <div class="max-w-7xl mx-auto">
+        <div class="flex-1 p-6 lg:p-8 w-full">
+            <div class="">
 
                 <!-- Table Container -->
                 <div class="overflow-x-auto shadow-xl rounded-lg border border-gray-200">
