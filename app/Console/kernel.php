@@ -9,6 +9,7 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         \App\Console\Commands\SendPlanExpirationReminder::class,
+        \App\Console\Commands\ResetAvailableMail::class, 
     ];
 
     protected function schedule(Schedule $schedule)
@@ -18,6 +19,12 @@ class Kernel extends ConsoleKernel
         
         // Optional: for testing, run every minute
         // $schedule->command('email:expiry-reminder')->everyMinute();
+        $schedule->command('mail:reset-available')
+         ->dailyAt('15:20')
+        ->timezone('Asia/Kolkata');
+        
+    // For testing, you can uncomment this line to run every minute
+    //$schedule->command('mail:reset-available')->everyMinute();
     }
 
     protected function commands()
