@@ -1,6 +1,8 @@
 @extends('layouts.web.main-layout')
 
-@section('title', 'home-page')
+@section('title', 'Link Building Outreach Tool | Backlink Marketplace')
+@section('description', '')
+@section('keywords', 'Link Building Outreach Automation​, Outreach Automation, Link Building Outreach Tool, outreach automation tool​, automated outreach system​, backlink marketplace, backlinks websites, outreach automation tool')
 
 @section('content')
 
@@ -20,30 +22,26 @@
         <!-- Left Section -->
         <div class=" lg:w-1/2 w-full space-y-8 lg:text-left text-center">
             <h1 class="text-h1-xs sm:text-h1-sm md:text-h1-md lg:text-h1-lg lgg:text-h1-lgg xl:text-h1-xl 2xl:text-h1-2xl font-bold text-gray-900 leading-tight">
-                Don’t Miss
-                <span class="text-primary">Amazing Grocery</span><br />
-                Deals & Offers
+                Best <span class="text-primary">Link Building Marketplace</span> & <span class="text-primary">Outreach Automation Tool</span>
             </h1>
 
             <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600 ">
-                We source and sell the very best beef, lamb and pork,
-                sourced with the greatest care from farmer.
+                Our guest posting marketplace connects you with the relevant backlinks websites & skyrocket yours link-building outreach automation.
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 lg:justify-start sm:justify-center items-center">
                 <!-- Hero CTA -->
-                <button type="button" id="see-pricing" class="btn-primary"> See Pricing </button>
+                <button type="button" id="see-pricing" class="btn-primary whitespace-nowrap"> See Pricing </button>
                 @auth
                 <form method="POST" action="{{ route('checkout') }}" class="w-full">
                     @csrf
-                    <input type="hidden" name="plan" value="{{ config('paypal.trial_plan_id') }}">
-                    <button type="submit" class="btn-secondary w-full">Start Trial</button>
+                    <button type="submit" class="btn-secondary">Trial Now</button>
                 </form>
                 @endauth
                 @guest
                 <form method="POST" action="{{ route('start.trial') }}" class="w-full">
                     @csrf
-                    <button type="submit" class="btn-secondary w-full">Start Trial</button>
+                    <button type="submit" class="btn-secondary">Trial Now</button>
                 </form>
                 @endguest
             </div>
@@ -51,16 +49,16 @@
             <!-- Stats -->
             <div class="flex flex-wrap gap-8 xl:gap-20 mt-12 text-center lg:justify-start justify-center">
                 <div>
-                    <div class="text-4xl font-bold text-gray-900">10+</div>
+                    <div class="text-4xl font-bold text-gray-900">7+</div>
                     <div class="text-sm text-gray-500">Years Experience</div>
                 </div>
                 <div>
-                    <div class="text-4xl font-bold text-gray-900">891</div>
-                    <div class="text-sm text-gray-500">Cases Solved</div>
+                    <div class="text-4xl font-bold text-gray-900">500+ </div>
+                    <div class="text-sm text-gray-500">Agency Users</div>
                 </div>
                 <div>
-                    <div class="text-4xl font-bold text-gray-900">263</div>
-                    <div class="text-sm text-gray-500">Business Partners</div>
+                    <div class="text-4xl font-bold text-gray-900">50K+</div>
+                    <div class="text-sm text-gray-500">Blogger Partner</div>
                 </div>
             </div>
         </div>
@@ -188,20 +186,20 @@
 
             <!-- Item 1 -->
             <div>
-                <h2 class="text-3xl font-bold">7000+</h2>
-                <p class=" mt-1 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">Success Stories and Cases</p>
+                <h2 class="text-3xl font-bold">200K+</h2>
+                <p class=" mt-1 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">Link Built</p>
             </div>
 
             <!-- Item 2 -->
             <div>
-                <h2 class="text-3xl font-bold">50 +</h2>
-                <p class=" mt-1 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">Years of Combined Experience</p>
+                <h2 class="text-3xl font-bold">1156+</h2>
+                <p class=" mt-1 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">Happy Client</p>
             </div>
 
             <!-- Item 3 -->
             <div>
-                <h2 class="text-3xl font-bold">5 Star</h2>
-                <p class=" mt-1 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">Star Customer Satisfaction</p>
+                <h2 class="text-3xl font-bold">100%</h2>
+                <p class=" mt-1 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl">Customer Satisfaction</p>
             </div>
 
         </div>
@@ -223,12 +221,10 @@
                     Key Features
                     <span class="w-2 h-2 bg-primary rounded-full ml-1"></span>
                 </div>
-                <h2 class="mt-2 text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
- font-bold text-gray-900">
-                    SaaS Made Simple: Drive efficiency and boost performance
+                <h2 class="mt-2 text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900">
+                    Next Generation Outreach Automation with Adaptive Functionality Features
                 </h2>
             </div>
-
             <!-- Features Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- High Resolution -->
@@ -239,10 +235,20 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg 
- font-semibold text-gray-900 mb-2">High Resolution</h3>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg font-semibold text-gray-900 mb-2"> Automate Link Building Outreach</h3>
+                    <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">By streamlining your repetitive taskflows, we help you in mass prospect outreach for increased conversions & functional efficiency.</p>
+                </div>
+                <!-- High Resolution -->
+                <div class="bg-[#eaeaea] feature-block-card rounded-xl p-6 flex flex-col sm:items-start items-center  sm:text-left text-center hover:shadow-lg transition-all duration-300 ease-in-out">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary  rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">Bulk Outreach Management</h3>
                     <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">
-                        Introducing our revolutionary SaaS App, designed to unlock your business potential and propel you towards success.
+                        We automate outreach, scale link-building, ensure consistent pitching, and connect you with more prospects efficiently, all at once.
                     </p>
                 </div>
                 <!-- High Resolution -->
@@ -253,9 +259,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">High Resolution</h3>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">Niche-Specific Target</h3>
                     <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">
-                        Introducing our revolutionary SaaS App, designed to unlock your business potential and propel you towards success.
+                        With AI, we analyze data, segment website owners, and send highly relevant & customized messages for niche-specific backlinks.
                     </p>
                 </div>
                 <!-- High Resolution -->
@@ -266,9 +272,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">High Resolution</h3>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">Automated Follow-Ups</h3>
                     <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">
-                        Introducing our revolutionary SaaS App, designed to unlock your business potential and propel you towards success.
+                        By scheduling the follow-up pitches, we help you re-engage with target bloggers without manual efforts, in case the initial one goes unnoticed.
                     </p>
                 </div>
                 <!-- High Resolution -->
@@ -279,9 +285,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">High Resolution</h3>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">Verified Placements</h3>
                     <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">
-                        Introducing our revolutionary SaaS App, designed to unlock your business potential and propel you towards success.
+                        Our automation outreach system increases link-building efficiency by securing guest post placements on pre-verified authority sites.
                     </p>
                 </div>
                 <!-- High Resolution -->
@@ -292,22 +298,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">High Resolution</h3>
+                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">Performance Tracking</h3>
                     <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">
-                        Introducing our revolutionary SaaS App, designed to unlock your business potential and propel you towards success.
-                    </p>
-                </div>
-                <!-- High Resolution -->
-                <div class="bg-[#eaeaea] feature-block-card rounded-xl p-6 flex flex-col sm:items-start items-center  sm:text-left text-center hover:shadow-lg transition-all duration-300 ease-in-out">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary  rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg  font-semibold text-gray-900 mb-2 ">High Resolution</h3>
-                    <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg text-gray-600">
-                        Introducing our revolutionary SaaS App, designed to unlock your business potential and propel you towards success.
+                        Our backlink marketplace tools also provide real-time user analytics data & detailed insights into site metrics after link-building.
                     </p>
                 </div>
 
@@ -316,9 +309,9 @@
 
             <!-- CTA Button -->
             <div class="text-center mt-12">
-                <button class="btn-primary">
-                    See All Features
-                </button>
+                <a href="{{ route('contact') }}" class="btn-primary">
+                    Contact Us
+                </a>
             </div>
         </div>
     </div>
@@ -371,7 +364,7 @@
                     </div>
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
-                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30) 
+                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30)
                     : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}}
 
                             {{-- <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">--}}{{$plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
@@ -435,21 +428,20 @@
     <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between text-white">
         <!-- Left Section: Text -->
         <div class="mb-6 lg:mb-0 text-center md:text-left">
-            <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
- font-bold leading-tight">
-                Build Websites Rapidly With<br>
-                <span class="text-secondary">Trendkit Interface Blocks</span>.
+            <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold leading-tight">
+                Outreach and Backlink Building Faster <br>
+                <span class="text-secondary">with Automated Outreach System</span>.
             </h2>
         </div>
 
         <!-- Right Section: Buttons -->
         <div class="flex flex-col sm:flex-row gap-4">
-            <button class="btn-secondary">
-                Check more
-            </button>
-            <button class="btn-primary">
-                Get trendkit
-            </button>
+            <a href="{{ route('contact') }}" class="btn-secondary">
+                Get Custom Plans
+            </a>
+            <a href="{{ route('about') }}" class="btn-primary">
+                About Us
+            </a>
         </div>
     </div>
 </section>
@@ -488,16 +480,14 @@
                     </div>
 
                     <!-- Title -->
-                    <h2 class="mt-3 text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
- font-bold text-gray-900 leading-tight">
-                        Connecting People And<br />Build Technology
+                    <h2 class="mt-3 text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900 leading-tight">
+                        Smart Backlink Solutions <br/> Powered by AI
                     </h2>
                 </div>
 
                 <!-- Description -->
                 <p class="text-gray-600   text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl lg:text-left text-center">
-                    Energetically evisculate an expanded array of meta-services after cross-media strategic theme areas.
-                    Interactively simplify interactive customer service before fully tested relationship parallel task high standards.
+                    Get data-driven backlinks with our outreach automation & guest posting marketplace. Boost your site’s rankings and authority with smarter link-building solutions, automated outreach, & strategic workflow management.
                 </p>
 
                 <!-- Progress Bars -->
@@ -699,7 +689,7 @@
     </div>
 </section>
 
-<x-web.faq />
+<x-web.faq :faqs="$faqs" />
 <script>
     // ================================================================
     // 1. FORCE ALL SLIDERS TO 0 ON PAGE LOAD (MOST IMPORTANT PART)
@@ -717,7 +707,7 @@
                     slider.value = slider.min || 0;
                 } else if (id.includes('-max')) {
                     slider.value = slider.max || 100;        // fallback to 100 if no max
-                } 
+                }
                 // Traffic: always full (200k+)
                 else if (id === 'tar-single') {
                     slider.value = slider.max || 200000;

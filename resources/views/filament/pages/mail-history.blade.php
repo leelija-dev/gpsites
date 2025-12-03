@@ -23,7 +23,7 @@
                     <td class="p-2 border text-center">{{ $promotional_mail->email }}</td>
                     <td class="p-2 border text-center">
                         @if(strlen($promotional_mail->subject)>20)
-                        {{substr($promotional_mail->subject,0,8).'...'.subdtr($promotional_mail->subject,-8)}}
+                        {{substr($promotional_mail->subject,0,8).'...'.substr($promotional_mail->subject,-8)}}
                         @else
                         {{ $promotional_mail->subject }}
                         @endif

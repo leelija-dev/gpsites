@@ -17,27 +17,27 @@ class OrdersTable
         return $table
             ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('id')->label('Order Id')->searchable()->sortable(),
-                TextColumn::make('user_id')
-                    ->label('User ID')
-                    ->searchable(),
+                TextColumn::make('id')
+                    ->label('Order ID')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('user.name')
                     ->label('User Name')
-                    ->searchable(),
-                // TextColumn::make('plan_id')
-                //     ->label('Plan ID')
-                //     ->searchable(),
+                    ->searchable()
+                    ->url(fn ($record) => route('filament.admin.resources.users.edit', $record->user_id)),
+
                 TextColumn::make('amount')
                     ->money('USD', true)
                     ->searchable(),
-                // TextColumn::make('paid_at')
-                //     ->searchable()
-                //     ->dateTime(),
+
                 TextColumn::make('plan.name')
-                    ->label('Plan Name')
-                    ,
+                    ->label('Plan Name'),
+
                 TextColumn::make('transaction_id')
-                    ->searchable(),
+                    ->searchable()
+                    ->label("Transaction ID"),
+
                 TextColumn::make('status')
                     ->searchable()
                     ->badge()
@@ -57,7 +57,9 @@ class OrdersTable
                         'processing' => 'warning',
                         default => 'gray',
                     }),
+
                 TextColumn::make('created_at')
+                    ->label('Order Date')
                     ->dateTime()
             ])
             ->filters([

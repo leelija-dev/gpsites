@@ -190,7 +190,7 @@ class BlogController extends Controller
         foreach ($selectedIds as $id) {
             $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
 
-            $email = $blog['created_by'];
+            $email = $blog['updated_by'];
 
             // $email = decrypt($email);
             $subject = $request->input('subject');

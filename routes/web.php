@@ -35,7 +35,7 @@ Route::post('/start-trial', function (Request $request) {
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
 
-Route::get('/about', fn() => view('web.about'));
+Route::get('/about', fn() => view('web.about'))->name('about');
 Route::get('/contact', fn() => view('web.contact'))->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 

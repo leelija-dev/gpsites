@@ -7,7 +7,7 @@ use App\Models\Plan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
+use App\Http\Controllers\HomeFaqs;
 class HomeController extends Controller
 {   
      protected $APIBASEURL;
@@ -47,8 +47,8 @@ class HomeController extends Controller
             ->where('is_active', true)
             ->orderBy('price', 'asc')
             ->get();
-
-        return view('web.home', compact('plans','niches_data'));
+        $faqs = HomeFaqs::index();
+        return view('web.home', compact('plans','niches_data','faqs'));
     }
 
     public function startTrial(Request $request)

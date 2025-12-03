@@ -4,13 +4,7 @@
 @endphp
 
 <x-app-layout>
-    <!-- jQuery (required for Summernote) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Summernote CSS & JS (Bootstrap-free version works fine with Tailwind) -->
-  <!-- Use summernote-lite (no Bootstrap dependency) -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
+    
 
     <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-4">
         <div class="w-full ">

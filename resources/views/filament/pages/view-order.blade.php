@@ -9,43 +9,55 @@
 
     {{-- Order Details Card --}}
     <div class="bg-white shadow-md rounded-xl p-12">
-        
+
         <table class="w-full text-left border-separate border-spacing-y-1">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>Order Date</th>
-                    <th >Plan Expiring</th>
-                    <th >Total Mail</th>
-                    <th >Available Mail</th>
-                </tr>
-
-                <tr>
+                    <th class="text-gray-500 font-semibold">Order Date:</th>
                     <td>{{ $this->record->created_at->format('d-m-Y, h:i A') ?? ''}}</td>
+                </tr>
+                
+                <tr>   
+                    <th class="text-gray-500 font-semibold">Plan Expiring:</th>
                     <?php 
                     $expiryDate = \Carbon\Carbon::parse($this->record->created_at)->addDays($record->plan->duration);
                     $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
                     ?>
-                    
+
                     <td class="ms-2">{{$expiryDate->format('d-m-Y, h:i A') }}</td>
-               
-                    <td> {{$record->MailAvailable->mail_available ?? ''}}</td>
-                    <td> {{$record->mailAvailable?? ''}}</td>
-                    
-                    
                 </tr>
-            </thead>
+                <tr>
+                    <th class="text-gray-500 font-semibold">Plan Status:</th>
+                    <td>
+                       @php
+                        $badgeColor = $isActive === true ? 'success' : ($isActive === false ? 'secondary' : 'danger');
+                        $badgeText  = $isActive === true ? 'Active' : ($isActive === false ? 'Expired' : 'Unknown');
+                    @endphp
 
+                    <x-filament::badge :color="$badgeColor">
+                        {{ $badgeText }}
+                    </x-filament::badge>
 
-            
-            <tbody>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-gray-500 font-semibold">Total Mail:</th>
+                    <td> {{$record->MailAvailable['total_mail'] ?? ''}}</td>
+                </tr>
+                <tr>
+                    <th class="text-gray-500 font-semibold">Available Mail:</th>
+                     <td> {{$record->mailAvailable['available_mail'] ?? ''}}</td>
+                </tr>
+             </thead>         
+            <tbody class="bg-white shadow-md rounded-xl p-6 space-y-4">
                 <tr>
                 <th><h3><b>Order Summary</b></h3></th>
                 <td></td>
                 </tr>
                 <tr>
-                
+
                 <th class="text-gray-500 font-semibold w-1/4">Customer ID:</th>
-                
+
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">
                     {{ $this->record->user_id ?? 0}}
                 </td>
@@ -72,7 +84,7 @@
             </tr>
 
             <tr>
-                <th class="text-gray-500 font-semibold">Status:</th>
+                <th class="text-gray-500 font-semibold">Payment:</th>
                 <td>
                 <x-filament::badge
                 :color="$this->record->status === 'completed'
@@ -107,7 +119,7 @@
         <h3 class="text-lg font-bold text-gray-800"><strong>Bill Details</strong></h3>
 
         <table class="w-full text-left border-separate border-spacing-y-3">
-            
+
             <tr>
                 <th class="text-gray-500 font-semibold w-1/4">Name:</th>
                 <td class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-2">

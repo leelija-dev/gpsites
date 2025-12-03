@@ -12,8 +12,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+    <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('js/summer-note/summer-note.min.js')}}"></script>
+    <script src="{{asset('js/sweet-alert/sweet-alert.min.js')}}"></script>
+
+
+
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -24,12 +29,12 @@
 
 
         <div class="w-full flex flex-row">
-            
-               <div class="w-fit">
-                 @include('web.sidebar')
 
-               </div>
-         
+            <div class="w-fit">
+                @include('web.sidebar')
+
+            </div>
+
             <div id="whole-heade-wrapper" class="whole-heade-wrapper w-full">
                 @include('layouts.navigation')
                 <!-- Page Heading -->
@@ -50,6 +55,7 @@
 
         </div>
     </div>
+    
 </body>
 
 </html>
