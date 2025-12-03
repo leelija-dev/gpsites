@@ -208,35 +208,37 @@ $loggedUserId = Auth::id();
             @if ($total_mail_available)
             <div class="space-y-4 md:space-y-0 md:flex md:items-center md:justify-between">
                 <!-- Search Section -->
-                <div class="flex items-center space-x-3">
-                    <div class="relative">
+                <div class="flex smxl:flex-row flex-col gap-2 items-center ">
+                    <div class="relative w-full">
                         <input type="text"
                             id="searchInput"
                             placeholder="Search"
                             class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                     </div>
                     <button id="searchBtn"
-                        class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                        class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
                         Search
                     </button>
                 </div>
 
                 <!-- Selection Controls -->
-                <div class="flex items-center space-x-3">
+                <div class="flex xxs:flex-row flex-col gap-2  xxs:items-center items-end space-x-3">
                     <div class="flex items-center space-x-2">
                         <span class="font-bold text-lg text-gray-700">Selected site:</span>
                         <span id="selectedCount" class="text-lg font-semibold text-blue-600">0</span>
                     </div>
-                    <button id="openMailModalBtn"
-                        data-available-mail="{{ $total_mail_available ?? 0 }}"
-                        data-total-mail="{{ $total_mail ?? 0 }}"
-                        class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        Send Mail
-                    </button>
-                    <button id="clearSelectionBtn"
-                        class="px-4 py-2 border border-red-600 text-red-600 font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition">
-                        Clear All
-                    </button>
+                    <div class="flex smxl:flex-row flex-col gap-2 smxl:w-auto w-full">
+                        <button id="openMailModalBtn"
+                            data-available-mail="{{ $total_mail_available ?? 0 }}"
+                            data-total-mail="{{ $total_mail ?? 0 }}"
+                            class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                            Send Mail
+                        </button>
+                        <button id="clearSelectionBtn"
+                            class="px-4 py-2 smxl:w-auto w-full border border-red-600 text-red-600 font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition">
+                            Clear All
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -267,42 +269,42 @@ $loggedUserId = Auth::id();
                                     onclick="event.stopPropagation();"
                                     autocomplete="off">
                             </td>
-                            <?php $page=$_GET['page'] ?? 1; ?>
+                            <?php $page = $_GET['page'] ?? 1; ?>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 {{ ($page - 1) * 10 + $loop->index + 1 }}
                             </td>
                             {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 vcvcv{{ $blog['website_name'] ?? '' }}
-                            
-                            
-                                {{ $blog['site_url'] ?? '' }}
+
+
+                            {{ $blog['site_url'] ?? '' }}
                             </td> --}}
-                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                    <div class="flex items-start gap-3">
-                                       
-                                        <div>
-                                            <div class="font-semibold text-gray-900">
-                                                {{ $blog['website_name'] ?? '' }}
-                                            </div>
-                                           
-                                           <a href="{{ $blog['site_url'] ?? '' }}"
-                                                class="text-blue-600 text-xs break-all flex items-center gap-1"
-                                                target="_blank">
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                <div class="flex items-start gap-3">
 
-                                                    <img src="https://thumbs.dreamstime.com/b/chain-link-icon-isolated-white-background-chain-link-icon-trendy-design-style-chain-link-vector-icon-modern-simple-flat-183702536.jpg"
-                                                        style="height:14px; width:14px;" />
-
-                                                    <span>{{ $blog['site_url'] ?? '' }}</span>
-                                                    
-                                                </a>
-
+                                    <div>
+                                        <div class="font-semibold text-gray-900">
+                                            {{ $blog['website_name'] ?? '' }}
                                         </div>
+
+                                        <a href="{{ $blog['site_url'] ?? '' }}"
+                                            class="text-blue-600 text-xs break-all flex items-center gap-1"
+                                            target="_blank">
+
+                                            <img src="https://thumbs.dreamstime.com/b/chain-link-icon-isolated-white-background-chain-link-icon-trendy-design-style-chain-link-vector-icon-modern-simple-flat-183702536.jpg"
+                                                style="height:14px; width:14px;" />
+
+                                            <span>{{ $blog['site_url'] ?? '' }}</span>
+
+                                        </a>
+
                                     </div>
-                                </td>
+                                </div>
+                            </td>
                             {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 {{ $blog['website_niche'] ?? '' }}
                             </td> --}}
-                             <td class="px-4 py-4 text-center" style="min-width: 200px;">
+                            <td class="px-4 py-4 text-center" style="min-width: 200px;">
                                 <div class="text-xs space-y-1">
                                     <div class="flex items-center gap-2">
                                         <img class="XNo5Ab" style="height: 20px; width: 20px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC" style="height:26px;width:26px" alt="" data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
@@ -316,7 +318,7 @@ $loggedUserId = Auth::id();
                                         <strong><span>{{ $blog['ahrefs_dr'] ?? '' }}</span></strong>
                                     </div>
                                 </div>
-                             </td>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 <div class="flex items-center gap-2 justify-center">
                                     <img src="https://t3.ftcdn.net/jpg/15/13/55/86/360_F_1513558693_ew5p2ThohA8SgdS0IiL4fHgWdrqncsmA.jpg"
@@ -346,62 +348,63 @@ $loggedUserId = Auth::id();
                                 <div class="space-y-1">
                                     <div><b>Website Name:</b> {{ $blog['website_name'] ?? '—' }}</div>
                                     <div><b>Site URL:</b> {{ $blog['site_url'] ?? '—' }}</div>
-                                    {{-- <div><b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }}</div> --}}
-                                    <div><b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }}</div>
-                                    <div><b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }}</div>
-                                    <div><b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}</div>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                        @else
-                        <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
-                                No blog found.
-                            </td>
-                        </tr>
-                        @endif
-                        <tr id="noResultsRow" style="display: none;">
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-700 font-bold">
-                                No blog found.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                    {{-- <div><b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }}
+                                </div> --}}
+                                <div><b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }}</div>
+                                <div><b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }}</div>
+                                <div><b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}</div>
             </div>
-
-            @if (isset($pagination))
-            <div id="pagina-wrapper" class="mt-6 flex justify-center">
-                {{ $pagination->links('pagination::bootstrap-5') }}
-            </div>
-            @endif
+            </td>
+            </tr>
+            @endforeach
             @else
-            <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
-                <h4 class="text-xl font-semibold text-gray-700 mb-4">
-                    You have already used all mail services!
-                </h4>
-                <a href="/#pricing"
-                    class="pricing-link text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
-                    <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        Buy
-                    </button>
-                </a>
-            </div>
+            <tr>
+                <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                    No blog found.
+                </td>
+            </tr>
             @endif
-            @else
-            <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
-                <h4 class="text-xl font-semibold text-gray-700 mb-4">
-                    You have not purchased any plan.
-                </h4>
-                <a href="/#pricing"
-                    class="pricing-link text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
-                    <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        Buy
-                    </button>
-                </a>
-            </div>
-            @endif
+            <tr id="noResultsRow" style="display: none;">
+                <td colspan="9" class="px-6 py-8 text-center text-gray-700 font-bold">
+                    No blog found.
+                </td>
+            </tr>
+            </tbody>
+            </table>
         </div>
+
+        @if (isset($pagination))
+        <div id="pagina-wrapper" class="mt-6 flex justify-center">
+            {{ $pagination->links('pagination::bootstrap-5') }}
+        </div>
+        @endif
+        @else
+        <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
+            <h4 class="text-xl font-semibold text-gray-700 mb-4">
+                You have already used all mail services!
+            </h4>
+            <a href="/#pricing"
+                class="pricing-link text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
+                <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                    Buy
+                </button>
+            </a>
+        </div>
+        @endif
+        @else
+        <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
+            <h4 class="text-xl font-semibold text-gray-700 mb-4">
+                You have not purchased any plan.
+            </h4>
+            <a href="/#pricing"
+                class="pricing-link text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
+                <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                    Buy
+                </button>
+            </a>
+        </div>
+        @endif
+    </div>
     </div>
 
     <!-- Custom Modal -->
@@ -445,21 +448,21 @@ $loggedUserId = Auth::id();
                                 </p>
                             </div>
 
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                Subject
-                                            </label>
-                                            <input type="text"
-                                                name="subject"
-                                                placeholder="Enter subject"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                                required>
-                                            <div class="mt-1 text-sm text-red-600 hidden">Subject can not be blank!</div>
-                                            @error('subject')
-                                            <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        Subject
+                                    </label>
+                                    <input type="text"
+                                        name="subject"
+                                        placeholder="Enter subject"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        required>
+                                    <div class="mt-1 text-sm text-red-600 hidden">Subject can not be blank!</div>
+                                    @error('subject')
+                                    <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
