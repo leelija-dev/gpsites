@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
     {
         try {
             $trialPlanId = Cache::rememberForever('trial_plan_id', function () {
-                $trialPlan = Plan::where('name', 'trial')->first();
+                $trialPlan = Plan::where('price', '<=', 1)->first();
                 return $trialPlan ? $trialPlan->id : config('paypal.trial_plan_id', 14);
             });
 
@@ -53,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
         // Re-set the config value
         try {
             $trialPlanId = Cache::rememberForever('trial_plan_id', function () {
-                $trialPlan = \App\Models\Plan::where('name', 'trial')->first();
+                $trialPlan = \App\Models\Plan::where('price', '<=', 1)->first();
                 return $trialPlan ? $trialPlan->id : config('paypal.trial_plan_id', 14);
             });
             config(['paypal.trial_plan_id' => $trialPlanId]);
