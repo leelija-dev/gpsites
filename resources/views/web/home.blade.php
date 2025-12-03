@@ -1045,7 +1045,7 @@
 
         // Traffic
         const trafficVal = document.getElementById('tar-single').value;
-        document.getElementById('traffic-min-input').value = trafficVal;
+        document.getElementById('traffic-min-input').value = 0;
         document.getElementById('traffic-max-input').value = trafficVal >= 200000 ? 999999 : trafficVal;
     });
 </script>
