@@ -242,6 +242,20 @@ input[type="range"]::-moz-range-thumb {
     opacity: 1;
 }
 
+.tooltip {
+    display: none;
+    position: absolute;
+    /* your styling */
+}
+
+.thumb-left:hover ~ #da-min-tooltip,
+.thumb-right:hover ~ #da-max-tooltip,
+.thumb-left:hover ~ #dr-min-tooltip,
+.thumb-right:hover ~ #dr-max-tooltip,
+.thumb:hover ~ #tar-tooltip {
+    display: block !important;
+}
+
 /* feature block css  */
 
 .pricing-card {
@@ -289,13 +303,13 @@ input[type="range"]::-moz-range-thumb {
 
 /* floating shapes css  */
 
- .floating-shapes {
+.floating-shapes {
     position: fixed;
     inset: 0;
     overflow: hidden;
     z-index: 0;
 }
- .shape {
+.shape {
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(
@@ -307,14 +321,14 @@ input[type="range"]::-moz-range-thumb {
     animation: float 25s infinite ease-in-out;
     pointer-events: none;
 }
- .shape:nth-child(1) {
+.shape:nth-child(1) {
     width: 500px;
     height: 500px;
     left: -10%;
     top: 10%;
     animation-delay: 0s;
 }
- .shape:nth-child(2) {
+.shape:nth-child(2) {
     width: 400px;
     height: 400px;
     right: -5%;
@@ -322,7 +336,7 @@ input[type="range"]::-moz-range-thumb {
     animation-delay: 7s;
     background: radial-gradient(circle, rgba(168, 85, 247, 0.15), transparent);
 }
- .shape:nth-child(3) {
+.shape:nth-child(3) {
     width: 600px;
     height: 600px;
     left: 20%;

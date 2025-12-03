@@ -6,6 +6,7 @@
 
 @section('content')
 
+
 <!-- hero section  -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden lg:py-16 py-12 px-6">
     <!-- Background decorative circles -->
@@ -35,6 +36,7 @@
                 @auth
                 <form method="POST" action="{{ route('checkout') }}" class="w-full">
                     @csrf
+                    <input type="hidden" name="plan" value="{{ config('paypal.trial_plan_id') }}">
                     <button type="submit" class="btn-secondary">Trial Now</button>
                 </form>
                 @endauth
@@ -105,12 +107,14 @@
                             <div class="track"></div>
                             <div class="fill" id="da-fill"></div>
 
-                            <span class="tooltip left-tooltip" id="da-min-tooltip">0</span>
-                            <span class="tooltip right-tooltip" id="da-max-tooltip">0</span>
+
 
                             <!-- IMPORTANT: value="0" or remove value entirely -->
                             <input type="range" min="0" max="100" value="0" class="thumb-right" id="da-max">
                             <input type="range" min="0" max="100" value="0" class="thumb-left" id="da-min">
+
+                            <span class="tooltip left-tooltip" id="da-min-tooltip">0</span>
+                            <span class="tooltip right-tooltip" id="da-max-tooltip">0</span>
                         </div>
                     </div>
 
@@ -124,11 +128,13 @@
                             <div class="track"></div>
                             <div class="fill" id="dr-fill"></div>
 
-                            <span class="tooltip left-tooltip" id="dr-min-tooltip">0</span>
-                            <span class="tooltip right-tooltip" id="dr-max-tooltip">0</span>
+
 
                             <input type="range" min="0" max="100" value="0" class="thumb-right" id="dr-max">
                             <input type="range" min="0" max="100" value="0" class="thumb-left" id="dr-min">
+
+                            <span class="tooltip left-tooltip" id="dr-min-tooltip">0</span>
+                            <span class="tooltip right-tooltip" id="dr-max-tooltip">0</span>
                         </div>
                     </div>
 
@@ -142,10 +148,11 @@
                             <div class="track"></div>
                             <div class="fill" id="tar-fill"></div>
 
-                            <span class="tooltip single-tooltip" id="tar-tooltip">0</span>
+
 
                             <input type="range" min="0" max="250000" value="0" step="1000"
                                 class="thumb" id="tar-single">
+                            <span class="tooltip single-tooltip" id="tar-tooltip">0</span>
                         </div>
                     </div>
                 </div>
@@ -403,21 +410,21 @@
                 @else
                 <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
                 @endauth -->
-            <div class="mt-8">
-                @auth
-                <form method="POST" action="{{ route('checkout') }}" class="w-full">
-                    @csrf
-                    <input type="hidden" name="plan" value="{{ $plan->id }}">
-                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
-                </form>
-                @else
-                <form method="POST" action="{{ route('intent.plan') }}" class="w-full">
-                    @csrf
-                    <input type="hidden" name="plan" value="{{ $plan->id }}">
-                    <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
-                </form>
-                @endauth
-            </div>
+                <div class="mt-8">
+                    @auth
+                    <form method="POST" action="{{ route('checkout') }}" class="w-full">
+                        @csrf
+                        <input type="hidden" name="plan" value="{{ $plan->id }}">
+                        <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                    </form>
+                    @else
+                    <form method="POST" action="{{ route('intent.plan') }}" class="w-full">
+                        @csrf
+                        <input type="hidden" name="plan" value="{{ $plan->id }}">
+                        <button type="submit" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</button>
+                    </form>
+                    @endauth
+                </div>
             </div>
             @endforeach
         </div>
@@ -456,14 +463,14 @@
             <div class="w-full lg:w-1/2 p-8 smxl:block hidden">
                 <div class="block-contaning-wrapper relative w-full lg:h-full h-[390px] max-w-[600px] mx-auto">
                     <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[45%] lg:h-[36%] h-[53%] absolute bottom-[46%] left-0">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
+                        <img class="w-full h-full object-cover" src="{{asset('images/digital-marketing-planning.jpg')}}" alt="">
+                        {{-- <img class="w-full h-full object-cover" src="{{asset('images/digital-marketing-planning.jpg')}}" alt=""> --}}
                     </div>
                     <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[45%] lg:h-[36%] h-[53%] absolute bottom-[40%] right-0">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
+                        <img class="w-full h-full object-cover" src="{{asset('images/link-building-planning.jpg')}}" alt="">
                     </div>
                     <div class="rounded-[15px] bg-gray-500 overflow-hidden w-[70%] lg:h-[50%] h-[64%] absolute bottom-0 left-[16%] border-white border-[4px]">
-                        <img class="w-full h-full object-cover" src="{{asset('images/bg-8.webp')}}" alt="">
+                        <img class="w-full h-full object-cover" src="{{asset('images/outreach-planning.jpg')}}" alt="">
                     </div>
 
                 </div>
@@ -481,7 +488,7 @@
 
                     <!-- Title -->
                     <h2 class="mt-3 text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900 leading-tight">
-                        Smart Backlink Solutions <br/> Powered by AI
+                        Smart Backlink Solutions <br /> Powered by AI
                     </h2>
                 </div>
 
@@ -696,7 +703,7 @@
     // ================================================================
     // 1. FORCE SLIDERS TO INITIAL VALUES ON PAGE LOAD
     // ================================================================
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const slidersToReset = ['da-min', 'da-max', 'dr-min', 'dr-max', 'tar-single'];
 
         slidersToReset.forEach(id => {
@@ -706,7 +713,7 @@
                 if (id.includes('-min')) {
                     slider.value = slider.min || 0;
                 } else if (id.includes('-max')) {
-                    slider.value = slider.max || 100;        // fallback to 100 if no max
+                    slider.value = slider.max || 100; // fallback to 100 if no max
                 }
                 // Traffic: always full (200k+)
                 else if (id === 'tar-single') {
@@ -730,10 +737,10 @@
     function initDualSlider(minId, maxId, displayId, fillId, minTooltipId, maxTooltipId) {
         const minThumb = document.getElementById(minId);
         const maxThumb = document.getElementById(maxId);
-        const display  = document.getElementById(displayId);
-        const fill     = document.getElementById(fillId);
-        const minTip   = document.getElementById(minTooltipId);
-        const maxTip   = document.getElementById(maxTooltipId);
+        const display = document.getElementById(displayId);
+        const fill = document.getElementById(fillId);
+        const minTip = document.getElementById(minTooltipId);
+        const maxTip = document.getElementById(maxTooltipId);
 
         function update() {
             let minVal = parseInt(minThumb.value);
@@ -742,14 +749,16 @@
             // Prevent crossing
             if (minVal > maxVal) {
                 if (document.activeElement === minThumb) {
-                    maxVal = minVal; maxThumb.value = minVal;
+                    maxVal = minVal;
+                    maxThumb.value = minVal;
                 } else {
-                    minVal = maxVal; minThumb.value = minVal;
+                    minVal = maxVal;
+                    minThumb.value = minVal;
                 }
             }
 
             const minAtStart = minVal <= parseInt(minThumb.min);
-            const maxAtEnd   = maxVal >= parseInt(maxThumb.max);
+            const maxAtEnd = maxVal >= parseInt(maxThumb.max);
 
             if (minAtStart && maxAtEnd) {
                 display.textContent = 'Any';
@@ -780,8 +789,14 @@
         maxThumb.addEventListener('input', update);
 
         // Tooltip logic unchanged …
-        minThumb.addEventListener('input', () => { minTip.classList.add('active'); maxTip.classList.remove('active'); });
-        maxThumb.addEventListener('input', () => { maxTip.classList.add('active'); minTip.classList.remove('active'); });
+        minThumb.addEventListener('input', () => {
+            minTip.classList.add('active');
+            maxTip.classList.remove('active');
+        });
+        maxThumb.addEventListener('input', () => {
+            maxTip.classList.add('active');
+            minTip.classList.remove('active');
+        });
 
         const hideTooltips = () => {
             minTip.classList.remove('active');
@@ -800,10 +815,10 @@
     // 3. TRAFFIC SINGLE SLIDER – Starts at 200k+ (full)
     // ================================================================
     function initTrafficSlider() {
-        const slider  = document.getElementById('tar-single');
+        const slider = document.getElementById('tar-single');
         const display = document.getElementById('tar-values');
         const tooltip = document.getElementById('tar-tooltip');
-        const fill    = document.getElementById('tar-fill');
+        const fill = document.getElementById('tar-fill');
 
         const format = (v) => {
             if (v === 0) return '0';
@@ -840,11 +855,11 @@
     const niches_data = @json($niches_data);
     const niches = niches_data.map(n => n.niche_name).filter(n => n && n.trim() !== "");
 
-    const searchInput   = document.getElementById('niche-search');
-    const dropdown      = document.getElementById('niche-dropdown');
-    const nicheList     = document.getElementById('niche-list');
-    const selectedBox   = document.getElementById('selected-niches');
-    const hiddenInput   = document.getElementById('niche-values');
+    const searchInput = document.getElementById('niche-search');
+    const dropdown = document.getElementById('niche-dropdown');
+    const nicheList = document.getElementById('niche-list');
+    const selectedBox = document.getElementById('selected-niches');
+    const hiddenInput = document.getElementById('niche-values');
 
     let selectedIndex = -1;
     let selectedValues = [];
@@ -875,9 +890,9 @@
     }
 
     function renderNiches(items) {
-        nicheList.innerHTML = items.length === 0
-            ? '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>'
-            : '';
+        nicheList.innerHTML = items.length === 0 ?
+            '<li class="px-6 py-3 text-gray-500 italic">No niches found</li>' :
+            '';
 
         items.forEach((niche, i) => {
             const li = document.createElement('li');
@@ -892,8 +907,15 @@
         return q.trim() ? niches.filter(n => n.toLowerCase().includes(q.toLowerCase())) : niches;
     }
 
-    function openDropdown() { dropdown.classList.remove('hidden'); renderNiches(filterNiches(searchInput.value)); }
-    function closeDropdown() { dropdown.classList.add('hidden'); selectedIndex = -1; }
+    function openDropdown() {
+        dropdown.classList.remove('hidden');
+        renderNiches(filterNiches(searchInput.value));
+    }
+
+    function closeDropdown() {
+        dropdown.classList.add('hidden');
+        selectedIndex = -1;
+    }
 
     searchInput.addEventListener('input', () => {
         const filtered = filterNiches(searchInput.value);
@@ -901,7 +923,10 @@
         filtered.length ? openDropdown() : closeDropdown();
     });
 
-    searchInput.addEventListener('focus', () => { renderNiches(niches); openDropdown(); });
+    searchInput.addEventListener('focus', () => {
+        renderNiches(niches);
+        openDropdown();
+    });
 
     document.addEventListener('click', e => {
         if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
@@ -928,13 +953,15 @@
             el.classList.toggle('font-medium', i === selectedIndex);
         });
 
-        items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+        items[selectedIndex]?.scrollIntoView({
+            block: 'nearest'
+        });
     });
 
     // ================================================================
     // 5. FORM SUBMIT – Sync all values
     // ================================================================
-    document.getElementById('searchForm')?.addEventListener('submit', function () {
+    document.getElementById('searchForm')?.addEventListener('submit', function() {
         // DA
         document.getElementById('da-min-input').value = document.getElementById('da-min').value;
         document.getElementById('da-max-input').value = document.getElementById('da-max').value;

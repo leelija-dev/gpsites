@@ -63,34 +63,17 @@
                         <h2 class="text-3xl font-bold text-gray-900 text-center lg:text-left">Create your account</h2>
                         <p class="mt-3 text-gray-600 text-center lg:text-left">Start your journey today — it's free forever.</p>
 
-                        <!-- Email Verification Notice -->
+                        <!-- Global Error (e.g. email already taken) -->
                         @error('error')
-                        <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
-                            <div class="flex">
-                                {{-- <div class="flex-shrink-0">
-                                    <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    </svg>
-                                </div> --}}
-                                <div class="">
-                                    {{-- <h3 class="text-sm font-medium text-blue-800">
-                                        Email Verification Required
-                                    </h3> --}}
-                                    <div class="mt-1 text-sm text-blue-700">
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        {{-- <p>After registration, you'll receive an email with a verification link. Please check your inbox and click the link to activate your account.</p> --}}
-                                    </div>
-                                </div>
+                            <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                                <p class="text-sm text-red-700 font-medium">{{ $message }}</p>
                             </div>
-                        </div>
                         @enderror
-
 
                         <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-6">
                             @csrf
 
-                            <!-- Name (single field) -->
+                            <!-- Name -->
                             <div>
                                 <input type="text" name="name" placeholder="Full Name" required autofocus
                                        value="{{ old('name') }}"
@@ -110,19 +93,50 @@
                                 @enderror
                             </div>
 
-                            <!-- Password -->
-                            <div>
-                                <input type="password" name="password" placeholder="Create Password" required minlength="8"
-                                       class="w-full px-5 py-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition @error('password') border-red-500 @enderror" />
+                            <!-- Password Field with Eye Toggle -->
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Create Password" 
+                                    required 
+                                    minlength="8"
+                                    class="w-full px-5 py-4 pr-14 border border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition @error('password') border-red-500 @enderror" 
+                                />
+                                <button type="button" onclick="togglePassword('password', 'eye1')" class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-indigo-600 transition">
+                                    <svg id="eye1Open" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg id="eye1Closed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.977 9.977 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
                                 @error('password')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Confirm Password -->
-                            <div>
-                                <input type="password" name="password_confirmation" placeholder="Confirm Password" required
-                                       class="w-full px-5 py-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition" />
+                            <!-- Confirm Password Field with Eye Toggle -->
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password_confirmation" 
+                                    name="password_confirmation" 
+                                    placeholder="Confirm Password" 
+                                    required
+                                    class="w-full px-5 py-4 pr-14 border border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition" 
+                                />
+                                <button type="button" onclick="togglePassword('password_confirmation', 'eye2')" class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-indigo-600 transition">
+                                    <svg id="eye2Open" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg id="eye2Closed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.977 9.977 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
                             </div>
 
                             <!-- Terms Checkbox -->
@@ -150,5 +164,23 @@
             </div>
         </div>
     </div>
-</body>
+
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePassword(inputId, eyeIdPrefix) {
+            const input = document.getElementById(inputId);
+            const eyeOpen = document.getElementById(eyeIdPrefix + 'Open');
+            const eyeClosed = document.getElementById(eyeIdPrefix + 'Closed');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            } else {
+                input.type = 'password';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            }
+        }
+    </script>
 </x-guest-layout>
