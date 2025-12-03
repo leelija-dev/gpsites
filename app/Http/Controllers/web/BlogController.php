@@ -475,13 +475,15 @@ class BlogController extends Controller
         // Store temporary in session
         session(['selected_niches' => $niches]);
 
+        // Check if user is logged in for plan validation
         $user = Auth::user();
-
-        // Check active plan
-        $mailData = MailAvailable::where('user_id', $user->id)->get();
         $isValidPlan = false;
         $total_mail_available = 0;
         $total_mail = 0;
+
+        // Only check plan for logged-in users
+        if ($user) {
+            $mailData = MailAvailable::where('user_id', $user->id)->get();
 
         // Check for valid paid plans only (trial users should NOT have access to blog functionality)
         foreach ($mailData as $mail) {
@@ -502,7 +504,12 @@ class BlogController extends Controller
                 $total_mail += $mail->total_mail;
             }
         }
+        } // Close the if ($user) block
 
+        // For non-logged-in users, allow viewing blogs but no mail functionality
+        // if (!$isValidPlan && $user) {
+        //     return redirect()->route('pricing')->with('error', 'Please purchase a valid plan first!');
+        // }
 
         // Build API Request
         $APIURL  = $this->APIBASEURL .'/api/blogs/search';
@@ -512,10 +519,12 @@ class BlogController extends Controller
             'da_min' => $request->get('da_min'),
             'dr_max' => $request->get('dr_max'),
             'dr_min' => $request->get('dr_min'),
-            'traffic_min' => $request->get('traffic_min'),
+            'traffic_min' => 0,//$request->get('traffic_min'),
+            'traffic_max' => $request->get('traffic_max'),
             'page' => $request->get('page', 1),
             // 'per_page' => 20,
         ]);
+        // print_r($response);die;
 
         if ($response->failed()) {
             return back()->with('error', 'API Failed: ' . $response->status());
