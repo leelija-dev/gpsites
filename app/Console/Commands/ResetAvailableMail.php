@@ -17,7 +17,7 @@ class ResetAvailableMail extends Command
      *
      * @var string
      */
-    protected $signature = 'mail:reset-available'; // FIXED → used in kernel & manual run
+    protected $signature = 'mail:reset-mail-available'; // FIXED → used in kernel & manual run
     
     /**
      * The console command description.

@@ -19,8 +19,8 @@ class Kernel extends ConsoleKernel
         
         // Optional: for testing, run every minute
         // $schedule->command('email:expiry-reminder')->everyMinute();
-        $schedule->command('mail:reset-available')
-         ->dailyAt('15:20')
+        $schedule->command('mail:reset-mail-available')
+         ->dailyAt('00:00')
         ->timezone('Asia/Kolkata');
         
     // For testing, you can uncomment this line to run every minute
