@@ -45,6 +45,7 @@ class HomeController extends Controller
         // print_r($response);die;
         $plans = Plan::with('features')
             ->where('is_active', true)
+            ->where('name', '!=', 'Trial') // Exclude trial plan from home page
             ->orderBy('price', 'asc')
             ->get();
         $faqs = HomeFaqs::index();
