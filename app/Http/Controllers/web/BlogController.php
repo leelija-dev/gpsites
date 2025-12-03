@@ -475,12 +475,6 @@ class BlogController extends Controller
         // Store temporary in session
         session(['selected_niches' => $niches]);
 
-        // Login required
-        // if (!Auth::check()) {
-        //     return redirect()->route('login')
-        //         ->with('error', 'Please login to see filtered blogs.');
-        // }
-
         $user = Auth::user();
 
         // Check active plan
@@ -509,9 +503,6 @@ class BlogController extends Controller
             }
         }
 
-        // if (!$isValidPlan) {
-        //     return redirect()->route('pricing')->with('error', 'Please purchase a valid plan first!');
-        // }
 
         // Build API Request
         $APIURL  = $this->APIBASEURL .'/api/blogs/search';
@@ -522,11 +513,9 @@ class BlogController extends Controller
             'dr_max' => $request->get('dr_max'),
             'dr_min' => $request->get('dr_min'),
             'traffic_min' => $request->get('traffic_min'),
-            'traffic_max' => $request->get('traffic_max'),
             'page' => $request->get('page', 1),
             // 'per_page' => 20,
         ]);
-        // print_r($response);die;
 
         if ($response->failed()) {
             return back()->with('error', 'API Failed: ' . $response->status());

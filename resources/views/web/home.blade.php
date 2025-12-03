@@ -171,7 +171,6 @@
                     <input type="hidden" id="dr-min-input" name="dr_min">
                     <input type="hidden" id="dr-max-input" name="dr_max">
                     <input type="hidden" id="traffic-min-input" name="traffic_min">
-                    <input type="hidden" id="traffic-max-input" name="traffic_max">
 
                     <button type="submit"
                         class="mt-10 w-full bg-primary hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition text-lg">
@@ -715,9 +714,9 @@
                 } else if (id.includes('-max')) {
                     slider.value = slider.max || 100; // fallback to 100 if no max
                 }
-                // Traffic: always full (200k+)
+                // Default selected traffic (50K)
                 else if (id === 'tar-single') {
-                    slider.value = slider.max || 200000;
+                    slider.value = 50000;
                 }
 
                 // Trigger visual update
@@ -973,7 +972,6 @@
         // Traffic
         const trafficVal = document.getElementById('tar-single').value;
         document.getElementById('traffic-min-input').value = trafficVal;
-        document.getElementById('traffic-max-input').value = trafficVal >= 200000 ? 999999 : trafficVal;
     });
 </script>
 
