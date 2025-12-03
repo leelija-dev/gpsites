@@ -370,12 +370,11 @@
                     </div>
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
-                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">{{ $plan->duration == 30 ? ($plan->duration / 30)
-                    : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}}
-
-                            {{-- <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">--}}{{$plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
+                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">
+                        {{-- {{ $plan->duration == 30 ? ($plan->duration / 30) : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}} --}}
+                        {{ $plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
-                        {{ $plan->mail_available ?? '0' }} Mail
+                        {{ $plan->mail_available ?? '0' }} Mail / Day
                     </span>
                 </div>
                 <div class="flex-1 mt-6">
@@ -385,30 +384,8 @@
                         <li>• {{ $feature->feature }}</li>
                         @endforeach
                     </ul>
-                    {{-- @else
-                <ul class="space-y-3 {{ $isHighlighted ? 'text-purple-100' : 'text-gray-600' }}">
-                    <li>• Feature 1</li>
-                    <li>• Feature 2</li>
-                    <li>• Feature 3</li>
-                    </ul> --}}
                     @endif
                 </div>
-
-                <!-- <div class="text-center my-10">
-                        <a href="{{ route('checkout') }}?plan={{ $plan->id }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
-                    </div> -->
-
-                <!-- @auth
-                <a href="{{ route('checkout') }}?plan={{ $plan->id }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
-                @else
-                <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
-                @endauth -->
-
-                <!-- @auth
-                <a href="{{ route('checkout', ['plan' => $plan->id]) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
-                @else
-                <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout', ['plan' => $plan->id])) }}" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} rounded-full w-full block">Get Started</a>
-                @endauth -->
                 <div class="mt-8">
                     @auth
                     <form method="POST" action="{{ route('checkout') }}" class="w-full">
@@ -440,13 +417,12 @@
 
                 <!-- Left Content -->
                 <div class="flex-1">
-                    <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
- font-bold text-gray-900  mb-2">
+                    <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900 mb-2">
                         Start Your Free Trial Today
                     </h2>
 
                     <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600 mb-6">
-                        Experience our powerful outreach system with no commitment.
+                        {{ $trialPlan->description }}
                     </p>
 
                     <!-- Trial Details -->
@@ -455,16 +431,18 @@
                             {{ $trialPlan->name }}
                         </h3>
 
-                        <div class="text-4xl font-bold text-gray-900 mb-3">
-                            ${{ number_format($trialPlan->price) }}
-                            <span class="text-lg font-normal text-gray-600">
-                                / {{ $trialPlan->duration }} days
-                            </span>
-                        </div>
+                        {{-- <div class="text-4xl font-bold text-gray-900 mb-3">
+                            <span class="text-lg font-normal text-gray-600">/ {{ $trialPlan->duration }} days</span>
+                        </div> --}}
 
-                        <p class="text-gray-600 mb-4">
-                            {{ $trialPlan->mail_available }} Mail Credits Included
+                        <p class="text-lg font-normal text-gray-600 mb-3">Free for {{ $trialPlan->duration }} days</span>
                         </p>
+
+                        <p class="text-gray-600 flex mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-2 text-indigo-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                            </svg>
+                            {{ $trialPlan->mail_available }} Mail Credits Included</p>
 
                         @if($trialPlan->features && $trialPlan->features->count() > 0)
                         <ul class="space-y-2 text-gray-700 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg">
@@ -509,9 +487,7 @@
                         </form>
                         @endauth
 
-                        <p class="text-xs text-gray-500">
-                            No credit card required · Cancel anytime
-                        </p>
+                        <p class="text-xs text-gray-500">No credit card required</p>
                     </div>
                 </div>
 
