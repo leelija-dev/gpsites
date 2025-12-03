@@ -277,7 +277,7 @@ $loggedUserId = Auth::id();
                             
                                 {{ $blog['site_url'] ?? '' }}
                             </td> --}}
-                             <td class="px-4 py-4">
+                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                     <div class="flex items-start gap-3">
                                        
                                         <div>

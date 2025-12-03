@@ -24,7 +24,7 @@
                                 <!-- Row -->
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-4 py-4">{{ $loop->iteration }}</td>
-                                    <td class="px-4 py-4">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                         <div class="flex items-start gap-3">
 
                                             <div>
