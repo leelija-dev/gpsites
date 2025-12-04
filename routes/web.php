@@ -122,9 +122,7 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
-    Route::get('/dashboard', function () {
-        return view('web.user.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\web\UserController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
