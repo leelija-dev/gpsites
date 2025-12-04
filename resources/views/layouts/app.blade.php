@@ -13,6 +13,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+    
+    
     <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('js/summer-note/summer-note.min.js')}}"></script>
     <script src="{{asset('js/sweet-alert/sweet-alert.min.js')}}"></script>

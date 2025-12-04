@@ -101,11 +101,10 @@
                                 <input type="text" id="zip" placeholder=" " value="" required />
                                 <label for="zip">Zip / Postal Code</label>
                             </div>
-
                             <div class="floating-label-group">
-                                <input type="text" id="phone" placeholder=" " value="+123456789111" required />
-                                <label for="phone">Phone</label>
-                            </div>
+    <input type="tel" id="phone" placeholder=" " value="" required />
+    <!-- <label for="phone"></label> -->
+</div>
                         </div>
 
                         <!-- Checkboxes -->
@@ -422,13 +421,232 @@
 @section('scripts')
 <script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=USD&components=buttons&enable-funding=venmo&disable-funding=paylater"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Script for intl-tel-input -->
+<!-- Script for intl-tel-input -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Pass plan data from PHP to JavaScript
-        // const planData = @json($plan ?? null);
         const planData = @json($planModel ?? null);
         const trialMode = @json($trialMode ?? false);
+        
+        // Initialize intl-tel-input for phone field
+        const phoneInput = document.querySelector("#phone");
+        let iti = null;
+        
+        // Phone validation configuration
+        const PHONE_CONFIG = {
+            MAX_LENGTH: 15, // Maximum digits for phone number
+            ALLOWED_CHARS: /^[0-9+\-\s()]*$/, // Only allow digits, plus, hyphen, space, parentheses
+            DIGITS_ONLY: /^[0-9]*$/ // For final validation - digits only
+        };
+        
+        if (phoneInput && typeof window.intlTelInput === 'function') {
+            // Restrict input to digits and basic phone characters
+            phoneInput.addEventListener('input', function(e) {
+                let value = this.value;
+                
+                // Remove any non-allowed characters
+                const cleaned = value.replace(/[^0-9+\-\s()]/g, '');
+                
+                // Count digits only for max length check
+                const digitCount = (cleaned.match(/[0-9]/g) || []).length;
+                
+                // If digits exceed max length, truncate
+                if (digitCount > PHONE_CONFIG.MAX_LENGTH) {
+                    // Remove excess digits
+                    let digitsOnly = cleaned.replace(/[^0-9]/g, '');
+                    digitsOnly = digitsOnly.substring(0, PHONE_CONFIG.MAX_LENGTH);
+                    
+                    // Reconstruct with formatting characters if needed
+                    let result = '';
+                    let digitIndex = 0;
+                    
+                    for (let i = 0; i < cleaned.length && digitIndex < digitsOnly.length; i++) {
+                        if (/[0-9]/.test(cleaned[i])) {
+                            result += digitsOnly[digitIndex];
+                            digitIndex++;
+                        } else if (/[+\-\s()]/.test(cleaned[i])) {
+                            result += cleaned[i];
+                        }
+                    }
+                    
+                    this.value = result;
+                } else if (cleaned !== value) {
+                    this.value = cleaned;
+                }
+                
+                // Update filled state
+                if (this.value.trim()) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+            
+            // Prevent paste of invalid characters
+            phoneInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                
+                // Get pasted text
+                const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                
+                // Clean the pasted text
+                let cleaned = pastedText.replace(/[^0-9+\-\s()]/g, '');
+                
+                // Count digits and check max length
+                const digitCount = (cleaned.match(/[0-9]/g) || []).length;
+                
+                if (digitCount > PHONE_CONFIG.MAX_LENGTH) {
+                    // Take only first MAX_LENGTH digits
+                    const digitsOnly = cleaned.replace(/[^0-9]/g, '');
+                    cleaned = digitsOnly.substring(0, PHONE_CONFIG.MAX_LENGTH);
+                    
+                    // Try to preserve formatting if it's a simple phone number
+                    if (cleaned.length <= 10) {
+                        // Format as (XXX) XXX-XXXX
+                        cleaned = cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                    }
+                }
+                
+                // Insert at cursor position
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                const currentValue = this.value;
+                
+                this.value = currentValue.substring(0, start) + 
+                             cleaned + 
+                             currentValue.substring(end);
+                
+                // Move cursor to end of inserted text
+                this.selectionStart = this.selectionEnd = start + cleaned.length;
+                
+                // Update filled state
+                if (this.value.trim()) {
+                    this.classList.add('filled');
+                }
+            });
+            
+            // Initialize intl-tel-input after setting up our validation
+            iti = window.intlTelInput(phoneInput, {
+                initialCountry: "in",
+                preferredCountries: ["gb", "us", "in"],
+                separateDialCode: true,
+                allowDropdown: true,
+                autoPlaceholder: "aggressive",
+                formatOnDisplay: true,
+                nationalMode: false,
+                // Custom validation
+                customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+                    return selectedCountryPlaceholder.replace(/[^\d]/g, '').length + " digits maximum";
+                },
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
+            });
+            
+            // Format the number on blur if valid
+            phoneInput.addEventListener('blur', function() {
+                if (iti && iti.isValidNumber()) {
+                    const number = iti.getNumber();
+                    phoneInput.value = number;
+                }
+                
+                // Additional validation for digits only
+                const digitsOnly = this.value.replace(/[^0-9]/g, '');
+                if (digitsOnly.length > PHONE_CONFIG.MAX_LENGTH) {
+                    // Truncate to max length
+                    this.value = digitsOnly.substring(0, PHONE_CONFIG.MAX_LENGTH);
+                }
+                
+                if (this.value.trim()) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+            
+            // Set initial filled state for phone
+            if (phoneInput.value) {
+                phoneInput.classList.add('filled');
+            }
+        }
 
+        // Update the validateField function for phone validation
+        function validateField(input) {
+            const value = input.value.trim();
+            const id = input.id;
+            clearError(input);
+
+            if (input.hasAttribute('required') && !value) {
+                showError(input, 'This field is required');
+                return false;
+            }
+            
+            if (id === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                showError(input, 'Please enter a valid email');
+                return false;
+            }
+            
+            if (id === 'phone' && value) {
+                // First, check with intl-tel-input validation if available
+                if (iti) {
+                    if (!iti.isValidNumber()) {
+                        showError(input, 'Please enter a valid phone number');
+                        return false;
+                    }
+                    
+                    // Additional validation for digit count
+                    const digitsOnly = value.replace(/[^0-9]/g, '');
+                    
+                    if (digitsOnly.length > PHONE_CONFIG.MAX_LENGTH) {
+                        showError(input, `Phone number cannot exceed ${PHONE_CONFIG.MAX_LENGTH} digits`);
+                        return false;
+                    }
+                    
+                    if (digitsOnly.length < 6) { // Minimum reasonable length for a phone number
+                        showError(input, 'Phone number is too short');
+                        return false;
+                    }
+                    
+                    if (!PHONE_CONFIG.DIGITS_ONLY.test(digitsOnly)) {
+                        showError(input, 'Phone number can only contain digits');
+                        return false;
+                    }
+                } else {
+                    // Fallback validation without intl-tel-input
+                    const digitsOnly = value.replace(/[^0-9]/g, '');
+                    
+                    if (!PHONE_CONFIG.ALLOWED_CHARS.test(value)) {
+                        showError(input, 'Only digits and basic phone characters (+, -, (, ), space) are allowed');
+                        return false;
+                    }
+                    
+                    if (digitsOnly.length > PHONE_CONFIG.MAX_LENGTH) {
+                        showError(input, `Phone number cannot exceed ${PHONE_CONFIG.MAX_LENGTH} digits`);
+                        return false;
+                    }
+                    
+                    if (digitsOnly.length < 6) {
+                        showError(input, 'Phone number is too short');
+                        return false;
+                    }
+                    
+                    if (!PHONE_CONFIG.DIGITS_ONLY.test(digitsOnly)) {
+                        showError(input, 'Phone number must contain only digits');
+                        return false;
+                    }
+                }
+            }
+            
+            if (id === 'zip' && value && !/^\d{6}(-\d{4})?$/.test(value)) {
+                showError(input, 'Invalid ZIP code');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // ... rest of your existing code remains the same ...
         const form = document.querySelector('form');
         const inputs = document.querySelectorAll('.floating-label-group input, .floating-label-group select');
         const selectedWrapper = document.getElementById('selected-package-wrapper');
@@ -442,7 +660,7 @@
             style: 'currency',
             currency: 'USD'
         });
-        // Track validation-blocked PayPal attempts to avoid showing payment error
+        
         let validationBlocked = false;
 
         // === LOAD COUNTRIES FROM API ===
@@ -451,27 +669,21 @@
             if (!countrySelect) return;
 
             try {
-                // Show loading state
                 countrySelect.innerHTML = '<option value="" disabled>Loading countries...</option>';
 
-                // Fetch countries from REST Countries API
                 const response = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2');
                 if (!response.ok) {
                     throw new Error('Failed to fetch countries');
                 }
 
                 const countries = await response.json();
-
-                // Sort countries alphabetically by common name
                 countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
-                // Clear and add default option
                 countrySelect.innerHTML = '<option value="" disabled selected>Select a country</option>';
 
-                // Add countries to select
                 countries.forEach(country => {
                     const option = document.createElement('option');
-                    option.value = country.cca2; // Use ISO 3166-1 alpha-2 code
+                    option.value = country.cca2;
                     option.textContent = country.name.common;
                     countrySelect.appendChild(option);
                 });
@@ -481,67 +693,22 @@
             } catch (error) {
                 console.error('Error loading countries:', error);
 
-                // Fallback: Add some common countries if API fails
-                const fallbackCountries = [{
-                        code: 'US',
-                        name: 'United States'
-                    },
-                    {
-                        code: 'CA',
-                        name: 'Canada'
-                    },
-                    {
-                        code: 'GB',
-                        name: 'United Kingdom'
-                    },
-                    {
-                        code: 'AU',
-                        name: 'Australia'
-                    },
-                    {
-                        code: 'DE',
-                        name: 'Germany'
-                    },
-                    {
-                        code: 'FR',
-                        name: 'France'
-                    },
-                    {
-                        code: 'IT',
-                        name: 'Italy'
-                    },
-                    {
-                        code: 'ES',
-                        name: 'Spain'
-                    },
-                    {
-                        code: 'NL',
-                        name: 'Netherlands'
-                    },
-                    {
-                        code: 'BE',
-                        name: 'Belgium'
-                    },
-                    {
-                        code: 'IN',
-                        name: 'India'
-                    },
-                    {
-                        code: 'JP',
-                        name: 'Japan'
-                    },
-                    {
-                        code: 'CN',
-                        name: 'China'
-                    },
-                    {
-                        code: 'BR',
-                        name: 'Brazil'
-                    },
-                    {
-                        code: 'MX',
-                        name: 'Mexico'
-                    }
+                const fallbackCountries = [
+                    { code: 'US', name: 'United States' },
+                    { code: 'CA', name: 'Canada' },
+                    { code: 'GB', name: 'United Kingdom' },
+                    { code: 'AU', name: 'Australia' },
+                    { code: 'DE', name: 'Germany' },
+                    { code: 'FR', name: 'France' },
+                    { code: 'IT', name: 'Italy' },
+                    { code: 'ES', name: 'Spain' },
+                    { code: 'NL', name: 'Netherlands' },
+                    { code: 'BE', name: 'Belgium' },
+                    { code: 'IN', name: 'India' },
+                    { code: 'JP', name: 'Japan' },
+                    { code: 'CN', name: 'China' },
+                    { code: 'BR', name: 'Brazil' },
+                    { code: 'MX', name: 'Mexico' }
                 ];
 
                 countrySelect.innerHTML = '<option value="" disabled selected>Select a country</option>';
@@ -556,45 +723,6 @@
             }
         }
 
-        // === PREVENT UNWANTED CHARACTERS IN PHONE FIELD WHILE TYPING ===
-        const phoneInput = document.getElementById('phone');
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function(e) {
-                // Allow only: digits, +, and -
-                let value = this.value.replace(/[^0-9+-]/g, '');
-
-                // Prevent multiple + signs (only allow at start)
-                const plusCount = (value.match(/\+/g) || []).length;
-                if (plusCount > 1) {
-                    value = value.replace(/\+/g, (match, offset) => offset === 0 ? '+' : '');
-                }
-
-                // Prevent + sign anywhere except at the beginning
-                if (value.includes('+') && value.indexOf('+') !== 0) {
-                    value = value.replace(/\+/g, '');
-                }
-
-                this.value = value;
-            });
-
-            // Optional: Auto-format as user types (e.g. 123-456-7890)
-            phoneInput.addEventListener('keyup', function(e) {
-                let value = this.value.replace(/[^0-9+-]/g, '');
-                if (!value.startsWith('+')) {
-                    // Remove all non-digits for formatting
-                    let digits = value.replace(/\D/g, '');
-                    if (digits.length > 10) digits = digits.slice(0, 10);
-                    if (digits.length <= 3) {
-                        this.value = digits;
-                    } else if (digits.length <= 6) {
-                        this.value = digits.slice(0, 3) + '-' + digits.slice(3);
-                    } else {
-                        this.value = digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6);
-                    }
-                }
-            });
-        }
-
         // Initialize PayPal Buttons
         let paypalButtons;
         let selectedPackage = null;
@@ -605,11 +733,8 @@
                 return;
             }
 
-            // Check if PayPal SDK is loaded
             if (typeof paypal === 'undefined') {
                 console.warn('PayPal SDK not loaded yet, retrying...');
-
-                // Retry after a short delay
                 setTimeout(() => {
                     if (typeof paypal === 'undefined') {
                         console.error('PayPal SDK failed to load');
@@ -620,22 +745,19 @@
                             confirmButtonColor: '#ef4444'
                         });
                     } else {
-                        // Try to initialize again
                         initPayPalButtons();
                     }
                 }, 2000);
                 return;
             }
 
-            // Destroy existing buttons if they exist
             if (paypalButtons) {
                 paypalButtons.close();
             }
 
-            // Check if a package is selected
             const packageElement = selectedWrapper.querySelector('[data-item="1"]');
             if (!packageElement) {
-                return; // No package selected
+                return;
             }
 
             selectedPackage = {
@@ -643,10 +765,8 @@
                 price: parseFloat(packageElement.dataset.price)
             };
 
-            // Render PayPal buttons
             paypalButtons = paypal.Buttons({
                 createOrder: function(data, actions) {
-                    // Validate form before creating PayPal order
                     let isValid = true;
                     inputs.forEach(input => {
                         if (!validateField(input)) isValid = false;
@@ -674,7 +794,6 @@
                         throw new Error(errorMessage);
                     }
 
-                    // Create order via AJAX
                     return fetch('{{ route("checkout.create-order") }}', {
                             method: 'POST',
                             headers: {
@@ -705,7 +824,6 @@
                             return data.order_id;
                         })
                         .catch(error => {
-                            // Re-throw with more user-friendly message
                             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                                 throw new Error('Network error. Please check your internet connection and try again.');
                             }
@@ -713,7 +831,6 @@
                         });
                 },
                 onApprove: function(data, actions) {
-                    // Validate that we have an order ID
                     if (!data.orderID) {
                         console.error('No PayPal order ID received');
                         Swal.fire({
@@ -725,7 +842,6 @@
                         return;
                     }
 
-                    // Show processing message
                     Swal.fire({
                         title: 'Processing Payment...',
                         text: 'Please wait while we process your payment.',
@@ -736,7 +852,6 @@
                         }
                     });
 
-                    // Capture the payment
                     return fetch('/checkout/capture-payment', {
                             method: 'POST',
                             headers: {
@@ -779,7 +894,6 @@
                         });
                 },
                 onCancel: function(data) {
-                    // Show cancellation message before redirect
                     Swal.fire({
                         icon: 'info',
                         title: 'Payment Cancelled',
@@ -790,18 +904,8 @@
                         window.location.href = '/checkout/cancel';
                     });
                 },
-                // onError: function(err) {
-                //     console.error('PayPal error:', err);
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Payment Error',
-                //         text: 'There was an error with PayPal. Please try again.',
-                //         confirmButtonColor: '#ef4444'
-                //     });
-                // }
                 onError: function(err) {
                     console.error('PayPal error:', err);
-                    // Suppress PayPal error UI if the flow was blocked by client-side validation
                     if (validationBlocked) {
                         validationBlocked = false;
                         return;
@@ -886,33 +990,8 @@
             if (errorEl) errorEl.remove();
         }
 
-        function validateField(input) {
-            const value = input.value.trim();
-            const id = input.id;
-            clearError(input);
-
-            if (input.hasAttribute('required') && !value) {
-                showError(input, 'This field is required');
-                return false;
-            }
-            if (id === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                showError(input, 'Please enter a valid email');
-                return false;
-            }
-            if (id === 'phone' && value && !/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value.replace(/\s/g, ''))) {
-                showError(input, 'Invalid phone number');
-                return false;
-            }
-            if (id === 'zip' && value && !/^\d{6}(-\d{4})?$/.test(value)) {
-                showError(input, 'Invalid ZIP code');
-                return false;
-            }
-            return true;
-        }
-
         // REPLACE PACKAGE - ONLY ONE PACKAGE ALLOWED AT A TIME
         function replacePackage(pkg) {
-            // Remove all existing packages
             selectedWrapper.innerHTML = '';
 
             const wasEmpty = selectedWrapper.children.length === 0;
@@ -923,69 +1002,21 @@
             row.dataset.price = pkg.price;
             row.dataset.packageId = pkg.id;
 
-            // row.innerHTML = `
-            //     <div class="flex flex-col smx:flex-row smx:items-center gap-2 sm:gap-6 w-full ">
-            //       <!-- Left side: Icon + Package Info -->
-            //       <div class="flex items-center gap-4 flex-1 min-w-0 xs:flex-row flex-col ">
-            //         <!-- Icon -->
-            //         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
-            //           Check
-            //         </div>
-
-            //         <!-- Package Details -->
-            //         <div class="xs:flex-1 xs:min-w-0 xs:w-auto w-full xs:text-left text-center">
-            //           <p class="package-name font-bold text-gray-800 text-lg truncate ">
-            //             ${pkg.name}
-            //           </p>
-            //           <p class="text-sm text-gray-600 mt-1">
-            //             <span class="font-medium">Package ID:</span>
-            //             <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs package-id ml-1">
-            //               ${pkg.id.toUpperCase()}
-            //             </span>
-            //           </p>
-            //           <p class="text-xs text-gray-500 mt-1">
-            //             $${pkg.price.toLocaleString()}/month • Billed Annually
-            //           </p>
-            //         </div>
-            //       </div>
-
-            //       <!-- Right side: Price + Remove button -->
-            //       <div class="flex items-center  xs:justify-end justify-center  gap-4 mt-2 smxl:mt-0">
-            //         <p class="package-price text-[1.2rem] font-bold text-gray-900 whitespace-nowrap ">
-            //           ${fmt.format(pkg.price)}
-            //         </p>
-            //         <button 
-            //           type="button" 
-            //           class="remove-pkg text-red-500 hover:text-red-700 text-4xl font-light leading-none absolute top-0 right-[3px]"
-            //           aria-label="Remove package">
-            //           ×
-            //         </button>
-            //       </div>
-            //     </div>
-            // `;
-
             row.innerHTML = `
                 <div class="flex flex-col smx:flex-row smx:items-center gap-2 sm:gap-6 w-full ">
-                  <!-- Left side: Icon + Package Info -->
                   <div class="flex items-center gap-4 flex-1 min-w-0 xs:flex-row flex-col ">
-                    <!-- Icon -->
                     <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
                       Check
                     </div>
-
-                    <!-- Package Details -->
                     <div class="xs:flex-1 xs:min-w-0 xs:w-auto w-full xs:text-left text-center">
                       <p class="package-name font-bold text-gray-800 text-lg truncate ">
                         ${pkg.name}
                       </p>
-                    
                       <p class="text-xs text-gray-500 mt-1">
                         $${pkg.price.toLocaleString()}
                       </p>
                     </div>
                   </div>
-
-                  <!-- Right side: Price only (removed cross button) -->
                   <div class="flex items-center xs:justify-end justify-center mt-2 smxl:mt-0">
                     <p class="package-price text-[1.2rem] font-bold text-gray-900 whitespace-nowrap ">
                       ${fmt.format(pkg.price)}
@@ -997,17 +1028,7 @@
             selectedWrapper.appendChild(row);
             updateTotals();
 
-            // Initialize PayPal buttons after package selection
             setTimeout(initPayPalButtons, 100);
-
-            // Feedback message
-            // Swal.fire({
-            //     icon: 'success',
-            //     title: wasEmpty ? 'Package Selected!' : 'Package Changed!',
-            //     text: `${pkg.name} (ID: ${pkg.id.toUpperCase()})`,
-            //     timer: 1800,
-            //     showConfirmButton: false
-            // });
         }
 
         // "Get Started" buttons inside modal - REPLACE package
@@ -1024,29 +1045,9 @@
 
                 replacePackage(pkg);
 
-                // Close modal
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             });
-        });
-
-        // Remove package (X button)
-        selectedWrapper.addEventListener('click', e => {
-            if (e.target.classList.contains('remove-pkg')) {
-                e.target.closest('[data-item="1"]').remove();
-                updateTotals();
-
-                if (selectedWrapper.children.length === 0) {
-                    if (subtotalEl) subtotalEl.textContent = '$0.00';
-                    if (grandTotalEl) grandTotalEl.textContent = '$0.00';
-                    if (payBtn) payBtn.textContent = 'Pay $0.00';
-                    // Remove PayPal buttons when no package selected
-                    const paypalContainer = document.getElementById('paypal-button-container');
-                    if (paypalContainer) {
-                        paypalContainer.innerHTML = '<p class="text-gray-500 text-sm">Please select a package to proceed with payment</p>';
-                    }
-                }
-            }
         });
 
         function updateTotals() {
@@ -1104,12 +1105,10 @@
 
             let isValid = true;
 
-            // Validate inputs
             inputs.forEach(input => {
                 if (!validateField(input)) isValid = false;
             });
 
-            // Terms checkbox
             const termsCheckbox = document.querySelector('input[type="checkbox"][required]');
             const termsLabel = termsCheckbox?.closest('label');
 
@@ -1126,7 +1125,6 @@
                 }
             }
 
-            // Must have exactly one package
             if (selectedWrapper.children.length === 0) {
                 isValid = false;
             }
@@ -1147,7 +1145,6 @@
                 return;
             }
 
-            // Confirmation dialog
             const result = await Swal.fire({
                 icon: 'question',
                 title: 'Confirm Your Order',
@@ -1189,7 +1186,6 @@
                     timer: 3000,
                     showConfirmButton: false
                 });
-                // form.submit(); // Uncomment when live
             }
         });
 
@@ -1209,12 +1205,10 @@
             trialCompleteBtn.addEventListener('click', async function() {
                 let isValid = true;
 
-                // Validate all inputs
                 inputs.forEach(input => {
                     if (!validateField(input)) isValid = false;
                 });
 
-                // Terms checkbox
                 const termsCheckbox = document.querySelector('input[type="checkbox"][required]');
                 const termsLabel = termsCheckbox?.closest('label');
 
@@ -1246,7 +1240,6 @@
                     return;
                 }
 
-                // Show processing message
                 Swal.fire({
                     title: 'Activating Trial...',
                     text: 'Please wait while we activate your trial.',
@@ -1258,7 +1251,6 @@
                 });
 
                 try {
-                    // Create trial order and activate trial
                     const response = await fetch('/checkout/free-complete', {
                         method: 'POST',
                         headers: {
@@ -1278,7 +1270,6 @@
                     const data = await response.json();
 
                     if (data.success) {
-                        // Redirect to success page
                         window.location.href = '/checkout/success?trial=1';
                     } else {
                         throw new Error(data.message || 'Failed to activate trial');
@@ -1298,7 +1289,6 @@
 
         // Auto-select plan 14 for trial mode
         if (@json($trialMode ?? false)) {
-            // Find plan with id 14 from allPlans
             const allPlans = @json($allPlans ?? []);
             const trialPlan = allPlans.find(plan => plan.id == {{ config('paypal.trial_plan_id') }});
 
@@ -1317,7 +1307,6 @@
 
         // Load countries on page load
         loadCountries();
-
         updateTotals();
     });
 </script>
