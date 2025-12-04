@@ -157,7 +157,7 @@ class BlogController extends Controller
 
         return view('web.user.client_Mail', compact('id', 'isValidPlan', 'total_mail_available'));
     }
-    public function sendMail(Request $request)
+    public function sendMail(Request $request) //grpup mail
     {
         $request->validate([
             'subject' => 'required|string|max:255',
@@ -188,6 +188,15 @@ class BlogController extends Controller
                 }
             }
         }
+        if(count($selectedIds) == 1){
+            $blogId = $selectedIds[0];
+            $blog = collect($blogs['data'])->firstWhere('blog_id', $blogId);
+            $email=$blog['contact_email_id'] ?? '';
+            if($email==null){
+                return redirect()->route('blog.index')->with('error', 'No email address available at the moment.');
+            }
+        }
+        
         foreach ($selectedIds as $id) {
             $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
 
@@ -213,14 +222,7 @@ class BlogController extends Controller
                 $messageBody,
                 $attachment // this is an array of strings (paths)
             ));
-                if (Mail::failures()) {
-                Log::error('Mail sending failed.', [
-                    'email' => $email,
-                    'failures' => Mail::failures()
-                    
-                ]);
-                continue;
-                }
+                
                 UserMailHistory::create([
                     'user_id' => $user_id,
                     'site_url' => $blog['site_url'],

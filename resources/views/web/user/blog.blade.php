@@ -854,7 +854,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                     return;
@@ -868,7 +868,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                     return;
@@ -904,7 +904,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                     return;
@@ -919,7 +919,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                 } else {
