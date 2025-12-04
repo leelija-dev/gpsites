@@ -191,7 +191,7 @@ class BlogController extends Controller
         foreach ($selectedIds as $id) {
             $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
 
-            $email = $blog['updated_by'];
+            $email = $blog['contact_email_id'];
 
             // $email = decrypt($email);
             $subject = $request->input('subject');
@@ -376,7 +376,7 @@ class BlogController extends Controller
 
         // $blog = collect($blogs['data'])->where('blog_id', (int) $id);
 
-        $email = $blog['updated_by'];
+        $email = $blog['contact_email_id'];
         $subject = $request->input('subject');
         $messageBody = $request->input('message');
         $messageForDB = strip_tags($messageBody);
@@ -431,7 +431,7 @@ class BlogController extends Controller
         }
 
         // Send email
-        if ($email === null) {
+        if ($email == null) {
 
             Log::error('Email is null. Mail cannot be sent.', [
                 'email' => $email,
@@ -448,15 +448,6 @@ class BlogController extends Controller
             $attachment // this is an array of strings (paths)
         ));
         // Check if mail failed
-        if (Mail::failures()) {
-            Log::error('Mail sending failed.', [
-                'email' => $email,
-                'failures' => Mail::failures()
-            ]);
-
-            return redirect()->route('blog.index')
-                ->with('error', 'Mail could not be sent.');
-        }
         }catch (\Exception $e) {
 
             Log::error('Mail sending exception: '.$e->getMessage(), [
