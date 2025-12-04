@@ -854,7 +854,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                     return;
@@ -868,7 +868,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                     return;
@@ -904,7 +904,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                     return;
@@ -919,7 +919,7 @@ $loggedUserId = Auth::id();
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "#";
+                            window.location.href = "/";
                         }
                     });
                 } else {
@@ -1075,4 +1075,35 @@ $loggedUserId = Auth::id();
         });
     </script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (session('error'))
+<script>
+Swal.fire({
+    toast: true,
+    position: 'top-end',
+    icon: 'error',
+    title: "{{ session('error') }}",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+});
+</script>
+@endif
+@if (session('success'))
+<script>
+Swal.fire({
+    toast: true,
+    position: 'top-end',
+    icon: 'success',
+    title: "{{ session('success') }}",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+});
+</script>
+@endif
+
+   
 @endsection

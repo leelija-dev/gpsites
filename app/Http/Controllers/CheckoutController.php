@@ -176,7 +176,28 @@ class CheckoutController extends Controller
                 'billing_info' => $request->billing_info ?: [],
                 'payment_details' => json_encode(['type' => 'trial', 'activated_at' => now()])
             ]);
-
+                    $userEmail = $order->user->email;
+                    $userSubject = "Your plan '{$plan->name}' is activated!";
+                    $userBody = "Hello {$order->user->name},\n\n"
+                        . "Your order for the plan '{$plan->name}' has been successfully completed.\n"
+                        . "Transaction ID: {$order->transaction_id}\n"
+                        . "Plan Duration: {$plan->duration} Day\n"
+                        . "Mail Credits: {$plan->mail_available}\n\n"
+                        . "Thank you for choosing " . config('app.name') . ".";
+                    if($userEmail!=null){
+                    try{
+                        Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
+                        $message->to($userEmail)
+                            ->subject($userSubject);
+                    });
+                    }catch(\Exception $e)
+                    {
+                        Log::error('Mail sending exception: '.$e->getMessage(), [
+                            'email' => $userEmail,
+                            'exception' => $e
+                        ]);
+                    }
+                    }
             // Create mail credits for trial
             MailAvailable::create([
                 'user_id' => $user->id,
@@ -344,11 +365,14 @@ class CheckoutController extends Controller
                         . "Plan Duration: {$plan->duration} Day\n"
                         . "Mail Credits: {$plan->mail_available}\n\n"
                         . "Thank you for choosing " . config('app.name') . ".";
-
+                    if($userEmail!=null){
                     Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
                         $message->to($userEmail)
                             ->subject($userSubject);
                     });
+                    }
+                    
+
                     //admin mail 
                     $adminEmail = config('mail.admin_email'); // set in .env
                     $adminSubject = "New Plan Ordered";
@@ -357,11 +381,15 @@ class CheckoutController extends Controller
                         . "Amount: {$order->amount} {$order->currency}\n"
                         . "Transaction ID: {$order->transaction_id}\n"
                         . "Paid at: " . now()->toDateTimeString();
-
-                    Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
+                    if($adminEmail!=null){
+                        
+                    $mail_status=Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
                         $message->to($adminEmail)
                             ->subject($adminSubject);
                     });
+                    
+                     }
+
                     //end mail
 
                     // Update user's plan

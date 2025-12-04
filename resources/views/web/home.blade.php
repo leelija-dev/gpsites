@@ -365,7 +365,7 @@
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
                     <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">
-                        {{-- {{ $plan->duration == 30 ? ($plan->duration / 30) : ($plan->duration == 31 ? ($plan->duration / 31) : $plan->duration )}} --}}
+                        {{ $plan->duration == 30 ? null : ($plan->duration == 31 ? null : $plan->duration )}}
                         {{ $plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
                         {{ $plan->mail_available ?? '0' }} Mail/day
