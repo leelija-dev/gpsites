@@ -16,11 +16,11 @@ public function mailHistory($id)
     $mails = UserMailHistory::where('user_id', $userId)->orderBy('created_at', 'desc')->paginate(10);
 
     // Pass to the view
-    return view('web.mail-history', compact('mails'));
+    return view('web.user.mail-history', compact('mails'));
 }
 public function viewMail($id){
     $id=decrypt($id);
     $mail=UserMailHistory::find($id);
-    return view('web.view-mail',compact('mail'));
+    return view('web.user.view-mail',compact('mail'));
 }
 }

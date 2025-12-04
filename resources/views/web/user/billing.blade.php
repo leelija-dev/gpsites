@@ -1,11 +1,12 @@
+@extends('layouts.app')
+
+@section('title','Billing')
+@section('content')
+
 @php
     use Illuminate\Support\Facades\Auth;
     $loggedUserId = Auth::id();
 @endphp
-
-<x-app-layout>
-    <!-- Tailwind CDN (remove if already included in your app) -->
-    
 
     <style>
         a {
@@ -34,7 +35,7 @@
                                     Plan Order ID
                                 </th>
                                 <th scope="col" class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider">
-                                    Total Mail
+                                    Mail/day
                                 </th>
                                 <th scope="col" class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider">
                                     Plan Status
@@ -68,7 +69,11 @@
                                             #{{ $bill->id ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
+                                            @if($bill->plan->price == 0)
+                                            {{ $bill->mailAvailable->total_mail ?? 0 }} (Total)
+                                            @else
                                             {{ $bill->mailAvailable->total_mail ?? 0 }}
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-center">
                                             @if($isActive)
@@ -112,4 +117,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

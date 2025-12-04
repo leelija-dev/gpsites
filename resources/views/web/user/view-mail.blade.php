@@ -1,4 +1,7 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('title','View Mail')
+@section('content')
     <style>
         /* Remove underline from all links */
         a {
@@ -103,4 +106,4 @@
             });
         });
     </script>
-</x-app-layout>
+@endsection

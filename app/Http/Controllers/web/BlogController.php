@@ -71,7 +71,7 @@ class BlogController extends Controller
 
         // If no valid paid plan, deny access (trial users cannot access blog content)
         if (!$isValidPlan) {
-            return view('web.blog', compact('isValidPlan'));
+            return view('web.user.blog', compact('isValidPlan'));
         }
         // $plan_expire=$plan_id->duration ?? 0;
         if ($response->failed()) {
@@ -100,7 +100,7 @@ class BlogController extends Controller
             ['path' => url()->current()]
         );
 
-        return view('web.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail'));
+        return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail'));
     }
     public function viewMail($id)
     {
@@ -149,12 +149,12 @@ class BlogController extends Controller
                 $total_mail = 0;
             }
         } else {
-            return view('web.client_Mail', compact('isValidPlan'));
+            return view('web.user.client_Mail', compact('isValidPlan'));
         }
 
 
 
-        return view('web.client_Mail', compact('id', 'isValidPlan', 'total_mail_available'));
+        return view('web.user.client_Mail', compact('id', 'isValidPlan', 'total_mail_available'));
     }
     public function sendMail(Request $request)
     {

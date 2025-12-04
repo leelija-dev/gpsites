@@ -1,16 +1,12 @@
+@extends('layouts.app')
+@section('title', 'Blogs')
 @php
 use Illuminate\Support\Facades\Auth;
 $loggedUserId = Auth::id();
 // or Auth::user()->id
 @endphp
-<x-app-layout>
 
-
-
-
-
-
-
+@section('content')
 
 
 
@@ -205,7 +201,7 @@ $loggedUserId = Auth::id();
         <!-- Main content -->
         <div class="p-4 md:p-6">
             @if ($isValidPlan)
-            @if ($total_mail_available)
+            {{-- @if ($total_mail_available) --}}
             <div class="space-y-4 md:space-y-0 md:flex md:items-center md:justify-between">
                 <!-- Search Section -->
                 <div class="flex smxl:flex-row flex-col gap-2 items-center ">
@@ -378,7 +374,7 @@ $loggedUserId = Auth::id();
             {{ $pagination->links('pagination::bootstrap-5') }}
         </div>
         @endif
-        @else
+        {{-- @else
         <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
             <h4 class="text-xl font-semibold text-gray-700 mb-4">
                 You have already used all mail services!
@@ -390,7 +386,7 @@ $loggedUserId = Auth::id();
                 </button>
             </a>
         </div>
-        @endif
+        @endif --}}
         @else
         <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
             <h4 class="text-xl font-semibold text-gray-700 mb-4">
@@ -1079,4 +1075,4 @@ $loggedUserId = Auth::id();
         });
     </script>
 
-</x-app-layout>
+@endsection

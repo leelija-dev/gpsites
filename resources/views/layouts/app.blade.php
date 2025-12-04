@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex, nofollow">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title') - {{ config('app.name') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -48,7 +48,8 @@
 
                 <!-- Page Content -->
                 <main>
-                    {{ $slot }}
+                    {{-- {{ $slot }} --}}
+                    @yield('content')
                 </main>
 
             </div>

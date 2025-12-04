@@ -1,6 +1,7 @@
-<x-app-layout>
-    
-    
+@extends('layouts.app')
+
+@section('title','Mail History')
+@section('content')
 
     <style>
         a { text-decoration: none !important; }
@@ -105,4 +106,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

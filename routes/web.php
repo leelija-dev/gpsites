@@ -123,7 +123,7 @@ Route::middleware('auth')->group(function () {
         ->name('verification.notice');
 
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return view('web.user.dashboard');
     })->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
