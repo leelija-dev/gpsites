@@ -1,21 +1,7 @@
 <x-filament-panels::page>
 
     <style>
-        .section-box {
-          
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid #2f3031;
-        }
-
-        .flex-between {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .space-y-4 > * + * {
+        .space-y-4>*+* {
             margin-top: 1rem;
         }
 
@@ -31,61 +17,18 @@
             }
         }
 
-        .fieldset-box {
-            border: 1px solid #2f3031;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
         .text-muted {
             font-size: 14px;
             /* color: #e3e3e3; */
             font-weight: 500;
         }
-
-        .badge {
-            padding: 1px 12px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 13px;
-            display: inline-block;
-        }
-
-        .badge-success {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-danger {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-gray {
-            background: #e5e7eb;
-            color: #374151;
-        } 
-
-        .billing-heading {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .space-y-3 > * + * {
+        .space-y-3>*+* {
             margin-top: 0.75rem;
         }
 
         .text-small {
             font-size: 14px;
         }
-
-        
     </style>
 
     @php
@@ -93,29 +36,35 @@
         $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
         $badgeColor = $isActive ? 'success' : ($isActive === false ? 'gray' : 'danger');
         $badgeText = $isActive ? 'Active' : ($isActive === false ? 'Expired' : 'Unknown');
+
+        $paymentBadgeColor = $this->record->status == 'completed' ? 'success' : ($this->record->status == 'pending' ? 'warning' : 'danger');
+
     @endphp
 
 
-    <div class="section-box">
+    <x-filament::section>
+        <x-slot name="heading">
+            Order ID: <b> #{{ $this->record->id }}</b>
+        </x-slot>
+
+        <x-slot name="afterHeader">
+            <x-filament::badge color="{{ $badgeColor }}">
+                {{ $badgeText }}
+            </x-filament::badge>
+        </x-slot>
 
         <div class="space-y-4">
-
-            <div class="flex-between">
-                <span><b>Order ID:</b> #{{ $this->record->id }}</span>
-
-                <span class="badge badge-{{ $badgeColor }}">
-                    {{ $badgeText }}
-                </span>
-            </div>
 
             <div class="grid-2">
 
                 {{-- LEFT FIELDSET --}}
-                <div class="fieldset-box">
+                <x-filament::section>
+
                     <dl class="space-y-3">
 
                         <div>
-                            <dt class="text-muted">Order Date: {{ $this->record->created_at->format('M d, Y h:i A') }}</dt>
+                            <dt class="text-muted">Order Date: {{ $this->record->created_at->format('M d, Y h:i A') }}
+                            </dt>
                         </div>
 
                         <div>
@@ -127,14 +76,15 @@
                         </div>
 
                         <div>
-                            <dt class="text-muted">Available Mail: {{ $record->mailAvailable['available_mail'] ?? '0' }}</dt>
+                            <dt class="text-muted">Available Mail: {{ $record->mailAvailable['available_mail'] ?? '0' }}
+                            </dt>
                         </div>
 
                     </dl>
-                </div>
+                </x-filament::section>
 
                 {{-- RIGHT FIELDSET --}}
-                <div class="fieldset-box">
+                <x-filament::section>
                     <dl class="space-y-3">
 
                         <div>
@@ -142,20 +92,15 @@
                         </div>
 
                         <div>
-                            <dt class="text-muted">Amount: ${{ number_format($this->record->amount, 2) }}</dt>
+                            <dt class="text-muted">Amount: {{ config('app.currency') }}{{ number_format($this->record->amount, 2) }}</dt>
                         </div>
 
                         <div>
                             <dt class="text-muted">
-                                Payment: 
-                                <span class="badge 
-                                    @if($this->record->status == 'completed') badge-success 
-                                    @elseif($this->record->status == 'pending') badge-warning 
-                                    @else badge-danger 
-                                    @endif
-                                ">
+                                Payment:
+                                <x-filament::badge color="{{ $paymentBadgeColor }}">
                                     {{ ucfirst($this->record->status) }}
-                                </span>
+                                </x-filament::badge>
                             </dt>
                         </div>
 
@@ -164,18 +109,18 @@
                         </div>
 
                     </dl>
-                </div>
+                </x-filament::section>
 
             </div>
 
         </div>
-    </div>
+    </x-filament::section>
 
 
-    {{-- BILLING SECTION --}}
-    <div class="section-box">
-
-        <h2 class="billing-heading">Billing Address</h2>
+    <x-filament::section>
+        <x-slot name="heading">
+            Billing Address
+        </x-slot>
 
         <div class="grid-2">
 
@@ -196,7 +141,6 @@
             </div>
 
         </div>
-
-    </div>
+    </x-filament::section>
 
 </x-filament-panels::page>

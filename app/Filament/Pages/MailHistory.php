@@ -10,7 +10,7 @@ class MailHistory extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Envelope;
     protected string $view = 'filament.pages.mail-history';
-    protected static ?string $title = 'Promotion Mail History';
+    protected static ?string $title = 'History';
     public static function getNavigationGroup(): ?string
     {
         return 'Promotion';

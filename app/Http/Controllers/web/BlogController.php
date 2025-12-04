@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
 {
@@ -156,7 +157,7 @@ class BlogController extends Controller
 
         return view('web.user.client_Mail', compact('id', 'isValidPlan', 'total_mail_available'));
     }
-    public function sendMail(Request $request)
+    public function sendMail(Request $request) //grpup mail
     {
         $request->validate([
             'subject' => 'required|string|max:255',
@@ -187,10 +188,19 @@ class BlogController extends Controller
                 }
             }
         }
+        if(count($selectedIds) == 1){
+            $blogId = $selectedIds[0];
+            $blog = collect($blogs['data'])->firstWhere('blog_id', $blogId);
+            $email=$blog['contact_email_id'] ?? '';
+            if($email==null){
+                return redirect()->route('blog.index')->with('error', 'No email address available at the moment.');
+            }
+        }
+        
         foreach ($selectedIds as $id) {
             $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
 
-            $email = $blog['updated_by'];
+            $email = $blog['contact_email_id'];
 
             // $email = decrypt($email);
             $subject = $request->input('subject');
@@ -203,12 +213,16 @@ class BlogController extends Controller
             //     $message->to($email)
             //         ->subject($subject);
             // });
-            $mail = Mail::to($email)->send(new \App\Mail\MailWithAttachment(
+            if($email==null){
+                continue;
+            }
+            try{
+            Mail::to($email)->send(new \App\Mail\MailWithAttachment(
                 $subject,
                 $messageBody,
                 $attachment // this is an array of strings (paths)
             ));
-            if ($mail) {
+                
                 UserMailHistory::create([
                     'user_id' => $user_id,
                     'site_url' => $blog['site_url'],
@@ -225,7 +239,17 @@ class BlogController extends Controller
                 //     $lastMail->decrement('available_mail', 1);
                 // }
                 $this->decrementMailCount();
-            }
+            
+
+         
+        }catch (\Exception $e) {
+
+            Log::error('Mail sending exception: '.$e->getMessage(), [
+                'email' => $email,
+                'exception' => $e
+            ]);
+        }
+            
         }
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
     }
@@ -354,7 +378,7 @@ class BlogController extends Controller
 
         // $blog = collect($blogs['data'])->where('blog_id', (int) $id);
 
-        $email = $blog['updated_by'];
+        $email = $blog['contact_email_id'];
         $subject = $request->input('subject');
         $messageBody = $request->input('message');
         $messageForDB = strip_tags($messageBody);
@@ -409,11 +433,34 @@ class BlogController extends Controller
         }
 
         // Send email
+        if ($email == null) {
+
+            Log::error('Email is null. Mail cannot be sent.', [
+                'email' => $email,
+                'blog_id' => $id ?? null,
+            ]);  // log message
+
+        return redirect()->route('blog.index')
+        ->with('error', 'No email address available at the moment.'); //usermessage
+        }
+       try {
         Mail::to($email)->send(new \App\Mail\MailWithAttachment(
             $subject,
             $messageBody,
             $attachment // this is an array of strings (paths)
         ));
+        // Check if mail failed
+        }catch (\Exception $e) {
+
+            Log::error('Mail sending exception: '.$e->getMessage(), [
+                'email' => $email,
+                'exception' => $e
+            ]);
+
+            return redirect()->route('blog.index')
+                ->with('error', 'Mail could not be sent due to a server issue.');
+        }
+        
 
         // Save mail history
         UserMailHistory::create([

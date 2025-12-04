@@ -11,6 +11,8 @@ class UserMailHistory extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Envelope;
 
     protected string $view = 'filament.pages.user-mail-history';
+    protected static ?string $title = 'Mail History';
+
     public static function getNavigationGroup(): ?string
     {
         return 'User Management';
