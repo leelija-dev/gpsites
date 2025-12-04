@@ -64,8 +64,12 @@ class CheckoutController extends Controller
             abort(404, 'Plan not specified');
         }
 
-        // Get all active plans for the modal (always needed)
-        $allPlans = Plan::with('features')->where('is_active', true)->orderBy('price', 'asc')->get();
+        // Get all active plans for the modal (exclude trial plans)
+        $allPlans = Plan::with('features')
+            ->where('is_active', true)
+            ->where('id', '!=', config('paypal.trial_plan_id'))
+            ->orderBy('price', 'asc')
+            ->get();
 
         // For trial mode, we don't need a specific planModel initially
         $planModel = null;
