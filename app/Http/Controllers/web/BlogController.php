@@ -54,6 +54,13 @@ class BlogController extends Controller
                     if ($plan) {
                         // Exclude trial plan from valid plans
                         if ($plan->id == config('paypal.trial_plan_id')) {
+                            $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                            $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+                            if($isValid)
+                            {
+                                $total_mail_available+=$mail_available_record->available_mail;
+                                $total_mail +=$mail_available_record->total_mail;
+                            }
                             continue; // Skip trial plan - trial users cannot access blog content
                         }
 
