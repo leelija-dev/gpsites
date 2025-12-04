@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
 {
@@ -203,12 +204,23 @@ class BlogController extends Controller
             //     $message->to($email)
             //         ->subject($subject);
             // });
-            $mail = Mail::to($email)->send(new \App\Mail\MailWithAttachment(
+            if($email==null){
+                continue;
+            }
+            try{
+            Mail::to($email)->send(new \App\Mail\MailWithAttachment(
                 $subject,
                 $messageBody,
                 $attachment // this is an array of strings (paths)
             ));
-            if ($mail) {
+                if (Mail::failures()) {
+                Log::error('Mail sending failed.', [
+                    'email' => $email,
+                    'failures' => Mail::failures()
+                    
+                ]);
+                continue;
+                }
                 UserMailHistory::create([
                     'user_id' => $user_id,
                     'site_url' => $blog['site_url'],
@@ -225,7 +237,17 @@ class BlogController extends Controller
                 //     $lastMail->decrement('available_mail', 1);
                 // }
                 $this->decrementMailCount();
-            }
+            
+
+         
+        }catch (\Exception $e) {
+
+            Log::error('Mail sending exception: '.$e->getMessage(), [
+                'email' => $email,
+                'exception' => $e
+            ]);
+        }
+            
         }
         return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
     }
@@ -409,11 +431,43 @@ class BlogController extends Controller
         }
 
         // Send email
+        if ($email === null) {
+
+            Log::error('Email is null. Mail cannot be sent.', [
+                'email' => $email,
+                'blog_id' => $id ?? null,
+            ]);  // log message
+
+        return redirect()->route('blog.index')
+        ->with('error', 'No email address available at the moment.'); //usermessage
+        }
+       try {
         Mail::to($email)->send(new \App\Mail\MailWithAttachment(
             $subject,
             $messageBody,
             $attachment // this is an array of strings (paths)
         ));
+        // Check if mail failed
+        if (Mail::failures()) {
+            Log::error('Mail sending failed.', [
+                'email' => $email,
+                'failures' => Mail::failures()
+            ]);
+
+            return redirect()->route('blog.index')
+                ->with('error', 'Mail could not be sent.');
+        }
+        }catch (\Exception $e) {
+
+            Log::error('Mail sending exception: '.$e->getMessage(), [
+                'email' => $email,
+                'exception' => $e
+            ]);
+
+            return redirect()->route('blog.index')
+                ->with('error', 'Mail could not be sent due to a server issue.');
+        }
+        
 
         // Save mail history
         UserMailHistory::create([
