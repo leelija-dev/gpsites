@@ -89,10 +89,10 @@ class UserController extends Controller
                 $blogsData = $response->json();
                 $blogs = $blogsData['data'] ?? [];
 
-                // Shuffle and take 3-4 random blogs
+                // Shuffle and take 4 random blogs
                 if (!empty($blogs)) {
                     shuffle($blogs);
-                    $randomBlogs = array_slice($blogs, 0, rand(3, 4));
+                    $randomBlogs = array_slice($blogs, 0, 4);
                 }
             }
         } catch (\Exception $e) {
