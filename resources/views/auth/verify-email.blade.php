@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Verify Account" description="">
     <!-- <div class="mb-4 text-sm text-gray-600">
         {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
     </div>
@@ -29,7 +29,7 @@
         </form>
     </div> -->
 
-    <section class="h-screen bg-gray-50 overflow-hidden relative">
+    <section class="h-screen overflow-hidden relative">
 
         <!-- Floating Background Shapes -->
         <div class="floating-shapes">
@@ -53,7 +53,7 @@
                             </div>
                             <h1 class="text-4xl font-bold">Check your inbox</h1>
                             <p class="mt-4 text-lg text-indigo-100">
-                                We've sent a 6-digit verification code to your email address.
+                                We've send you verification link to <span class="font-semibold">{{ $usermail }}</span>
                             </p>
                             <div class="mt-10 p-6 bg-white/10 backdrop-blur rounded-2xl">
                                 <p class="text-5xl font-bold">98%</p>
@@ -76,41 +76,20 @@
                                 </div>
                             </div>
 
-                            <h2 class="text-3xl font-bold text-gray-900 text-center lg:text-left">Enter verification code</h2>
+                            <h2 class="text-2xl font-bold text-gray-900 text-center lg:text-left">Verify Email Address</h2>
+                            <p class="mt-2 mb-3 text-sm text-center text-indigo-500 lg:hidden">
+                                Mail sent to <span class="font-semibold">{{ $usermail }}</span>
+                            </p>
                             <p class="mt-3 text-gray-600 text-center lg:text-left">
-                                We sent a code to <span class="font-semibold">john.doe@company.com</span>
+                                Once you verify your account, you will be able to access your account using the button below.
                             </p>
 
-                            <form class="mt-10" onsubmit="event.preventDefault()">
-                                <!-- 6-Digit OTP Input (Auto-focus next) -->
-                                <div class="grid grid-cols-6 gap-3">
-                                    <input type="text" maxlength="1" class="otp-input" required autofocus
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value) this.nextElementSibling?.focus();">
-                                    <input type="text" maxlength="1" class="otp-input" required
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus();"
-                                        onkeydown="if(event.key==='Backspace' && !this.value) this.previousElementSibling?.focus();">
-                                    <input type="text" maxlength="1" class="otp-input" required
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus();"
-                                        onkeydown="if(event.key==='Backspace' && !this.value) this.previousElementSibling?.focus();">
-                                    <input type="text" maxlength="1" class="otp-input" required
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus();"
-                                        onkeydown="if(event.key==='Backspace' && !this.value) this.previousElementSibling?.focus();">
-                                    <input type="text" maxlength="1" class="otp-input" required
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus();"
-                                        onkeydown="if(event.key==='Backspace' && !this.value) this.previousElementSibling?.focus();">
-                                    <input type="text" maxlength="1" class="otp-input" required
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,''); if(this.value) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus();"
-                                        onkeydown="if(event.key==='Backspace' && !this.value) this.previousElementSibling?.focus();">
-                                </div>
 
                                 <!-- Submit Button -->
-                                <button type="submit" id="verifyBtn" disabled
-                                    class="w-full mt-8 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-60 text-white font-semibold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100">
-                                    Verify & Continue
-                                </button>
-                            </form>
-
-                            <!-- Resend & Timer -->
+                                <div class="w-full mt-8 text-center">
+                                    <a href="{{ route('dashboard') }}" class="m-auto py-2 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-normal text-md rounded-md shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100">Dashboard</a>
+                                </div>
+                                    <!-- Resend & Timer -->
                             <div class="mt-8 text-center">
                                 <p class="text-sm text-gray-600">
                                     Didn't receive the code?
@@ -122,9 +101,7 @@
                             </div>
 
                             <div class="mt-10 text-center">
-                                <a href="register.html" class="text-sm text-gray-500 hover:text-gray-700">
-                                    Back to registration
-                                </a>
+                                <p class="text-sm text-gray-500"> Back to <a class="text-indigo-500 hover:text-indigo-700" href="{{ route('register') }}">Registration</a> or <a class="text-indigo-500 hover:text-indigo-700" href="{{ route('login') }}">Login</a></p>
                             </div>
                         </div>
                     </div>
@@ -136,20 +113,8 @@
         </section>
         <!-- Simple JS for OTP experience + Timer -->
         <script>
-            const inputs = document.querySelectorAll('.otp-input');
-            const verifyBtn = document.getElementById('verifyBtn');
             const resendBtn = document.getElementById('resendBtn');
             const timerEl = document.getElementById('timer').querySelector('span');
-
-            // Enable verify button when all filled
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    const allFilled = [...inputs].every(i => i.value.length === 1);
-                    verifyBtn.disabled = !allFilled;
-                    verifyBtn.classList.toggle('opacity-60', !allFilled);
-                    verifyBtn.classList.toggle('opacity-100', allFilled);
-                });
-            });
 
             // 60-second countdown
             let seconds = 59;
@@ -161,7 +126,7 @@
                     resendBtn.disabled = false;
                     resendBtn.classList.remove('text-gray-400');
                     resendBtn.classList.add('text-indigo-600');
-                    timerEl.parentElement.textContent = 'You can now request a new code';
+                    timerEl.parentElement.textContent = 'You can now request a new link.';
                 }
             }, 1000);
         </script>

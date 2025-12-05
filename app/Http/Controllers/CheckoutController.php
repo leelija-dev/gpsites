@@ -111,12 +111,12 @@ class CheckoutController extends Controller
             // Get plan details from database
             $plan = Plan::findOrFail($request->plan_id);
 
-            // Create order record in database (keep original currency)
+            // Create order record in database
             $order = PlanOrder::create([
                 'user_id' => Auth::id(),
                 'plan_id' => $plan->id,
                 'amount' => $plan->price,
-                'currency' => config('app.currency'),//$plan->currency, // Store original currency
+                'currency' => config('app.currency'),
                 'status' => 'pending',
                 'billing_info' => $request->billing_info,
             ]);
@@ -186,7 +186,7 @@ class CheckoutController extends Controller
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
                 'amount' => 0, // Free trial
-                'currency' => config('app.currency'),//$plan->currency,
+                'currency' => config('app.currency'),
                 'status' => 'completed',
                 'payment_status' => 'trial',
                 'paid_at' => now(),
@@ -391,13 +391,12 @@ class CheckoutController extends Controller
                     }
                     
 
-                    //admin mail 
-                    $currency = config('app.currency');
+                    //admin mail
                     $adminEmail = config('mail.admin_email'); // set in .env
                     $adminSubject = "New Plan Ordered";
                     $adminBody = "User: {$order->user->name} ({$order->user->email})\n"
                         . "Plan: {$plan->name}\n"
-                        . "Amount: {$order->amount} {$currency}\n"
+                        . "Amount: {$order->currency} {$order->amount}\n"
                         . "Transaction ID: {$order->transaction_id}\n"
                         . "Paid at: " . now()->toDateTimeString();
                     if($adminEmail!=null){
@@ -481,28 +480,6 @@ class CheckoutController extends Controller
 
         return response()->json(['status' => 'ok']);
     }
-
-
-    // public function success(Request $request): View
-    // {
-    //     // Get transaction_id from cache instead of session (since jobs run asynchronously)
-    //     $transactionId = \Cache::get('payment_success_' . Auth::id());
-
-    //     // Clear the cache value after use
-    //     if ($transactionId) {
-    //         \Cache::forget('payment_success_' . Auth::id());
-    //     }
-
-    //     // Get order details for success page
-    //     $order = null;
-    //     if ($transactionId) {
-    //         $order = PlanOrder::with(['plan', 'user'])
-    //             ->where('transaction_id', $transactionId)
-    //             ->first();
-    //     }
-
-    //     return view('web.checkout-success', compact('transactionId', 'order'));
-    // }
 
 
     public function success(Request $request): View

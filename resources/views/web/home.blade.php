@@ -34,14 +34,14 @@
                 <!-- Hero CTA -->
                 <button type="button" id="see-pricing" class="btn-primary whitespace-nowrap"> See Pricing </button>
                 @auth
-                <form method="POST" action="{{ route('checkout') }}" class="w-full">
+                <form method="POST" action="{{ route('checkout') }}" class="w-fit">
                     @csrf
                     <input type="hidden" name="plan" value="{{ config('paypal.trial_plan_id') }}">
                     <button type="submit" class="btn-secondary">Trial Now</button>
                 </form>
                 @endauth
                 @guest
-                <form method="POST" action="{{ route('start.trial') }}" class="w-full">
+                <form method="POST" action="{{ route('start.trial') }}" class="w-fit">
                     @csrf
                     <button type="submit" class="btn-secondary">Trial Now</button>
                 </form>
@@ -259,7 +259,7 @@
                 <div class="bg-[#eaeaea] feature-block-card rounded-xl p-6 flex flex-col sm:items-start items-center  sm:text-left text-center hover:shadow-lg transition-all duration-300 ease-in-out">
                     <div class="flex sm:flex-row flex-col  gap-2 sm:justify-start justify-center items-center">
                         <div class="min-w-12 w-12 min-h-12 h-12 bg-gradient-to-br from-primary to-secondary  rounded-full flex items-center justify-center sm:mb-4 mb-0">
-                           <i class="fa-solid fa-bullseye text-[1rem] text-white"></i>
+                            <i class="fa-solid fa-bullseye text-[1rem] text-white"></i>
                         </div>
                         <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md   font-semibold text-gray-900 mb-2 ">Niche-Specific Target</h3>
                     </div>
@@ -283,7 +283,7 @@
                 <div class="bg-[#eaeaea] feature-block-card rounded-xl p-6 flex flex-col sm:items-start items-center  sm:text-left text-center hover:shadow-lg transition-all duration-300 ease-in-out">
                     <div class="flex sm:flex-row flex-col  gap-2 sm:justify-start justify-center items-center">
                         <div class="min-w-12 w-12 min-h-12 h-12 bg-gradient-to-br from-primary to-secondary  rounded-full flex items-center justify-center sm:mb-4 mb-0">
-                           <i class="fa-solid fa-certificate text-[1rem] text-white"></i>
+                            <i class="fa-solid fa-certificate text-[1rem] text-white"></i>
                         </div>
                         <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md   font-semibold text-gray-900 mb-2 ">Verified Placements</h3>
                     </div>
@@ -295,7 +295,7 @@
                 <div class="bg-[#eaeaea] feature-block-card rounded-xl p-6 flex flex-col sm:items-start items-center  sm:text-left text-center hover:shadow-lg transition-all duration-300 ease-in-out">
                     <div class="flex sm:flex-row flex-col  gap-2 sm:justify-start justify-center items-center">
                         <div class="min-w-12 w-12 min-h-12 h-12 bg-gradient-to-br from-primary to-secondary  rounded-full flex items-center justify-center sm:mb-4 mb-0">
-                           <i class="fa-solid fa-chart-pie text-[1rem]  text-white"></i>
+                            <i class="fa-solid fa-chart-pie text-[1rem]  text-white"></i>
                         </div>
                         <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md   font-semibold text-gray-900 mb-2 ">Performance Tracking</h3>
                     </div>
@@ -365,8 +365,8 @@
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
                     <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-xl font-small">/</span><span class="text-base font-medium">
-                        {{ $plan->duration == 30 ? null : ($plan->duration == 31 ? null : $plan->duration )}}
-                        {{ $plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
+                            {{ $plan->duration == 30 ? null : ($plan->duration == 31 ? null : $plan->duration )}}
+                            {{ $plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</span></p>
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
                         {{ $plan->mail_available ?? '0' }} Mail/day
                     </span>
@@ -427,66 +427,67 @@
 
                         {{-- <div class="text-4xl font-bold text-gray-900 mb-3">
                             <span class="text-lg font-normal text-gray-600">/ {{ $trialPlan->duration }} days</span>
-                        </div> --}}
+                    </div> --}}
 
-                        <p class="text-lg font-normal text-gray-600 mb-3">Free for {{ $trialPlan->duration }} days</span>
-                        </p>
+                    <p class="text-lg font-normal text-gray-600 mb-3">Free for {{ $trialPlan->duration }} days</span>
+                    </p>
 
-                        <p class="text-gray-600 flex mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-2 text-indigo-400">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                            </svg>
-                            {{ $trialPlan->mail_available }} Mail Credits Included</p>
+                    <p class="text-gray-600 flex mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-2 text-indigo-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                        </svg>
+                        {{ $trialPlan->mail_available }} Mail Credits Included
+                    </p>
 
-                        @if($trialPlan->features && $trialPlan->features->count() > 0)
-                        <ul class="space-y-2 text-gray-700 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg">
-                            @foreach($trialPlan->features->where('is_active', true) as $feature)
-                            <li class="flex items-center">
-                                <span class="text-green-500 mr-2">✔</span>
-                                {{ $feature->feature }}
-                            </li>
-                            @endforeach
-                        </ul>
-                        @endif
-                    </div>
+                    @if($trialPlan->features && $trialPlan->features->count() > 0)
+                    <ul class="space-y-2 text-gray-700 text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg">
+                        @foreach($trialPlan->features->where('is_active', true) as $feature)
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✔</span>
+                            {{ $feature->feature }}
+                        </li>
+                        @endforeach
+                    </ul>
+                    @endif
                 </div>
-
-                <!-- CTA Right Box -->
-                <div class="md:w-1/3 w-full">
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 shadow-sm text-center">
-
-                        <div class="w-16 h-16 bg-purple-100 rounded-full flex justify-center items-center mx-auto mb-6">
-                            <span class="text-3xl">🚀</span>
-                        </div>
-
-                        <!-- Buttons -->
-                        @auth
-                        <form method="POST" action="{{ route('checkout') }}" class="w-full mb-4">
-                            @csrf
-                            <input type="hidden" name="plan" value="{{ config('paypal.trial_plan_id') }}">
-                            <button
-                                type="submit"
-                                class="w-full bg-purple-600 text-white font-semibold py-3 rounded-lg hover:bg-purple-700 transition">
-                                Start Free Trial
-                            </button>
-                        </form>
-                        @else
-                        <form method="POST" action="{{ route('start.trial') }}" class="w-full mb-4">
-                            @csrf
-                            <button
-                                type="submit"
-                                class="w-full bg-purple-600 text-white font-semibold py-3 rounded-lg hover:bg-purple-700 transition">
-                                Start Free Trial
-                            </button>
-                        </form>
-                        @endauth
-
-                        <p class="text-xs text-gray-500">No credit card required</p>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- CTA Right Box -->
+            <div class="md:w-1/3 w-full">
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 shadow-sm text-center">
+
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex justify-center items-center mx-auto mb-6">
+                        <span class="text-3xl">🚀</span>
+                    </div>
+
+                    <!-- Buttons -->
+                    @auth
+                    <form method="POST" action="{{ route('checkout') }}" class="w-full mb-4">
+                        @csrf
+                        <input type="hidden" name="plan" value="{{ config('paypal.trial_plan_id') }}">
+                        <button
+                            type="submit"
+                            class="w-full bg-purple-600 text-white font-semibold py-3 rounded-lg hover:bg-purple-700 transition">
+                            Start Free Trial
+                        </button>
+                    </form>
+                    @else
+                    <form method="POST" action="{{ route('start.trial') }}" class="w-full mb-4">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="w-full bg-purple-600 text-white font-semibold py-3 rounded-lg hover:bg-purple-700 transition">
+                            Start Free Trial
+                        </button>
+                    </form>
+                    @endauth
+
+                    <p class="text-xs text-gray-500">No credit card required</p>
+                </div>
+            </div>
+
         </div>
+    </div>
     </div>
 </section>
 
@@ -506,10 +507,10 @@
 
         <!-- Right Section: Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 lg:mt-0 mt-3">
-            <a href="{{ route('contact') }}" class="btn-secondary">
+            <a href="{{ route('contact') }}" class="btn-secondary text-center">
                 Get Custom Plans
             </a>
-            <a href="{{ route('about') }}" class="btn-primary">
+            <a href="{{ route('about') }}" class="btn-primary text-center">
                 About Us
             </a>
         </div>
@@ -1066,50 +1067,7 @@
             });
         });
     });
-    document.addEventListener('DOMContentLoaded', function() {
-        const pricingSection = document.getElementById('pricing');
-
-        // If URL contains #pricing and we are on home page -> auto scroll
-        if (pricingSection && window.location.hash === '#pricing') {
-            setTimeout(() => {
-                const nav = document.querySelector('nav');
-                const navHeight = nav ? nav.offsetHeight : 0;
-
-                const offset = pricingSection.getBoundingClientRect().top +
-                    window.pageYOffset -
-                    navHeight;
-
-                window.scrollTo({
-                    top: offset,
-                    behavior: 'smooth'
-                });
-            }, 200);
-
-            // Remove hash so URL stays clean
-            history.replaceState(null, null, ' ');
-        }
-
-        // When clicking Pricing while already on Home page
-        const navPricing = document.getElementById('nav-pricing');
-        if (navPricing && pricingSection) {
-            navPricing.addEventListener('click', function(e) {
-                e.preventDefault();
-                const nav = document.querySelector('nav');
-                const navHeight = nav ? nav.offsetHeight : 0;
-
-                const offset = pricingSection.getBoundingClientRect().top +
-                    window.pageYOffset -
-                    navHeight;
-
-                window.scrollTo({
-                    top: offset,
-                    behavior: 'smooth'
-                });
-
-                history.replaceState(null, null, ' ');
-            });
-        }
-    });
+   
 </script>
 
 

@@ -7,17 +7,10 @@
     $loggedUserId = Auth::id();
 @endphp
 
-    
-
-    <style>
-        a { text-decoration: none !important; }
-        a:hover { text-decoration: none !important; }
-    </style>
-
-    <div class="min-h-screen bg-white flex">
+    <div class="min-h-screen bg-gray-50">
         <!-- Main Content Area -->
-        <div class="flex-1 p-6 lg:p-8 w-full">
-            <div class="">
+        <div class="p-6 lg:p-10">
+            <div class="max-w-7xl mx-auto">
 
                 <!-- Table Container -->
                 <div class="overflow-x-auto shadow-xl rounded-lg border border-gray-200">
@@ -25,7 +18,7 @@
                         <thead class="bg-[#f0f0f0] text-[#575757]">
                             <tr>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">SL No</th>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan Name</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Plan</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Amount</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Payment Status</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Mail/Day</th>
@@ -113,7 +106,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="9" class="px-6 py-16 text-center text-gray-500 text-lg font-medium">
+                                    <td colspan="10" class="px-6 py-16 text-center text-gray-500 text-lg font-medium">
                                         No orders yet!
                                     </td>
                                 </tr>

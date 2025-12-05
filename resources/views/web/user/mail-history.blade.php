@@ -3,11 +3,6 @@
 @section('title','Mail History')
 @section('content')
 
-    <style>
-        a { text-decoration: none !important; }
-        a:hover { text-decoration: none !important; }
-    </style>
-
     <div class="min-h-screen bg-gray-50">
         <!-- Main Content -->
         <div class="p-6 lg:p-10">

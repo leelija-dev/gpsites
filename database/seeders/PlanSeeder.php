@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Plan;
 use App\Models\PlansFeature;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlanSeeder extends Seeder
 {
@@ -29,7 +30,6 @@ class PlanSeeder extends Seeder
                 'slug' => 'trial',
                 'description' => 'Experience our service for free for 7 days.',
                 'price' => 0.00,
-                'currency' => 'USD',
                 'duration' => 7,
                 'mail_available' => 2,
                 'is_active' => true,
@@ -74,7 +74,7 @@ class PlanSeeder extends Seeder
             if ($trialPlan) {
                 // You can store it dynamically, but better to query when needed
                 // Or set once via php artisan tinker or env
-                \Log::info("Trial plan created with ID: {$trialPlan->id}");
+                Log::info("Trial plan created with ID: {$trialPlan->id}");
                 // You can update .env or config dynamically if needed
             }
         }

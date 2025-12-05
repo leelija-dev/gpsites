@@ -8,19 +8,10 @@
     $loggedUserId = Auth::id();
 @endphp
 
-    <style>
-        a {
-            text-decoration: none !important;
-        }
-        a:hover {
-            text-decoration: none !important;
-        }
-    </style>
-
-    <div class="min-h-screen bg-white flex">
+    <div class="min-h-screen bg-gray-50">
         <!-- Main Content -->
-        <div class="flex-1 p-6 lg:p-8 w-full">
-            <div class="">
+        <div class="p-6 lg:p-10">
+            <div class="max-w-7xl mx-auto">
                
 
                 <!-- Responsive Table Container -->

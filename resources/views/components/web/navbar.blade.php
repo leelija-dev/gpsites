@@ -8,15 +8,15 @@
                 <div class="flex items-center space-x-1">
                     <!-- Purple curved shape (using SVG) -->
                     <a href="/"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
-                        class="text-purple-600">
-                        <path
-                            d="M16 2C11.7565 2 8 5.75652 8 10V22C8 26.2435 11.7565 30 16 30C20.2435 30 24 26.2435 24 22V10C24 5.75652 20.2435 2 16 2Z"
-                            fill="currentColor" />
-                        <path
-                            d="M16 8C13.7909 8 12 9.79086 12 12V20C12 22.2091 13.7909 24 16 24C18.2091 24 20 22.2091 20 20V12C20 9.79086 18.2091 8 16 8Z"
-                            fill="white" />
-                    </svg></a>
-                   <a href="/"> <span class="text-xl font-bold text-gray-900">Logo</span></a>
+                            class="text-purple-600">
+                            <path
+                                d="M16 2C11.7565 2 8 5.75652 8 10V22C8 26.2435 11.7565 30 16 30C20.2435 30 24 26.2435 24 22V10C24 5.75652 20.2435 2 16 2Z"
+                                fill="currentColor" />
+                            <path
+                                d="M16 8C13.7909 8 12 9.79086 12 12V20C12 22.2091 13.7909 24 16 24C18.2091 24 20 22.2091 20 20V12C20 9.79086 18.2091 8 16 8Z"
+                                fill="white" />
+                        </svg></a>
+                    <a href="/"> <span class="text-xl font-bold text-gray-900">Logo</span></a>
                 </div>
             </div>
 
@@ -25,11 +25,11 @@
                 <div class="hidden lg:flex items-center space-x-8">
                     <a href="/"
                         class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Home</a>
-                            <a href="/#pricing"
-                            id="nav-pricing"
-                            class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
-                                Pricing
-                            </a>
+                    <a href="/#pricing"
+
+                        class="pricing-link text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">
+                        Pricing
+                    </a>
 
 
                     <a href="/about"
@@ -46,17 +46,17 @@
                       Login
                     </a> --}}
                     @auth
-                        <!-- When user is logged in show Profile -->
-                        <a href="/dashboard" class="btn-primary px-8 py-[0.3rem] text-[17px]">
-                            Dashboard
-                        </a>
+                    <!-- When user is logged in show Profile -->
+                    <a href="/dashboard" class="btn-primary px-8 py-[0.3rem] text-[17px]">
+                        Dashboard
+                    </a>
                     @endauth
 
                     @guest
-                        <!-- When user is NOT logged in show Login -->
-                        <a href="/login" class="btn-primary px-8 py-[0.3rem] text-[17px]">
-                            Login
-                        </a>
+                    <!-- When user is NOT logged in show Login -->
+                    <a href="/login" class="btn-primary px-8 py-[0.3rem] text-[17px]">
+                        Login
+                    </a>
                     @endguest
                 </div>
 
@@ -86,14 +86,14 @@
         <div class="flex justify-between items-center mb-8">
             <div class="flex items-center space-x-1">
                 <a href="/"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="text-purple-600">
-                    <path
-                        d="M16 2C11.7565 2 8 5.75652 8 10V22C8 26.2435 11.7565 30 16 30C20.2435 30 24 26.2435 24 22V10C24 5.75652 20.2435 2 16 2Z"
-                        fill="currentColor" />
-                    <path
-                        d="M16 8C13.7909 8 12 9.79086 12 12V20C12 22.2091 13.7909 24 16 24C18.2091 24 20 22.2091 20 20V12C20 9.79086 18.2091 8 16 8Z"
-                        fill="white" />
-                </svg></a>
+                        class="text-purple-600">
+                        <path
+                            d="M16 2C11.7565 2 8 5.75652 8 10V22C8 26.2435 11.7565 30 16 30C20.2435 30 24 26.2435 24 22V10C24 5.75652 20.2435 2 16 2Z"
+                            fill="currentColor" />
+                        <path
+                            d="M16 8C13.7909 8 12 9.79086 12 12V20C12 22.2091 13.7909 24 16 24C18.2091 24 20 22.2091 20 20V12C20 9.79086 18.2091 8 16 8Z"
+                            fill="white" />
+                    </svg></a>
                 <a href="/"><span class="text-xl font-bold text-gray-900">Logo</span></a>
             </div>
             <button onclick="closeSidebar()" class="p-2 rounded-md hover:bg-gray-100 text-gray-600">
@@ -107,8 +107,8 @@
         <nav class="space-y-2">
             <a href="/"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Home</a>
-            <a href="{{ url('/') }}#pricing"
-                class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Pricing</a>
+            <a href="/#pricing"
+                class=" block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Pricing</a>
             <a href="/about"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">About
                 Us</a>
@@ -116,21 +116,62 @@
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Contact
                 Us</a>
             {{-- <a href="/login" class="block px-4 py-3 btn-primary text-center mt-6">Login</a> --}}
-                    @auth
-                        <!-- When user is logged in show Profile -->
-                        
-                        <a href="/dashboard" class="block px-4 py-3 btn-primary text-center mt-6">
-                            Dashboard
-                        </a>
-                    @endauth
+            @auth
+            <!-- When user is logged in show Profile -->
 
-                    @guest
-                        <!-- When user is NOT logged in show Login -->
-                        <a href="/login" class="block px-4 py-3 btn-primary text-center mt-6">Login</a>
-                    @endguest
+            <a href="/dashboard" class="block px-4 py-3 btn-primary text-center mt-6">
+                Dashboard
+            </a>
+            @endauth
+
+            @guest
+            <!-- When user is NOT logged in show Login -->
+            <a href="/login" class="block px-4 py-3 btn-primary text-center mt-6">Login</a>
+            @endguest
         </nav>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pricingSection = document.querySelector('#pricing'); // your one and only pricing section
+        const pricingLinks = document.querySelectorAll('a[href="/#pricing"]'); // all links that have href="#pricing"
+
+        if (!pricingSection) return; // safety
+
+        // Function to scroll to pricing section (with fixed navbar offset)
+        function scrollToPricing() {
+            const nav = document.querySelector('nav');
+            const navHeight = nav ? nav.offsetHeight : 0;
+            const extraPadding = 20; // optional: extra space from top
+
+            const offsetTop = pricingSection.getBoundingClientRect().top + window.pageYOffset - navHeight - extraPadding;
+
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+
+            // Clean the URL (remove #pricing after scrolling)
+            if (window.location.hash === '#pricing') {
+                history.replaceState(null, null, window.location.pathname + window.location.search);
+            }
+        }
+
+        // 1. Auto-scroll when page loads with #pricing in URL
+        if (window.location.hash === '#pricing') {
+            setTimeout(scrollToPricing, 300); // small delay ensures everything is rendered
+        }
+
+        // 2. Add click handler to ALL links that point to #pricing
+        pricingLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // prevent jump
+                scrollToPricing(); // smooth scroll instead
+            });
+        });
+    });
+</script>
 
 <!-- JavaScript for Sidebar Toggle with Animation -->
 <script>
