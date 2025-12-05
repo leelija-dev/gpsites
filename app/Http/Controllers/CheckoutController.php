@@ -180,28 +180,27 @@ class CheckoutController extends Controller
                 'billing_info' => $request->billing_info ?: [],
                 'payment_details' => json_encode(['type' => 'trial', 'activated_at' => now()])
             ]);
-                    $userEmail = $order->user->email;
-                    $userSubject = "Your plan '{$plan->name}' is activated!";
-                    $userBody = "Hello {$order->user->name},\n\n"
-                        . "Your order for the plan '{$plan->name}' has been successfully completed.\n"
-                        . "Transaction ID: {$order->transaction_id}\n"
-                        . "Plan Duration: {$plan->duration} Day\n"
-                        . "Mail Credits: {$plan->mail_available}\n\n"
-                        . "Thank you for choosing " . config('app.name') . ".";
-                    if($userEmail!=null){
-                    try{
-                        Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
+            $userEmail = $order->user->email;
+            $userSubject = "Your plan '{$plan->name}' is activated!";
+            $userBody = "Hello {$order->user->name},\n\n"
+                . "Your order for the plan '{$plan->name}' has been successfully completed.\n"
+                . "Transaction ID: {$order->transaction_id}\n"
+                . "Plan Duration: {$plan->duration} Day\n"
+                . "Mail Credits: {$plan->mail_available}\n\n"
+                . "Thank you for choosing " . config('app.name') . ".";
+            if ($userEmail != null) {
+                try {
+                    Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
                         $message->to($userEmail)
                             ->subject($userSubject);
                     });
-                    }catch(\Exception $e)
-                    {
-                        Log::error('Mail sending exception: '.$e->getMessage(), [
-                            'email' => $userEmail,
-                            'exception' => $e
-                        ]);
-                    }
-                    }
+                } catch (\Exception $e) {
+                    Log::error('Mail sending exception: ' . $e->getMessage(), [
+                        'email' => $userEmail,
+                        'exception' => $e
+                    ]);
+                }
+            }
             // Create mail credits for trial
             MailAvailable::create([
                 'user_id' => $user->id,
@@ -217,7 +216,6 @@ class CheckoutController extends Controller
             $user->save();
 
             return response()->json(['success' => true, 'message' => 'Trial activated successfully']);
-
         } catch (\Exception $e) {
             Log::error('Trial activation failed: ' . $e->getMessage(), [
                 'exception' => $e,
@@ -350,8 +348,8 @@ class CheckoutController extends Controller
                         'transaction_id' => $paypalOrder->purchase_units[0]->payments->captures[0]->id,
                         'payment_details' => json_encode($paypalOrder)
                     ]);
-                
-                $plan = Plan::findOrFail($order->plan_id);
+
+                    $plan = Plan::findOrFail($order->plan_id);
                     MailAvailable::create([
                         'user_id' => $order->user_id,
                         'order_id' => $order->id,
@@ -369,13 +367,13 @@ class CheckoutController extends Controller
                         . "Plan Duration: {$plan->duration} Day\n"
                         . "Mail Credits: {$plan->mail_available}\n\n"
                         . "Thank you for choosing " . config('app.name') . ".";
-                    if($userEmail!=null){
-                    Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
-                        $message->to($userEmail)
-                            ->subject($userSubject);
-                    });
+                    if ($userEmail != null) {
+                        Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
+                            $message->to($userEmail)
+                                ->subject($userSubject);
+                        });
                     }
-                    
+
 
                     //admin mail 
                     $adminEmail = config('mail.admin_email'); // set in .env
@@ -385,14 +383,13 @@ class CheckoutController extends Controller
                         . "Amount: {$order->amount} {$order->currency}\n"
                         . "Transaction ID: {$order->transaction_id}\n"
                         . "Paid at: " . now()->toDateTimeString();
-                    if($adminEmail!=null){
-                        
-                    $mail_status=Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
-                        $message->to($adminEmail)
-                            ->subject($adminSubject);
-                    });
-                    
-                     }
+                    if ($adminEmail != null) {
+
+                        $mail_status = Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
+                            $message->to($adminEmail)
+                                ->subject($adminSubject);
+                        });
+                    }
 
                     //end mail
 

@@ -125,4 +125,10 @@ class HomeController extends Controller
         // Then send to login
         return redirect()->route('login');
     }
+
+    public function mailtemp(Request $request)
+    {
+        return view('web.check-template');
+    }
 }
+
