@@ -18,6 +18,8 @@ class UserMailHistory extends Model
         'subject',
         'message',
         'file',
+        'status',
+        'description'
         
     ];
 }

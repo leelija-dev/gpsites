@@ -34,22 +34,27 @@
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <!-- Site URL -->
                     <div class="mb-4">
-                        <p class="text-sm font-medium text-gray-500">Site URL</p>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-gray-500">Site URL</p>
+                            @if($mail->status == true)
+                                <span class="px-3 rounded-full text-white bg-green-600 text-sm flex items-center"
+                                 style="height: 20px; line-height: 20px;">Sent</span>
+                            @else
+                                 <span class="px-3 rounded-full text-white bg-yellow-400 text-sm flex items-center"
+                                 style="height: 20px; line-height: 20px;">Failed</span>
+                            @endif
+                        </div>
                         <p class="text-base text-gray-900 font-semibold truncate">{{ $mail->site_url }}</p>
                     </div>
 
-                    <!-- Timestamp -->
-                    <div class="mb-4">
-                        <p class="text-sm font-medium text-gray-500">Date & Time</p>
-                        <p class="text-base text-gray-900">{{ $mail->created_at->format('d-m-Y, h:i a') }}</p>
-                    </div>
+                    
 
                     <!-- Subject -->
                     <div class="mb-4">
                         <p class="text-sm font-medium text-gray-500">Subject</p>
                         <p class="text-xl text-gray-900 font-bold">{{ $mail->subject }}</p>
                     </div>
-
+                    
                     <!-- Message -->
                     <div class="mb-6">
                         <p class="text-sm font-medium text-gray-500 mb-2">Message</p>
@@ -82,6 +87,11 @@
                             </ul>
                         </div>
                     @endif
+                    <!-- Timestamp -->
+                    <div class="flex justify-end">
+                        {{-- <p class="text-sm font-medium text-gray-500">Date & Time</p> --}}
+                        <p class="text-base text-gray-500 text-sm">{{ $mail->created_at->format('d-m-Y, h:i a') }}</p>
+                    </div>
                 </div>
             </div>
         </div>

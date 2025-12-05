@@ -377,7 +377,7 @@ class CheckoutController extends Controller
                     }
                     
 
-                    //admin mail 
+                    //admin mail
                     $adminEmail = config('mail.admin_email'); // set in .env
                     $adminSubject = "New Plan Ordered";
                     $adminBody = "User: {$order->user->name} ({$order->user->email})\n"

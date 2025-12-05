@@ -8,8 +8,11 @@
                    <th class="p-2 border text-center">Site URL</th>
                     <th class="p-2 border">Subject</th>
                     <th class="p-2 border">Message</th>
+                    <th class="p-2 border">Status</th>
+                    <th class="p-2 border">Error</th>
                     <th class="p-2 border">File</th>
-                    <th class="p-2 border">Sent at</th>
+                    <th class="p-2 border">Sent Date</th>
+
                     
                 </tr>
             </thead>
@@ -35,20 +38,36 @@
                                     {{ $message }}
                                 @endif
                                 </td>
+                             <td class="pd-2 border text-center">
+                                @if((int) $user_mail->status == true)
+                                    <x-filament::badge color="success">
+                                        Sent
+                                    </x-filament::badge>
+                                @else
+                                   <x-filament::badge color="warning">
+                                        Failed
+                                    </x-filament::badge>
+                                @endif
+                            </td>
+                            <td class="p-2 border text-center">
+                            {{ $user_mail->description ?? '' }}
+                            </td>
+
                             <td class="p-2 border">
                            @if($user_mail->file)
                         @php
                             
                             $fileName = str_replace('public/', '', $user_mail->file);
                         @endphp
-
+                        <x-filament::badge color="success">
                         <a href="{{ asset($fileName) }}"
                         download
-                        class="text-blue-600 hover:text-blue-800 underline">
-                           {{$fileName}}
+                        class="text-blue-600 hover:text-blue-800 underline btn-sm">
+                           Download File
                         </a>
+                        </x-filament::badge>
                     @else
-                        <span class="text-gray-500">No File</span>
+                        <span class="text-gray-500"></span>
                     @endif
                                             </td>
 
