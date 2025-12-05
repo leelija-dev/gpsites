@@ -1,4 +1,4 @@
-<x-guest-layout title="Register - {{ config('app.name', 'GP Sites') }}" description="">
+<x-guest-layout title="Register" description="">
     <body class="h-screen bg-gray-50 overflow-hidden relative">
 
     <!-- Floating Background Shapes -->
