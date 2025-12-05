@@ -37,9 +37,6 @@ class CheckoutController extends Controller
      */
     public function show(Request $request, $plan = null): View
     {
-        // Check if this is trial mode from session, POST data, or session trial_plan
-        $trialMode = session()->has('trial_mode') || $request->input('plan') == config('paypal.trial_plan_id') || session('trial_plan') == config('paypal.trial_plan_id');
-
         // If plan is not provided in URL, check query parameter for backward compatibility
         if (!$plan) {
             $plan = $request->query('plan');
@@ -58,6 +55,14 @@ class CheckoutController extends Controller
                 session()->forget('intent_plan');
             }
         }
+
+        // If an explicit plan is provided and it's NOT the trial plan, clear trial_mode
+        if ($plan && $plan != config('paypal.trial_plan_id')) {
+            session()->forget('trial_mode');
+        }
+
+        // Check if this is trial mode from session, POST data, or session trial_plan
+        $trialMode = session()->has('trial_mode') || $request->input('plan') == config('paypal.trial_plan_id') || session('trial_plan') == config('paypal.trial_plan_id');
 
         // For trial mode, we don't require a specific plan initially
         if (!$plan && !$trialMode) {
