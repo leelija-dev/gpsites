@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Login - {{ config('app.name', 'GP Sites') }}" description="">
     <section class="w-full min-h-screen bg-white flex items-center justify-center px-4 relative">
         <div class="floating-shapes">
             <div class="shape"></div>

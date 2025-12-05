@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Register - {{ config('app.name', 'GP Sites') }}" description="">
     <body class="h-screen bg-gray-50 overflow-hidden relative">
 
     <!-- Floating Background Shapes -->
@@ -140,8 +140,8 @@
                             </div>
 
                             <!-- Terms Checkbox -->
-                            <div class="flex items-start gap-3">
-                                <input type="checkbox" id="terms" name="terms" required class="mt-1 w-5 h-5 text-indigo-600 rounded border-gray-300"/>
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="terms" name="terms" required class="w-5 h-5 text-indigo-600 rounded border-gray-300"/>
                                 <label for="terms" class="text-sm text-gray-600">
                                     I agree to the <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Terms</a> and
                                     <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Privacy Policy</a>
