@@ -79,15 +79,17 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
          <div class="flex items-center space-x-3 transition-all duration-300 hide-when-collapsed">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
                <x-application-logo class="h-10 w-10 fill-current text-blue-600 flex-shrink-0" />
-               <span class="text-xl font-bold text-gray-800 sidebar-text ">Gpts</span>
+               <span class="text-xl font-bold text-gray-800 sidebar-text ">GP Sites</span>
             </a>
          </div>
 
          <div class="flex items-center gap-3">
             <button type="button" id="shrink-sidebar" class="hidden lg:block text-gray-500 hover:text-gray-700 transition">
                <svg id="shrink-icon" class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                </svg>
+
+
             </button>
 
             <button type="button" id="close-sidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
@@ -127,7 +129,7 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
 
             <!-- Mail History -->
             <li>
-               <a href="{{ route('blog.mailHistory', encrypt($loggedUserId)) }}"
+               <a href="{{ route('blog.mailHistory') }}"
                   class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
                               {{ request()->routeIs('blog.mailHistory','blog.view-mail') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
                   <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('blog.mailHistory','blog.view-mail') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,82 +280,3 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
       });
    });
 </script>
-
-
-
-
-{{-- <div class="p-4 sm:ml-64">
-   <div class="p-4 border-1 border-default border-dashed rounded-base">
-      <div class="grid grid-cols-3 gap-4 mb-4">
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-      </div>
-      <div class="flex items-center justify-center h-48 rounded-base bg-neutral-secondary-soft mb-4">
-         <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-         </p>
-      </div>
-      <div class="grid grid-cols-2 gap-4 mb-4">
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-      </div>
-      <div class="flex items-center justify-center h-48 rounded-base bg-neutral-secondary-soft mb-4">
-         <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-         </p>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-         <div class="flex items-center justify-center h-24 rounded-base bg-neutral-secondary-soft">
-            <p class="text-fg-disabled">
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-            </p>
-         </div>
-      </div>
-   </div>
-</div> --}}

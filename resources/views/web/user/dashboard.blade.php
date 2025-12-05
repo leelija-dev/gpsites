@@ -6,7 +6,7 @@
 @section('content')
     
 
-    <div class="py-12 px-4">
+    <div class="p-4 md:p-6">
         
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
@@ -157,12 +157,22 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
 
                 <!-- Left Side: Random Blogs -->
-                <div class="space-y-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Featured Blogs</h3>
+                <div class="space-y-2">
+
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Featured Blogs</h3>
+                        <a href="{{ route('blog.index') }}"
+                            class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                            View All
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
 
                     @if(!empty($randomBlogs))
                         @foreach($randomBlogs as $blog)
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-0 hover:shadow-md transition-shadow">
                             <div class="p-6">
                                 <div class="flex items-start gap-4">
                                     <!-- Blog Icon -->
@@ -244,8 +254,8 @@
                 <!-- Right Side: Mail History -->
                 <div class="space-y-6">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-semibold text-gray-800">Recent Mail History</h3>
-                        <a href="{{ route('blog.mailHistory', encrypt(auth()->id())) }}"
+                        <h3 class="text-xl font-semibold text-gray-800">Recent Mails</h3>
+                        <a href="{{ route('blog.mailHistory') }}"
                            class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
                             View All
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
