@@ -24,12 +24,11 @@
 
             <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
          font-bold text-gray-900 leading-snug mb-4">
-                We are a best IT  solution provider
+                Link Building Outreach Automation for Smart Businesses
             </h2>
 
             <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600 mb-6">
-                Since 2010 our company has been providing leading custom
-                IT services to companies all over the world outsourced.
+                One-stop AI-driven automated outreach & premium guest posting marketplace with advanced CRM integration for optimized, accurate, faster, & large-scale link-building.
             </p>
 
             <!-- TABS -->
@@ -47,25 +46,23 @@
 
             <!-- TAB CONTENTS -->
             <p id="mission" class="tab-content text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600">
-                At New Media Services, we aim to conquer the impossible.
-                We pledge a commitment to teamwork between our staff and valued clients
-                to ensure the growth and success of everyone.
+                At GPsites, we help you streamline your link-building process by automating mass outreach & simplifying your search for relevant niche bloggers, quality guest post destinations, top-tier link insertion sources, & managing industry relationships.
             </p>
 
             <p id="vision" class="tab-content text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600 hidden">
-                Our vision is to innovate cutting-edge technology solutions that empower
-                businesses and create a digital future driven by excellence.
+                Creating an all-in-one AI marketplace for automated outreach, powered-up link-building workflow, & identifying credible link placement resources for smarter conversion.
             </p>
 
             <p id="history" class="tab-content text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600 hidden">
-                Since 2010, we have expanded globally, delivering IT excellence and
-                building strong partnerships across multiple industries worldwide.
+                With an automated pipeline, we have been freeing up outreach resources to manage high-volume link-building campaigns faster for 7+years
             </p>
 
             <!-- BUTTON -->
-            <button class="btn-primary mt-8">
-                Learn more
-            </button>
+                <a href="{{ route('contact') }}">
+                    <button class="btn-primary mt-8">
+                        Contact Us
+                    </button>
+                </a>
         </div>
     </div>
 </section>
@@ -81,43 +78,38 @@
             <span class="w-2 h-2 bg-primary rounded-full ml-1"></span>
         </div>
 
-        <h2 class="ttext-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
- font-bold text-gray-900 mt-2 mb-12">
-            Our success rate is <br> shown by numbers
-        </h2>
+        <h2 class="ttext-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900 mt-2 mb-12">Real Stats That Flex <br>Our Success Stories</h2>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
             <!-- Box 1 -->
             <div class="bg-white shadow-sm rounded-xl p-6">
-                <h3 class="text-4xl font-bold text-gray-900">12</h3>
-                <p class="text-gray-600 mt-2">Year <br> of establishment</p>
+                <h3 class="text-4xl font-bold text-gray-900">7+</h3>
+                <p class="text-gray-600 mt-2">Year <br>of Wins</p>
             </div>
 
             <!-- Box 2 -->
             <div class="bg-white shadow-sm rounded-xl p-6">
-                <h3 class="text-4xl font-bold text-gray-900">75K</h3>
-                <p class="text-gray-600 mt-2">Of customers <br> worldwide</p>
+                <h3 class="text-4xl font-bold text-gray-900">1156+</h3>
+                <p class="text-gray-600 mt-2">Satisfied <br>Global Fams</p>
             </div>
 
             <!-- Box 3 -->
             <div class="bg-white shadow-sm rounded-xl p-6">
-                <h3 class="text-4xl font-bold text-gray-900">63K</h3>
-                <p class="text-gray-600 mt-2">Countries with <br> active client base</p>
+                <h3 class="text-4xl font-bold text-gray-900">500+</h3>
+                <p class="text-gray-600 mt-2">Global Agencies <br>Vibing with Us</p>
             </div>
 
             <!-- Box 4 -->
             <div class="bg-white shadow-sm rounded-xl p-6">
-                <h3 class="text-4xl font-bold text-gray-900">4.8</h3>
-                <p class="text-gray-600 mt-2">Success rate of the <br> company this year</p>
+                <h3 class="text-4xl font-bold text-gray-900">50K+</h3>
+                <p class="text-gray-600 mt-2">Active Blogger Partners <br> Across the World</p>
             </div>
 
         </div>
-
     </div>
 </section>
-
 
 <section class="lg:py-16 py-12 px-6">
     <div class="container mx-auto  grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -131,15 +123,12 @@
                 <span class="w-2 h-2 bg-primary rounded-full ml-1"></span>
             </div>
 
-            <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
- font-bold text-gray-900 mb-4">
-                The world's best IT-solutions company
+            <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900 mb-4">
+                No. 1 Global Outreach Automation Marketplace 
             </h2>
 
             <p class="text-p-xs sm:text-p-sm md:text-p-md lg:text-p-lg lgg:text-p-lgg xl:text-p-xl 2xl:text-p-2xl text-gray-600 mb-8">
-                For efficient, knowledgeable IT support that addresses all of your
-                business technology needs, from our professionals. We do things
-                differently at reliable technology services.
+                Designed with intuitive UI & advanced predictive AI functionality features for simplifying accurate prospect analysis, automating mass outreach management, seamless multi-channel CRM integration & robust data security.
             </p>
 
             <a href="/contact"><button class="btn-primary">
@@ -202,7 +191,8 @@
 
         <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
           font-bold text-gray-900 mt-2 mb-16 leading-tight">
-            Meet our IT professional <br> team members
+            Meet our Outreach Specialists & Link-Building Experts
+
         </h2>
 
         <!-- Team Grid -->
@@ -235,13 +225,6 @@
                 <div class=" mx-auto w-11/12 bg-white  p-5 rounded-xl relative mt-[-48px]">
                     <h3 class="text-lg font-bold text-gray-900">Kristin Watsons</h3>
                     <p class="text-sm text-gray-600">SEO Executive</p>
-
-                    <!-- <div class="flex gap-4 mt-4 justify-center text-white text-xl">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div> -->
                 </div>
             </div>
             <!-- Card 1 (Highlighted) -->
@@ -253,13 +236,6 @@
                 <div class=" mx-auto w-11/12 bg-white  p-5 rounded-xl relative mt-[-48px]">
                     <h3 class="text-lg font-bold text-gray-900">Kristin Watsons</h3>
                     <p class="text-sm text-gray-600">SEO Executive</p>
-
-                    <!-- <div class="flex gap-4 mt-4 justify-center text-white text-xl">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div> -->
                 </div>
             </div>
             <!-- Card 1 (Highlighted) -->
@@ -271,20 +247,9 @@
                 <div class=" mx-auto w-11/12 bg-white  p-5 rounded-xl relative mt-[-48px]">
                     <h3 class="text-lg font-bold text-gray-900">Kristin Watsons</h3>
                     <p class="text-sm text-gray-600">SEO Executive</p>
-
-                    <!-- <div class="flex gap-4 mt-4 justify-center text-white text-xl">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div> -->
                 </div>
             </div>
-
-
-
         </div>
-
     </div>
 </section>
 
@@ -301,7 +266,7 @@
         <!-- Main Heading -->
         <h2 class="text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
          font-bold  text-white mb-6 ">
-            Looking for the best IT <br> business solutions?
+            Want customised mass outreach <br> for scalable backlinks?
         </h2>
 
         <!-- Input + Button -->
@@ -332,11 +297,9 @@
                 Features
                 <span class="w-2 h-2 bg-primary rounded-full ml-1"></span>
             </div>
-            <h2 class=" text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl
-           font-bold text-gray-900">
-                Contains modern features<br />
-                <span class="text-primary">for a better experience</span>
-            </h2>
+            
+            <h2 class=" text-h2-xs sm:text-h2-sm md:text-h2-md lg:text-h2-lg lgg:text-h2-lgg xl:text-h2-xl 2xl:text-h2-2xl font-bold text-gray-900"> Predictive Functionality Features <br/><span class="text-primary">for improved efficiency </span></h2>
+
         </div>
 
         <div class=" mx-auto">
@@ -353,9 +316,9 @@
                                 </svg>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Secure IT services</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Smarter Prospect Identification</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            Provide secure IT services limited have been used.
+                            Discover your potential leads faster with integrated Machine Learning
                         </p>
                     </div>
 
@@ -368,9 +331,9 @@
                                 </svg>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Backup solutions</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Hyper-personalized solutions</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            Quickly backup and restore for information when issues.
+                            AI-powered personalization for streamlined outreach & conversions
                         </p>
                     </div>
                 </div>
@@ -389,9 +352,9 @@
                                 </svg>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Fast communication</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Multi-channel drip automation</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            Fast communication for best Internet service provider.
+                            Connect with prospects on their preferred platforms to boost responses
                         </p>
                     </div>
 
@@ -404,9 +367,9 @@
                                 </svg>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Modern technology</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Quality checks</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            Innovation of technology use computers and networks.
+                            Monitor backlink metrics for performance analysis & strategic adjustments
                         </p>
                     </div>
                 </div>

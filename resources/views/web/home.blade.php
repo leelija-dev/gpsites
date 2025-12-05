@@ -1,7 +1,7 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'Link Building Outreach Tool | Backlink Marketplace')
-@section('description', '')
+@section('description', 'Scale up your link-building outreach with our one-stop AI-powered outreach automation, link-building, and guest posting marketplace.')
 @section('keywords', 'Link Building Outreach Automation​, Outreach Automation, Link Building Outreach Tool, outreach automation tool​, automated outreach system​, backlink marketplace, backlinks websites, outreach automation tool')
 
 @section('content')
