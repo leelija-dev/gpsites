@@ -76,13 +76,22 @@ class CheckoutController extends Controller
             ->orderBy('price', 'asc')
             ->get();
 
+        // For trial mode, we need the trial plan available for selection
+        if ($trialMode) {
+            $trialPlan = Plan::with('features')->find(config('paypal.trial_plan_id'));
+            if ($trialPlan) {
+                // Add trial plan to allPlans for JavaScript to find it
+                $allPlans->push($trialPlan);
+            }
+        }
+
         // For trial mode, we don't need a specific planModel initially
         $planModel = null;
         if ($plan) {
             $planModel = Plan::with('features')->findOrFail($plan);
         }
 
-        return view('web.checkout', compact('planModel', 'allPlans'));
+        return view('web.checkout', compact('planModel', 'allPlans', 'trialMode'));
     }
 
     /**

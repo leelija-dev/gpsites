@@ -34,7 +34,8 @@
 <section class="flex justify-center items-center min-h-screen w-full h-auto px-6 py-12">
     <div class="max-w-7xl w-full">
         @php
-        $trialMode = session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] == config('paypal.trial_plan_id')) || session('trial_plan') == config('paypal.trial_plan_id');
+        // Use trialMode passed from controller, fallback to calculation if not set
+        $trialMode = $trialMode ?? (session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] == config('paypal.trial_plan_id')) || session('trial_plan') == config('paypal.trial_plan_id'));
         $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
         @endphp
 
@@ -1208,6 +1209,7 @@
 
         // REPLACE PACKAGE - ONLY ONE PACKAGE ALLOWED AT A TIME
         function replacePackage(pkg) {
+            console.log('replacePackage called with:', pkg);
             selectedWrapper.innerHTML = '';
 
             const wasEmpty = selectedWrapper.children.length === 0;
@@ -1243,6 +1245,8 @@
 
             selectedWrapper.appendChild(row);
             updateTotals();
+
+            console.log('Package successfully added to order review:', pkg.name, 'Price:', pkg.price);
 
             setTimeout(initPayPalButtons, 100);
         }
@@ -1506,6 +1510,7 @@
         // Auto-select plan 14 for trial mode
         if (@json($trialMode ?? false)) {
             const allPlans = @json($allPlans ?? []);
+            console.log('Trial mode active, checking allPlans:', allPlans);
             const trialPlan = allPlans.find(plan => plan.id == {{ config('paypal.trial_plan_id') }});
 
             if (trialPlan) {
@@ -1515,9 +1520,10 @@
                     name: trialPlan.name,
                     price: parseFloat(trialPlan.price)
                 });
-                console.log('Trial plan selected successfully');
+                console.log('Trial plan selected successfully and added to order review');
             } else {
-                console.error('Trial plan (id: {{ config("paypal.trial_plan_id") }}) not found');
+                console.error('Trial plan (id: {{ config("paypal.trial_plan_id") }}) not found in allPlans');
+                console.log('Available plans:', allPlans.map(p => ({id: p.id, name: p.name})));
             }
         }
 
