@@ -25,6 +25,9 @@
         max-height: 0;
         opacity: 0;
     }
+    .iti__country-list{
+        z-index: 2000 !important;
+    }
 </style>
 
 
@@ -243,7 +246,7 @@
 
 
 <!-- Modal Background -->
-<div id="package-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 min-h-screen">
+<div id="package-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[2000] min-h-screen">
 
     <!-- Modal Box -->
     <div class="bg-white rounded-lg shadow-xl w-fit p-6 relative max-h-[90vh] overflow-y-scroll">
@@ -422,7 +425,6 @@
 <script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=USD&components=buttons&enable-funding=venmo&disable-funding=paylater"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Script for intl-tel-input -->
 <!-- Script for intl-tel-input -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 <script>
