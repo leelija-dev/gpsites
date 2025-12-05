@@ -20,12 +20,12 @@ class SendPlanExpirationReminder extends Command
 
         $orders = PlanOrder::with(['user', 'plan'])
             ->whereNotNull('paid_at')
-            ->where('status', 'active')
+            ->where('status', 'completed')
             ->get();
 
         foreach ($orders as $order) {
 
-            $expiryDate = Carbon::parse($order->paid_at)->addMonths($order->plan->duration);
+            $expiryDate = Carbon::parse($order->paid_at)->addDays($order->plan->duration);
 
             if ($expiryDate->isSameDay($threeDaysFromNow)) {
 

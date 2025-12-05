@@ -82,7 +82,12 @@
                                         <td class="px-6 py-4 text-center text-sm text-gray-600">
                                             {{ $order->created_at->format('d-m-Y, h:i A') }}
                                         </td>
-                                        <td class="px-6 py-4 text-center text-sm text-gray-600">{{$expiryDate->format('d-m-Y, h:i A')}}</td>
+                                        <td class="px-6 py-4 text-center text-sm text-gray-600">
+                                        @if($order->status == 'completed')    
+                                        {{$expiryDate->format('d-m-Y, h:i A')}}</td>
+                                        @else
+                                        <span class="text-gray-400 text-xs"></span>
+                                        @endif
                                         <td class="px-6 py-4 text-center">
                                             @if($isCompleted)
                                                 @if($isActive)

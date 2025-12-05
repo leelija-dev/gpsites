@@ -25,7 +25,7 @@
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Subject</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Message</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Sent At</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Sent Date</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
