@@ -37,9 +37,6 @@ class CheckoutController extends Controller
      */
     public function show(Request $request, $plan = null): View
     {
-        // Check if this is trial mode from session, POST data, or session trial_plan
-        $trialMode = session()->has('trial_mode') || $request->input('plan') == config('paypal.trial_plan_id') || session('trial_plan') == config('paypal.trial_plan_id');
-
         // If plan is not provided in URL, check query parameter for backward compatibility
         if (!$plan) {
             $plan = $request->query('plan');
@@ -59,6 +56,14 @@ class CheckoutController extends Controller
             }
         }
 
+        // If an explicit plan is provided and it's NOT the trial plan, clear trial_mode
+        if ($plan && $plan != config('paypal.trial_plan_id')) {
+            session()->forget('trial_mode');
+        }
+
+        // Check if this is trial mode from session, POST data, or session trial_plan
+        $trialMode = session()->has('trial_mode') || $request->input('plan') == config('paypal.trial_plan_id') || session('trial_plan') == config('paypal.trial_plan_id');
+
         // For trial mode, we don't require a specific plan initially
         if (!$plan && !$trialMode) {
             abort(404, 'Plan not specified');
@@ -71,13 +76,22 @@ class CheckoutController extends Controller
             ->orderBy('price', 'asc')
             ->get();
 
+        // For trial mode, we need the trial plan available for selection
+        if ($trialMode) {
+            $trialPlan = Plan::with('features')->find(config('paypal.trial_plan_id'));
+            if ($trialPlan) {
+                // Add trial plan to allPlans for JavaScript to find it
+                $allPlans->push($trialPlan);
+            }
+        }
+
         // For trial mode, we don't need a specific planModel initially
         $planModel = null;
         if ($plan) {
             $planModel = Plan::with('features')->findOrFail($plan);
         }
 
-        return view('web.checkout', compact('planModel', 'allPlans'));
+        return view('web.checkout', compact('planModel', 'allPlans', 'trialMode'));
     }
 
     /**
