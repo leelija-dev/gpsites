@@ -24,6 +24,7 @@
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Site URL</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Subject</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Message</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Sent At</th>
                                     <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Action</th>
                                 </tr>
@@ -63,6 +64,13 @@
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-600" title="{{ $cleanMessage }}">
                                                 {{ $shortMessage }}
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-sm text-gray-600">
+                                                @if($mail->status == 1)
+                                                    <span class="px-2 py-1 rounded-full text-white bg-green-600" style="height: 10px; line-height: 10px;">Sent</span>
+                                                @else
+                                                    <span class="px-2 py-1 rounded-full text-white bg-yellow-400" style="height: 18px; line-height: 18px;">Failed</span>
+                                                @endif
                                             </td>
                                             <td class="px-6 py-4 text-center text-sm text-gray-600">
                                                 {{ $mail->created_at->format('d M Y') }}
