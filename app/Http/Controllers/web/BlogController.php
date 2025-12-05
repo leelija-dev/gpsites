@@ -415,7 +415,7 @@ class BlogController extends Controller
         $email = $blog['contact_email_id'];
         $subject = $request->input('subject');
         $messageBody = $request->input('message');
-        $messageForDB = strip_tags($messageBody);
+        $messageForDB = $messageBody;
         $user_id = $request->userId;
 
 
