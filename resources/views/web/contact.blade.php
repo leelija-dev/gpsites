@@ -352,7 +352,7 @@
 
 </section>
 
-<x-web.faq />
+{{-- <x-web.faq /> --}}
 
 
 @endsection

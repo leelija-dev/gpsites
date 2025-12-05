@@ -208,7 +208,7 @@
                                             @if(isset($blog['ahrefs_traffic']) && $blog['ahrefs_traffic'])
                                                 <div class="flex items-center gap-1">
                                                     <span class="font-medium">Traffic:</span>
-                                                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-semibold">{{ number_format($blog['ahrefs_traffic']) }}</span>
+                                                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-semibold">{{ number_format((float) $blog['ahrefs_traffic']) }}</span>
                                                 </div>
                                             @endif
                                         </div>

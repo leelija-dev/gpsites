@@ -207,8 +207,8 @@
                             <p class="text-gray-900">{{ $order->billing_info['city'] ?? '—' }}</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-500 mb-1">State</label>
-                            <p class="text-gray-900">{{ $order->billing_info['state'] ?? '—' }}</p>
+                            <label class="block text-sm font-medium text-gray-500 mb-1">Country</label>
+                            <p class="text-gray-900">{{ $order->billing_info['country'] ?? '—' }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-500 mb-1">ZIP Code</label>

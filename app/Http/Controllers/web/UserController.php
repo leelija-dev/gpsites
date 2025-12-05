@@ -66,7 +66,7 @@ class UserController extends Controller
             ->count();
 
         // Calculate total amount spent by user on successful payments
-        $totalSpent = PlanOrder::where('user_id', $user->id)
+        $totalSpent = (float) PlanOrder::where('user_id', $user->id)
             ->where('status', 'COMPLETED') // Only count successful payments
             ->sum('amount');
 

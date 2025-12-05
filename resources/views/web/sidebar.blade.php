@@ -167,12 +167,16 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
 
       <!-- Footer Links -->
       <div class="border-t border-gray-200 px-4 py-5 space-y-1">
-         <a href="/logout" class="inline-flex w-full justify-center items-center gap-3 px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-300">
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+         <a href="/logout" class="inline-flex w-full justify-center items-center gap-2 px-5 py-2 border border-red-500 hover:bg-red-500 hover:text-white text-red-500 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-300">
+            <span class="sidebar-text hide-when-collapsed">Logout</span>
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
             </svg>
-            <span class="sidebar-text hide-when-collapsed">Logout</span> <!-- THIS WAS MISSING -->
          </a>
 
       </div>

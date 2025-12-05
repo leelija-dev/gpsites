@@ -38,7 +38,7 @@
                         </div>
                         <div class="flex xxs:flex-row flex-col items-center  xxs:justify-between text-lg font-bold">
                             <span>Amount</span>
-                            <span class="text-primary">{{ $order->currency }} {{ number_format($order->amount, 2) }}</span>
+                            <span class="text-primary">{{ config('app.currency') }}{{ number_format($order->amount, 2) }}</span>
                         </div>
                         <div class="flex xxs:flex-row flex-col items-center  xxs:justify-between">
                             <span class="font-medium">Status</span>

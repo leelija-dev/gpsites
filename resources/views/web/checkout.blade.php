@@ -61,7 +61,7 @@
 
                         <!-- Email -->
                         <div class="floating-label-group">
-                            <input type="email" id="email" placeholder=" " value="" required />
+                            <input type="email" id="email" placeholder=" " value="{{ auth()->user()->email ?? '' }}" required />
                             <label for="email">Email Address</label>
 
                         </div>
@@ -1197,7 +1197,7 @@
                 <div class="flex flex-col smx:flex-row smx:items-center gap-2 sm:gap-6 w-full ">
                   <div class="flex items-center gap-4 flex-1 min-w-0 xs:flex-row flex-col ">
                     <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
-                      Check
+                      ${pkg.name}
                     </div>
                     <div class="xs:flex-1 xs:min-w-0 xs:w-auto w-full xs:text-left text-center">
                       <p class="package-name font-bold text-gray-800 text-lg truncate ">
