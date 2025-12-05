@@ -76,7 +76,7 @@ $loggedUserId = Auth::id();
         }
 
         .page-link {
-            padding: 0.5rem 0.75rem;
+            padding: 0.5rem 1rem;
             border: 1px solid #d1d5db;
             border-radius: 0.375rem;
             color: #374151;
@@ -244,9 +244,9 @@ $loggedUserId = Auth::id();
                     <thead class="bg-[#f0f0f0] text-[#575757]">
                         <tr>
                             <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking"></th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Sl No</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking"></th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Metrics</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Sl. No</th>
+                            <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Site/blog</th>
+                            <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Metrics</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Traffic</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Mail</th>
                         </tr>
@@ -269,12 +269,6 @@ $loggedUserId = Auth::id();
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 {{ ($page - 1) * 10 + $loop->index + 1 }}
                             </td>
-                            {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                vcvcv{{ $blog['website_name'] ?? '' }}
-
-
-                            {{ $blog['site_url'] ?? '' }}
-                            </td> --}}
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 <div class="flex items-start gap-3">
 
@@ -285,7 +279,8 @@ $loggedUserId = Auth::id();
 
                                         <a href="{{ $blog['site_url'] ?? '' }}"
                                             class="text-blue-600 text-xs break-all flex items-center gap-1"
-                                            target="_blank">
+                                            target="_blank"
+                                            rel="nofollow">
 
                                             <img src="https://thumbs.dreamstime.com/b/chain-link-icon-isolated-white-background-chain-link-icon-trendy-design-style-chain-link-vector-icon-modern-simple-flat-183702536.jpg"
                                                 style="height:14px; width:14px;" />

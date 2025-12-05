@@ -61,7 +61,7 @@
 
                         <!-- Email -->
                         <div class="floating-label-group">
-                            <input type="email" id="email" placeholder=" " value="" required />
+                            <input type="email" id="email" placeholder=" " value="{{ auth()->user()->email ?? '' }}" required />
                             <label for="email">Email Address</label>
 
                         </div>

@@ -4,13 +4,13 @@ namespace App\Http\Controllers\web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserMailHistory;
+use Illuminate\Support\Facades\Auth;
 
 class MailController extends Controller
 {
-public function mailHistory($id)
+public function mailHistory(Request $request)
 {
-    // Decrypt the incoming ID
-    $userId = decrypt($id);
+    $userId=Auth::user()->id;
 
     // Fetch mail history for the user with pagination
     $mails = UserMailHistory::where('user_id', $userId)->orderBy('created_at', 'desc')->paginate(10);

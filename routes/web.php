@@ -102,7 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
 
-    Route::get('/mailHistory/{id}', [MailController::class, 'mailHistory'])->name('blog.mailHistory');
+    Route::get('/mail-history', [MailController::class, 'mailHistory'])->name('blog.mailHistory');
     Route::get('/viewMail/{id}', [MailController::class, 'viewMail'])->name('blog.view-mail');
 
     //order routes
