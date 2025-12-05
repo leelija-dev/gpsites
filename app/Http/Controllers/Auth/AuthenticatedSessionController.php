@@ -30,11 +30,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // Check email verification
-        if (is_null(Auth::user()->email_verified_at)) {
-            Auth::logout();
-            return redirect()->route('login')
-                ->with('error', 'Please verify your email address from Inbox before logging in.');
-        }
+        // if (is_null(Auth::user()->email_verified_at)) {
+        //     Auth::logout();
+        //     return redirect()->route('login')
+        //         ->with('error', 'Please verify your email address from Inbox before logging in.');
+        // }
 
         // ALWAYS redirect intended URL first if exists
         return redirect()->intended(route('dashboard'));
