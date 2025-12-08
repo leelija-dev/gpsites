@@ -87,7 +87,7 @@
 
                         <!-- CTA BUTTON -->
                         <div align="center" style="margin:12px 0 22px;">
-                            <a href="https://yourapp.com/dashboard" target="_blank"
+                            <a href="{{route('dashboard')}}" target="_blank"
                                 style="background:#4f46e5; color:#ffffff; font-size:15px; font-weight:bold; text-decoration:none; padding:14px 36px; border-radius:10px; display:inline-block;">
                                 Go to Dashboard →
                             </a>
@@ -106,9 +106,9 @@
                         style="background:#f3f4f6; padding:22px 16px; color:#6b7280; font-size:12px; line-height:1.6; font-family:Arial,sans-serif;">
                         © 2025 <strong>MyMailApp</strong>. All rights reserved.<br><br>
                         Support:
-                        <a href="mailto:support@yourapp.com"
+                        <a href="mailto:info@leelija.com"
                             style="color:#4f46e5; font-weight:bold; text-decoration:none;">
-                            support@yourapp.com
+                           info@leelija.com
                         </a>
                     </td>
                 </tr>
@@ -209,7 +209,7 @@
 
                         <!-- Mobile-Friendly Button -->
                         <div align="center" style="margin:32px 0 8px;">
-                            <a href="https://yourapp.com/dashboard"
+                            <a href="{{route('dashboard')}}"
                                 target="_blank"
                                 style="background:#4f46e5; color:#ffffff; font-weight:bold; font-size:16px; text-decoration:none; padding:14px 32px; border-radius:8px;  text-align:center;">
                                 Go to Dashboard →
@@ -230,9 +230,9 @@
                         © 2025 <strong>MyMailApp</strong>. All rights reserved.
                         <br><br>
                         Questions? Contact us at
-                        <a href="mailto:support@yourapp.com"
+                        <a href="mailto:info@leelija.com"
                             style="color:#4f46e5; text-decoration:none; font-weight:bold;">
-                            support@yourapp.com
+                            info@leelija.com
                         </a>
                     </td>
                 </tr>
