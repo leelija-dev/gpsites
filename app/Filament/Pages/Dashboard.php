@@ -22,11 +22,13 @@ class Dashboard extends Page //BaseDashboard
     {
         // Send total customer count to Blade
         $this->totalCustomers = User::count();
-        $this->totalOrders= PlanOrder::where('status', 'completed')->with('plan')->get();//where('status', 'completed')->count();
+        $this->totalOrders= PlanOrder::where('status', 'completed')->with('plan')->orderBy('created_at', 'desc')->get();//where('status', 'completed')->count();
 
         $this->totalMailSent = UserMailHistory::count();
         $this->totalMail = MailAvailable::all();
-        $this->latestContact = Contact::all();
+        // $this->latestContact = Contact::all();
+        $this->latestContact = Contact::orderBy('created_at', 'desc')->get();
+
         $this->plans= Plan::all();
     }
     public function searchByDate()

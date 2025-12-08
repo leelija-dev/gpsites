@@ -223,6 +223,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if($this->totalOrders->isNotEmpty())
                                 @foreach ($this->totalOrders as $order)
                                     <tr>
                                         <td class="truncate max-w-[150px]">{{ $order->user->name }}</td>
@@ -237,6 +238,11 @@
                                         }
                                     @endphp
                                 @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="4" class="p-4 text-center">No orders found.</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -267,6 +273,7 @@
                                 @php
                                     $count = 0;
                                 @endphp
+                                @if($this->latestContact->isNotEmpty())
                                 @foreach ($this->latestContact as $contact)
                                     <tr>
                                      
@@ -285,6 +292,11 @@
                                         @break
                                     @endif
                                 @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="2" class="p-4 text-center">No contact found.</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -310,6 +322,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if($this->plans->isNotEmpty())
                                 @foreach ($this->plans as $plan)
                                     <tr>
                                         <td class="truncate max-w-[150px]">{{ $plan->name }}</td>
@@ -324,6 +337,11 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="4" class="text-center">No plans found.</td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>

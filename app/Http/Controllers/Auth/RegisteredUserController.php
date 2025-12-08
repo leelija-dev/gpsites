@@ -49,6 +49,8 @@ class RegisteredUserController extends Controller
                 // Fire the registered event
                 event(new Registered($user));
 
+                return redirect()->route('login') // after registration logging page verify message
+                 ->with('verification_message', 'A verification link has been sent to your email address. Please verify your email before logging in.');
                 // Commit the transaction
                 DB::commit();
 
