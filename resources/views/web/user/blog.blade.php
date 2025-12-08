@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Blogs')
 @php
-use Illuminate\Support\Facades\Auth;
-$loggedUserId = Auth::id();
-// or Auth::user()->id
+    use Illuminate\Support\Facades\Auth;
+    $loggedUserId = Auth::id();
+    // or Auth::user()->id
 @endphp
 
 @section('content')
@@ -197,303 +197,315 @@ $loggedUserId = Auth::id();
         }
     </style>
 
-    <div class="min-h-screen bg-white">
-        <!-- Main content -->
-        <div class="p-4 md:p-6">
+    <!-- Main content -->
+    <div class="p-4 md:p-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-8">
+
             @if ($isValidPlan)
-            {{-- @if ($total_mail_available) --}}
-            <div class="space-y-4 md:space-y-0 md:flex md:items-center md:justify-between">
-                <!-- Search Section -->
-                <div class="flex smxl:flex-row flex-col gap-2 items-center ">
-                    <div class="relative w-full">
-                        <input type="text"
-                            id="searchInput"
-                            placeholder="Search"
-                            class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                    </div>
-                    <button id="searchBtn"
-                        class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        Search
-                    </button>
-                </div>
-
-                <!-- Selection Controls -->
-                <div class="flex xxs:flex-row flex-col gap-2  xxs:items-center items-end space-x-3">
-                    <div class="flex items-center space-x-2">
-                        <span class="font-bold text-lg text-gray-700">Selected site:</span>
-                        <span id="selectedCount" class="text-lg font-semibold text-blue-600">0</span>
-                    </div>
-                    <div class="flex smxl:flex-row flex-col gap-2 smxl:w-auto w-full">
-                        <button id="openMailModalBtn"
-                            data-available-mail="{{ $total_mail_available ?? 0 }}"
-                            data-total-mail="{{ $total_mail ?? 0 }}"
+                {{-- @if ($total_mail_available) --}}
+                <div class="space-y-4 md:space-y-0 md:flex md:items-center md:justify-between">
+                    <!-- Search Section -->
+                    <div class="flex smxl:flex-row flex-col gap-2 items-center ">
+                        <div class="relative w-full">
+                            <input type="text" id="searchInput" placeholder="Search"
+                                class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        </div>
+                        <button id="searchBtn"
                             class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                            Send Mail
-                        </button>
-                        <button id="clearSelectionBtn"
-                            class="px-4 py-2 smxl:w-auto w-full border border-red-600 text-red-600 font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition">
-                            Clear All
+                            Search
                         </button>
                     </div>
+
+                    <!-- Selection Controls -->
+                    <div class="flex xxs:flex-row flex-col gap-2  xxs:items-center items-end space-x-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-lg text-gray-700">Selected site:</span>
+                            <span id="selectedCount" class="text-lg font-semibold text-blue-600">0</span>
+                        </div>
+                        <div class="flex smxl:flex-row flex-col gap-2 smxl:w-auto w-full">
+                            <button id="openMailModalBtn" data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                data-total-mail="{{ $total_mail ?? 0 }}"
+                                class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                                Send Mail
+                            </button>
+                            <button id="clearSelectionBtn"
+                                class="px-4 py-2 smxl:w-auto w-full border border-red-600 text-red-600 font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition">
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Table Container -->
-            <div class="mt-6 overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-[#f0f0f0] text-[#575757]">
-                        <tr>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking"></th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Sl. No</th>
-                            <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Site/blog</th>
-                            <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Metrics</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Traffic</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Mail</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @if ($pagination->isNotEmpty())
-                        @foreach ($pagination as $blog)
-                        <!-- Main row -->
-                        <tr class="main-row hover:bg-gray-50 cursor-pointer transition"
-                            data-target="#expandRow{{ $blog['blog_id'] }}"
-                            data-blog-id="{{ $blog['blog_id'] }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-center" onclick="event.stopPropagation();">
-                                <input type="checkbox"
-                                    class="selectSiteCheckbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                    value="{{ $blog['blog_id'] }}"
-                                    onclick="event.stopPropagation();"
-                                    autocomplete="off">
-                            </td>
-                            <?php $page = $_GET['page'] ?? 1; ?>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                {{ ($page - 1) * 10 + $loop->index + 1 }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                <div class="flex items-start gap-3">
+                <!-- Table Container -->
+                <div class="mt-6 overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-[#f0f0f0] text-[#575757]">
+                            <tr>
+                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking"></th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Sl. No</th>
+                                <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Site/blog</th>
+                                <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Metrics</th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Traffic</th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Mail</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @if ($pagination->isNotEmpty())
+                                @foreach ($pagination as $blog)
+                                    <!-- Main row -->
+                                    <tr class="main-row hover:bg-gray-50 cursor-pointer transition"
+                                        data-target="#expandRow{{ $blog['blog_id'] }}"
+                                        data-blog-id="{{ $blog['blog_id'] }}">
+                                        <td class="px-6 py-4 whitespace-nowrap text-center"
+                                            onclick="event.stopPropagation();">
+                                            <input type="checkbox"
+                                                class="selectSiteCheckbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                                value="{{ $blog['blog_id'] }}" onclick="event.stopPropagation();"
+                                                autocomplete="off">
+                                        </td>
+                                        <?php $page = $_GET['page'] ?? 1; ?>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                            {{ ($page - 1) * 10 + $loop->index + 1 }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                            <div class="flex items-start gap-3">
 
-                                    <div>
-                                        <div class="font-semibold text-gray-900">
-                                            {{ $blog['website_name'] ?? '' }}
-                                        </div>
+                                                <div>
+                                                    <div class="font-semibold text-gray-900">
+                                                        {{ $blog['website_name'] ?? '' }}
+                                                    </div>
 
-                                        <a href="{{ $blog['site_url'] ?? '' }}"
-                                            class="text-blue-600 text-xs break-all flex items-center gap-1"
-                                            target="_blank"
-                                            rel="nofollow">
+                                                    <a href="{{ $blog['site_url'] ?? '' }}"
+                                                        class="text-blue-600 text-xs break-all flex items-center gap-1"
+                                                        target="_blank" rel="nofollow">
 
-                                            <img src="https://thumbs.dreamstime.com/b/chain-link-icon-isolated-white-background-chain-link-icon-trendy-design-style-chain-link-vector-icon-modern-simple-flat-183702536.jpg"
-                                                style="height:14px; width:14px;" />
+                                                        <img src="https://thumbs.dreamstime.com/b/chain-link-icon-isolated-white-background-chain-link-icon-trendy-design-style-chain-link-vector-icon-modern-simple-flat-183702536.jpg"
+                                                            style="height:14px; width:14px;" />
 
-                                            <span>{{ $blog['site_url'] ?? '' }}</span>
+                                                        <span>{{ $blog['site_url'] ?? '' }}</span>
 
-                                        </a>
+                                                    </a>
 
-                                    </div>
-                                </div>
-                            </td>
-                            {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                 {{ $blog['website_niche'] ?? '' }}
                             </td> --}}
-                            <td class="px-4 py-4 text-center" style="min-width: 200px;">
-                                <div class="text-xs space-y-1">
-                                    <div class="flex items-center gap-2">
-                                        <img class="XNo5Ab" style="height: 20px; width: 20px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC" style="height:26px;width:26px" alt="" data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
-                                        <span class="font-medium text-gray-900">Domain Authority:</span>
-                                        <strong><span>{{ $blog['moz_da'] ?? '' }}</span></strong>
-                                    </div>
+                                        <td class="px-4 py-4 text-center" style="min-width: 200px;">
+                                            <div class="text-xs space-y-1">
+                                                <div class="flex items-center gap-2">
+                                                    <img class="XNo5Ab" style="height: 20px; width: 20px;"
+                                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC"
+                                                        style="height:26px;width:26px" alt=""
+                                                        data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
+                                                    <span class="font-medium text-gray-900">Domain Authority:</span>
+                                                    <strong><span>{{ $blog['moz_da'] ?? '' }}</span></strong>
+                                                </div>
 
-                                    <div class="flex items-center gap-2">
-                                        <img class="XNo5Ab" style="height: 20px; width: 20px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC" style="height:26px;width:26px" alt="" data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
-                                        <span class="font-medium text-gray-900">Domain Rating:</span>
-                                        <strong><span>{{ $blog['ahrefs_dr'] ?? '' }}</span></strong>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                <div class="flex items-center gap-2 justify-center">
-                                    <img src="https://t3.ftcdn.net/jpg/15/13/55/86/360_F_1513558693_ew5p2ThohA8SgdS0IiL4fHgWdrqncsmA.jpg"
-                                        style="width:20px; height:20px;" alt="Icon">
+                                                <div class="flex items-center gap-2">
+                                                    <img class="XNo5Ab" style="height: 20px; width: 20px;"
+                                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVNvetVv+xfwuxEuuqt3/X////z+/6/5vhmxe2o3fT5/f7M6/m54/ea2fSM1PKs4PXl9fx4y++f2vQMWunWAAAAhElEQVR4Ad3RxxXDMAwEUTCMJK7E5P57dc6mGxBu8/5tYTs75713fzJEmOblkcs8QQwPTAJWfyu/AkqfqO2qftMAUXRmLooRomyWxRihFBigagMkoFV9Y+kXvVgvvxjyBDDlMELLAmX7wgic0RIkOyNvC1nPh3xdr9brfufsgw842+mdAC4OBqWvVW0xAAAAAElFTkSuQmCC"
+                                                        style="height:26px;width:26px" alt=""
+                                                        data-csiid="ydAvaYP_F9WP4-EP0Y3GsQo_6" data-atf="3">
+                                                    <span class="font-medium text-gray-900">Domain Rating:</span>
+                                                    <strong><span>{{ $blog['ahrefs_dr'] ?? '' }}</span></strong>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                            <div class="flex items-center gap-2 justify-center">
+                                                <img src="https://t3.ftcdn.net/jpg/15/13/55/86/360_F_1513558693_ew5p2ThohA8SgdS0IiL4fHgWdrqncsmA.jpg"
+                                                    style="width:20px; height:20px;" alt="Icon">
 
-                                    <span class="font-medium text-gray-900">Ahrefs Traffic:</span>
+                                                <span class="font-medium text-gray-900">Ahrefs Traffic:</span>
 
-                                    <strong>{{ $blog['ahrefs_traffic'] ?? '' }}</strong>
-                                </div>
-                            </td>
+                                                <strong>{{ $blog['ahrefs_traffic'] ?? '' }}</strong>
+                                            </div>
+                                        </td>
 
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm" onclick="event.stopPropagation();">
-                                <button class="rowMailBtn px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
-                                    data-available-mail="{{ $total_mail_available ?? 0 }}"
-                                    data-total-mail="{{ $total_mail ?? 0 }}"
-                                    data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
-                                    Send Mail
-                                </button>
-                            </td>
-                        </tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm"
+                                            onclick="event.stopPropagation();">
+                                            <button
+                                                class="rowMailBtn px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
+                                                data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                                data-total-mail="{{ $total_mail ?? 0 }}"
+                                                data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
+                                                Send Mail
+                                            </button>
+                                        </td>
+                                    </tr>
 
-                        <!-- Expandable row (hidden by default) -->
-                        <tr class="expandable-row bg-gray-50"
-                            id="expandRow{{ $blog['blog_id'] }}"
-                            style="display:none;">
-                            <td colspan="9" class="px-6 py-4">
-                                <div class="space-y-1">
-                                    <div><b>Website Name:</b> {{ $blog['website_name'] ?? '—' }}</div>
-                                    <div><b>Site URL:</b> {{ $blog['site_url'] ?? '—' }}</div>
-                                    {{-- <div><b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }}
+                                    <!-- Expandable row (hidden by default) -->
+                                    <tr class="expandable-row bg-gray-50" id="expandRow{{ $blog['blog_id'] }}"
+                                        style="display:none;">
+                                        <td colspan="9" class="px-6 py-4">
+                                            <div class="space-y-1">
+                                                <div><b>Website Name:</b> {{ $blog['website_name'] ?? '—' }}</div>
+                                                <div><b>Site URL:</b> {{ $blog['site_url'] ?? '—' }}</div>
+                                                {{-- <div><b>Website Niche:</b> {{ $blog['website_niche'] ?? '—' }}
                                 </div> --}}
-                                <div><b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }}</div>
-                                <div><b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }}</div>
-                                <div><b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}</div>
-            </div>
-            </td>
-            </tr>
-            @endforeach
+                                                <div><b>Moz DA:</b> {{ $blog['moz_da'] ?? '—' }}</div>
+                                                <div><b>DR:</b> {{ $blog['ahrefs_dr'] ?? '—' }}</div>
+                                                <div><b>Ahrefs Traffic:</b> {{ $blog['ahrefs_traffic'] ?? '—' }}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                                        No blog found.
+                                    </td>
+                                </tr>
+                            @endif
+                            <tr id="noResultsRow" style="display: none;">
+                                <td colspan="9" class="px-6 py-8 text-center text-gray-700 font-bold">
+                                    No blog found.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (isset($pagination))
+                    <div id="pagina-wrapper" class="mt-6 flex justify-center">
+                        {{ $pagination->links('pagination::bootstrap-5') }}
+                    </div>
+                @endif
             @else
-            <tr>
-                <td colspan="9" class="px-6 py-8 text-center text-gray-500">
-                    No blog found.
-                </td>
-            </tr>
-            @endif
-            <tr id="noResultsRow" style="display: none;">
-                <td colspan="9" class="px-6 py-8 text-center text-gray-700 font-bold">
-                    No blog found.
-                </td>
-            </tr>
-            </tbody>
-            </table>
-        </div>
-
-        @if (isset($pagination))
-        <div id="pagina-wrapper" class="mt-6 flex justify-center">
-            {{ $pagination->links('pagination::bootstrap-5') }}
-        </div>
-        @endif
-        {{-- @else
-        <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
-            <h4 class="text-xl font-semibold text-gray-700 mb-4">
-                You have already used all mail services!
-            </h4>
-            <a href="/#pricing"
-                class="pricing-link text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
-                <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                    Buy
-                </button>
-            </a>
-        </div>
-        @endif --}}
-        @else
-        <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
-            <h4 class="text-xl font-semibold text-gray-700 mb-4">
-                You have not purchased any plan.
-            </h4>
-            <a href="/#pricing"
-                class="pricing-link text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
-                <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                    Buy
-                </button>
-            </a>
-        </div>
-        @endif
-    </div>
-    </div>
-
-    <!-- Custom Modal -->
-    <div id="sendMailModal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 z-50 hidden">
-    <!-- Background overlay -->
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeModal()"></div>
-
-    <!-- Modal container - FIXED: removed overflow-hidden + proper flex setup -->
-    <div class="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
-        
-        <!-- This inner wrapper ensures header/body/footer layout works perfectly -->
-        <div class="flex flex-col h-full min-h-0"> <!-- min-h-0 is CRUCIAL for flex children with overflow -->
-
-            <!-- Modal header -->
-            <div class="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
-                <h3 class="text-lg font-medium text-gray-900">Send Mail</h3>
-                <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Modal body - This is the ONLY scrollable part -->
-            <div class="flex-1 overflow-y-auto p-6">
-                <form id="sendMailForm" class="mail-validation" method="POST" action="{{ route('blog.sendMail') }}"
-                    enctype="multipart/form-data" novalidate>
-                    @csrf
-                    <input type="hidden" name="selected_ids" id="selectedIdsInput">
-                    <input type="hidden" name="userId" id="userId" value="{{ $loggedUserId }}">
-                    <input type="hidden" name="availableMail" id="availableMail"
-                        value="{{ $total_mail_available->available_mail ?? 0 }}">
-
-                    <div class="space-y-6">
-                        <div>
-                            <p class="text-sm text-gray-500 mb-4">
-                                Selected Site: <span id="modalSelectedCount" class="font-semibold text-gray-900">0</span>
-                            </p>
+                <!-- No Active Plan Message -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+                    <div class="max-w-md mx-auto">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z">
+                                </path>
+                            </svg>
                         </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">No Active Plan Found</h3>
+                        <p class="text-gray-600 mb-6">
+                            You don't have any active plans at the moment. To access blogs list to outreach, please purchase
+                            a plan.
+                        </p>
+                        <a href="/#pricing"
+                            class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
+                            </svg>
+                            View Plans
+                        </a>
+                    </div>
+                </div>
+            @endif
+        </div>
 
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <input type="text" name="subject" placeholder="Enter subject"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    required>
-                                <div class="mt-1 text-sm text-red-600 hidden">Subject can not be blank!</div>
-                                @error('subject')
-                                    <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
-                                @enderror
-                            </div>
+        <!-- Custom Modal -->
+        <div id="sendMailModal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 z-50 hidden">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeModal()"></div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                <textarea id="summernote" name="message" style="display: none;"></textarea>
-                                <div id="summernote-editor"></div>
-                                <div class="mt-1 text-sm text-red-600 hidden">Message can not be blank!</div>
-                                @error('message')
-                                    <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
-                                @enderror
-                            </div>
+            <!-- Modal container - FIXED: removed overflow-hidden + proper flex setup -->
+            <div class="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Attachments</label>
-                                <div class="flex items-center space-x-2">
-                                    <input type="file" name="attachments[]" id="attachments" multiple
-                                        class="block w-full text-sm text-gray-500
+                <!-- This inner wrapper ensures header/body/footer layout works perfectly -->
+                <div class="flex flex-col h-full min-h-0"> <!-- min-h-0 is CRUCIAL for flex children with overflow -->
+
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
+                        <h3 class="text-lg font-medium text-gray-900">Send Mail</h3>
+                        <button type="button" onclick="closeModal()"
+                            class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Modal body - This is the ONLY scrollable part -->
+                    <div class="flex-1 overflow-y-auto p-6">
+                        <form id="sendMailForm" class="mail-validation" method="POST"
+                            action="{{ route('blog.sendMail') }}" enctype="multipart/form-data" novalidate>
+                            @csrf
+                            <input type="hidden" name="selected_ids" id="selectedIdsInput">
+                            <input type="hidden" name="userId" id="userId" value="{{ $loggedUserId }}">
+                            <input type="hidden" name="availableMail" id="availableMail"
+                                value="{{ $total_mail_available->available_mail ?? 0 }}">
+
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-sm text-gray-500 mb-4">
+                                        Selected Site: <span id="modalSelectedCount"
+                                            class="font-semibold text-gray-900">0</span>
+                                    </p>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                        <input type="text" name="subject" placeholder="Enter subject"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                            required>
+                                        <div class="mt-1 text-sm text-red-600 hidden">Subject can not be blank!</div>
+                                        @error('subject')
+                                            <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                        <textarea id="summernote" name="message" style="display: none;"></textarea>
+                                        <div id="summernote-editor"></div>
+                                        <div class="mt-1 text-sm text-red-600 hidden">Message can not be blank!</div>
+                                        @error('message')
+                                            <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Attachments</label>
+                                        <div class="flex items-center space-x-2">
+                                            <input type="file" name="attachments[]" id="attachments" multiple
+                                                class="block w-full text-sm text-gray-500
                                             file:mr-4 file:py-2 file:px-4
                                             file:rounded-md file:border-0
                                             file:text-sm file:font-medium
                                             file:bg-blue-50 file:text-blue-700
                                             hover:file:bg-blue-100">
-                                    <button type="button" id="clearAttachmentsBtn"
-                                        class="px-3 py-2 text-sm text-red-600 hover:text-red-800 hidden">
-                                        Clear All
-                                    </button>
+                                            <button type="button" id="clearAttachmentsBtn"
+                                                class="px-3 py-2 text-sm text-red-600 hover:text-red-800 hidden">
+                                                Clear All
+                                            </button>
+                                        </div>
+                                        <div id="fileList" class="mt-2 space-y-1 text-sm text-gray-600"></div>
+                                    </div>
                                 </div>
-                                <div id="fileList" class="mt-2 space-y-1 text-sm text-gray-600"></div>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                </form>
-            </div>
 
-            <!-- Modal footer -->
-            <div class="flex justify-end space-x-3 p-6 border-t border-gray-200 flex-shrink-0 bg-gray-50">
-                <button type="button" onclick="closeModal()"
-                    class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-                    Cancel
-                </button>
-                <button type="submit" form="sendMailForm"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-                    Send Mail
-                </button>
+                    <!-- Modal footer -->
+                    <div class="flex justify-end space-x-3 p-6 border-t border-gray-200 flex-shrink-0 bg-gray-50">
+                        <button type="button" onclick="closeModal()"
+                            class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                            Cancel
+                        </button>
+                        <button type="submit" form="sendMailForm"
+                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                            Send Mail
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
-</div>
 
     <script>
         // Storage key for selected blogs
@@ -707,7 +719,9 @@ $loggedUserId = Auth::id();
             } catch (error) {
                 console.error('Summernote Lite initialization error:', error);
                 // Fallback to plain textarea
-                $('#summernote-editor').html('<textarea id="fallback-textarea" class="w-full h-48 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your message..."></textarea>');
+                $('#summernote-editor').html(
+                    '<textarea id="fallback-textarea" class="w-full h-48 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your message..."></textarea>'
+                );
                 $('#fallback-textarea').on('input', function() {
                     $('#summernote').val($(this).val());
                 });
@@ -927,7 +941,8 @@ $loggedUserId = Auth::id();
                 let files = Array.from(this.files);
 
                 files.forEach(file => {
-                    const fileExists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+                    const fileExists = selectedFiles.some(f => f.name === file.name && f.size ===
+                        file.size);
                     if (!fileExists) {
                         selectedFiles.push(file);
 
@@ -1021,7 +1036,8 @@ $loggedUserId = Auth::id();
                 const subject = form.find('input[name="subject"]').val().trim();
                 if (!subject) {
                     form.find('input[name="subject"]').next('.text-red-600').removeClass('hidden');
-                    form.find('input[name="subject"]').removeClass('border-gray-300').addClass('border-red-500');
+                    form.find('input[name="subject"]').removeClass('border-gray-300').addClass(
+                        'border-red-500');
                     isValid = false;
                 }
 
@@ -1073,32 +1089,32 @@ $loggedUserId = Auth::id();
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@if (session('error'))
-<script>
-Swal.fire({
-    toast: true,
-    position: 'top-end',
-    icon: 'error',
-    title: "{{ session('error') }}",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-});
-</script>
-@endif
-@if (session('success'))
-<script>
-Swal.fire({
-    toast: true,
-    position: 'top-end',
-    icon: 'success',
-    title: "{{ session('success') }}",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-});
-</script>
-@endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
 
-   
+
 @endsection

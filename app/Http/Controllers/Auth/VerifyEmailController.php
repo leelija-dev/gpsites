@@ -47,7 +47,7 @@ class VerifyEmailController extends Controller
        
         // Find the user by ID
         $user = User::find($id);
-//  dd($user);  die;
+        
         if (!$user) {
             return redirect()->route('login')->with('error', 'Invalid verification link.');
         }

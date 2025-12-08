@@ -65,10 +65,19 @@ class HomeController extends Controller
     public function startTrial(Request $request)
     {
         $user = Auth::user();
+
+        // If user is not authenticated, store trial intent and redirect to login
         if (!$user) {
+            // Store trial mode in session for after login
+            session(['trial_mode' => true]);
+
+            // Set intended URL to checkout so user goes there after login
+            redirect()->setIntendedUrl(route('checkout'));
+
             return redirect()->route('login');
         }
 
+        // User is authenticated - proceed with trial logic
         // Do NOT write to DB here. Only switch to trial checkout mode.
         $trialStarted = !$user->is_trial; // eligible if not already used
 
@@ -115,6 +124,11 @@ class HomeController extends Controller
         $request->validate([
             'plan' => 'required|integer|exists:plans,id'
         ]);
+
+        // If selecting a non-trial plan, clear any existing trial mode
+        if ($request->input('plan') != config('paypal.trial_plan_id')) {
+            session()->forget('trial_mode');
+        }
 
         // Store plan in session
         session(['intent_plan' => $request->input('plan')]);

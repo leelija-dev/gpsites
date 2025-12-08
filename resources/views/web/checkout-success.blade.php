@@ -1,6 +1,7 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'Order Successful - Thank You!')
+@section('indexing', 'no')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center py-4 px-4">
@@ -26,7 +27,7 @@
             <div class="px-8 py-6">
                 @if($order)
                 <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
-                    
+
                     <div class="space-y-4 text-gray-700">
                         <div class="flex xxs:flex-row flex-col items-center  xxs:justify-between">
                             <span class="font-medium">Transaction ID</span>
@@ -42,7 +43,7 @@
                         </div>
                         <div class="flex xxs:flex-row flex-col items-center  xxs:justify-between">
                             <span class="font-medium">Status</span>
-                            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold 
+                            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold
                                     {{ $order->status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
                                 {{ ucfirst($order->status) }}
                             </span>
@@ -68,7 +69,7 @@
                 <div class="mt-6 space-y-4">
                     <a href="{{ route('dashboard') }}"
                         class="w-full block text-center bg-gradient-to-r from-secondary to-primary hover:from-primary hover:to-secondary text-white font-bold text-lg py-4 px-8 rounded-xl shadow-lg transform transition-all hover:scale-105 hover:shadow-xl">
-                        
+
                         Go to Dashboard
                     </a>
 

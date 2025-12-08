@@ -54,6 +54,13 @@ class BlogController extends Controller
                     if ($plan) {
                         // Exclude trial plan from valid plans
                         if ($plan->id == config('paypal.trial_plan_id')) {
+                            $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                            $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+                            if($isValid)
+                            {
+                                $total_mail_available+=$mail_available_record->available_mail;
+                                $total_mail +=$mail_available_record->total_mail;
+                            }
                             continue; // Skip trial plan - trial users cannot access blog content
                         }
 
@@ -214,6 +221,22 @@ class BlogController extends Controller
             //         ->subject($subject);
             // });
             if($email==null){
+                 UserMailHistory::create([
+                    'user_id' => $user_id,
+                    'site_url' => $blog['site_url'],
+                    'subject' => $subject,
+                    'message' => $messageBody,
+                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
+                    'status'=>false,
+                    'description'=>'Mail record not found.'
+
+                ]);
+                Log::error('Email is null. Mail cannot be sent.', [
+                'email' => $email,
+                'blog_id' => $id ?? null,
+                'site_url' => $blog['site_url'] ?? null,
+                ]); 
+
                 continue;
             }
             try{
@@ -229,6 +252,7 @@ class BlogController extends Controller
                     'subject' => $subject,
                     'message' => $messageBody,
                     'file' => !empty($attachment) ? implode(',', $attachment) : null,
+                    'status'=>true
 
                 ]);
                 // $lastMail = MailAvailable::where('user_id', Auth::id())
@@ -244,6 +268,16 @@ class BlogController extends Controller
          
         }catch (\Exception $e) {
 
+            UserMailHistory::create([
+                    'user_id' => $user_id,
+                    'site_url' => $blog['site_url'],
+                    'subject' => $subject,
+                    'message' => $messageBody,
+                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
+                    'status'=>false,
+                    'description'=>'Mail not send'.$e->getMessage()
+
+                ]);
             Log::error('Mail sending exception: '.$e->getMessage(), [
                 'email' => $email,
                 'exception' => $e
@@ -381,7 +415,7 @@ class BlogController extends Controller
         $email = $blog['contact_email_id'];
         $subject = $request->input('subject');
         $messageBody = $request->input('message');
-        $messageForDB = strip_tags($messageBody);
+        $messageForDB = $messageBody;
         $user_id = $request->userId;
 
 
@@ -434,10 +468,20 @@ class BlogController extends Controller
 
         // Send email
         if ($email == null) {
+            UserMailHistory::create([
+                    'user_id' => $user_id,
+                    'site_url' => $blog['site_url'],
+                    'subject' => $subject,
+                    'message' => $messageBody,
+                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
+                    'status'=>false,
+                    'description'=>'Mail record not found.'
 
+                ]);
             Log::error('Email is null. Mail cannot be sent.', [
                 'email' => $email,
                 'blog_id' => $id ?? null,
+                'site_url'=> $blog['site_url']?? null,
             ]);  // log message
 
         return redirect()->route('blog.index')
@@ -452,6 +496,17 @@ class BlogController extends Controller
         // Check if mail failed
         }catch (\Exception $e) {
 
+
+            UserMailHistory::create([
+                    'user_id' => $user_id,
+                    'site_url' => $blog['site_url'],
+                    'subject' => $subject,
+                    'message' => $messageBody,
+                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
+                    'status'=>false,
+                    'description'=>$e->getMessage(),
+
+                ]);
             Log::error('Mail sending exception: '.$e->getMessage(), [
                 'email' => $email,
                 'exception' => $e
@@ -469,6 +524,8 @@ class BlogController extends Controller
             'subject' => $subject,
             'message' => $messageForDB,
             'file' => !empty($attachment) ? implode(',', $attachment) : null,
+            'status'=>true
+            
         ]);
         $this->decrementMailCount();
         // Decrement correct credit source

@@ -1,6 +1,9 @@
 @extends('layouts.web.main-layout')
 
-@section('title', 'home-page')
+@section('title', 'Contact')
+@section('description', '')
+@section('keywords', 'contact gpsites, gpsites contact number', 'gpsites email')
+@section('indexing', 'no')
 
 @section('content')
 
@@ -84,7 +87,7 @@
             <!-- Right side - Contact Form -->
             <div class="bg-white rounded-2xl shadow-[0_6px_19px_#ccc] p-8 lg:p-10">
                 <form id="contact-us" method="post" action="{{route('contact.store')}}" class="space-y-6" novalidate>
-                    
+
                     <!-- Success Message -->
                     @if(session('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
@@ -96,7 +99,7 @@
                             </div>
                         </div>
                     @endif
-                    
+
                     <!-- Error Message -->
                     @if(session('error'))
                         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
@@ -108,9 +111,9 @@
                             </div>
                         </div>
                     @endif
-                    
+
                     @csrf
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Full Name -->
                         <div class="floating-label-group">
@@ -127,7 +130,7 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+
                         <!-- Phone Number -->
                         <div class="floating-label-group">
                             <input
@@ -208,7 +211,7 @@
                         </span>
                     </button>
                 </form>
-                
+
             </div>
 
         </div>
@@ -237,13 +240,13 @@
                 {{ session('success') }}
             </div>
         @endif
-        
+
         @if(session('info') && request()->routeIs('newsletter.subscribe'))
             <div class="max-w-2xl mx-auto mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg text-sm">
                 {{ session('info') }}
             </div>
         @endif
-        
+
         @error('email')
             <div class="max-w-2xl mx-auto mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {{ $message }}
@@ -251,15 +254,15 @@
         @enderror
 
         <!-- Input + Button -->
-        <form 
-            method="POST" 
-            action="{{ route('newsletter.subscribe') }}" 
+        <form
+            method="POST"
+            action="{{ route('newsletter.subscribe') }}"
             class="max-w-2xl mx-auto flex items-center smx:flex-row flex-col bg-white smx:rounded-full rounded-[10px] shadow-lg overflow-hidden smx:pe-2 smx:p-0 p-4"
             id="newsletter-form">
             @csrf
             <input type="hidden" name="source" value="contact-page">
             <input type="hidden" name="redirect_to" value="{{ url()->current() }}">
-            
+
             <!-- Email Input -->
             <input
                 type="email"
@@ -267,7 +270,7 @@
                 id="newsletter-email"
                 value="{{ old('email', request()->routeIs('newsletter.subscribe') ? old('email') : '') }}"
                 placeholder="Enter Your Email"
-                class="smx:px-6 px-4 smx:py-4 py-2 w-full text-gray-700 placeholder-gray-500 focus:outline-none smx:border-0 border-[1px] border-[#aeaeae] smx:rounded-none rounded-full smx:mb-0 mb-2 text-lg @error('email') border-red-500 @enderror" 
+                class="smx:px-6 px-4 smx:py-4 py-2 w-full text-gray-700 placeholder-gray-500 focus:outline-none smx:border-0 border-[1px] border-[#aeaeae] smx:rounded-none rounded-full smx:mb-0 mb-2 text-lg @error('email') border-red-500 @enderror"
                 style="box-shadow: none !important;"
                 required />
 

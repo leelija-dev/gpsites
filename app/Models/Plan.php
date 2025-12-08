@@ -14,7 +14,6 @@ class Plan extends Model
         'slug',
         'description',
         'price',
-        'currency',
         'duration',
         'mail_available',
         'is_active',

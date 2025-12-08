@@ -8,10 +8,10 @@
         <div class="w-14 min-w-14 h-14 min-h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3 overflow-hidden">
           <img src="{{asset('images/bg-8.webp')}}" alt="Post 1" class="w-full h-full  object-cover" />
         </div>
-        <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg font-bold gradient-text">SYNVO</h3>
+        <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg font-bold gradient-text">{{ config('app.name') }}</h3>
       </div>
       <p class="text-sm md:text-md lg:text-[1rem] leading-relaxed text-white mb-6">
-        we are passionate about empowering businesses through innovative and reliable technology solutions.
+        Convert your quality prospects through GPsites’ automation & streamline your personalized outreach workflow. 
       </p>
       <div class="flex space-x-3">
         <a href="#" class="lg:w-12 lg:h-12 w-10 h-10  bg-gray-800 rounded-full flex items-center justify-center hover:bg-purple-600 transition">

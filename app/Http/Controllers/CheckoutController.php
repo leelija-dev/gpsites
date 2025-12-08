@@ -37,9 +37,6 @@ class CheckoutController extends Controller
      */
     public function show(Request $request, $plan = null): View
     {
-        // Check if this is trial mode from session, POST data, or session trial_plan
-        $trialMode = session()->has('trial_mode') || $request->input('plan') == config('paypal.trial_plan_id') || session('trial_plan') == config('paypal.trial_plan_id');
-
         // If plan is not provided in URL, check query parameter for backward compatibility
         if (!$plan) {
             $plan = $request->query('plan');
@@ -59,6 +56,14 @@ class CheckoutController extends Controller
             }
         }
 
+        // If an explicit plan is provided and it's NOT the trial plan, clear trial_mode
+        if ($plan && $plan != config('paypal.trial_plan_id')) {
+            session()->forget('trial_mode');
+        }
+
+        // Check if this is trial mode from session, POST data, or session trial_plan
+        $trialMode = session()->has('trial_mode') || $request->input('plan') == config('paypal.trial_plan_id') || session('trial_plan') == config('paypal.trial_plan_id');
+
         // For trial mode, we don't require a specific plan initially
         if (!$plan && !$trialMode) {
             abort(404, 'Plan not specified');
@@ -71,13 +76,22 @@ class CheckoutController extends Controller
             ->orderBy('price', 'asc')
             ->get();
 
+        // For trial mode, we need the trial plan available for selection
+        if ($trialMode) {
+            $trialPlan = Plan::with('features')->find(config('paypal.trial_plan_id'));
+            if ($trialPlan) {
+                // Add trial plan to allPlans for JavaScript to find it
+                $allPlans->push($trialPlan);
+            }
+        }
+
         // For trial mode, we don't need a specific planModel initially
         $planModel = null;
         if ($plan) {
             $planModel = Plan::with('features')->findOrFail($plan);
         }
 
-        return view('web.checkout', compact('planModel', 'allPlans'));
+        return view('web.checkout', compact('planModel', 'allPlans', 'trialMode'));
     }
 
     /**
@@ -97,12 +111,12 @@ class CheckoutController extends Controller
             // Get plan details from database
             $plan = Plan::findOrFail($request->plan_id);
 
-            // Create order record in database (keep original currency)
+            // Create order record in database
             $order = PlanOrder::create([
                 'user_id' => Auth::id(),
                 'plan_id' => $plan->id,
                 'amount' => $plan->price,
-                'currency' => $plan->currency, // Store original currency
+                'currency' => config('app.currency'),
                 'status' => 'pending',
                 'billing_info' => $request->billing_info,
             ]);
@@ -172,7 +186,7 @@ class CheckoutController extends Controller
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
                 'amount' => 0, // Free trial
-                'currency' => $plan->currency,
+                'currency' => config('app.currency'),
                 'status' => 'completed',
                 'payment_status' => 'trial',
                 'paid_at' => now(),
@@ -375,12 +389,12 @@ class CheckoutController extends Controller
                     }
 
 
-                    //admin mail 
+                    //admin mail
                     $adminEmail = config('mail.admin_email'); // set in .env
                     $adminSubject = "New Plan Ordered";
                     $adminBody = "User: {$order->user->name} ({$order->user->email})\n"
                         . "Plan: {$plan->name}\n"
-                        . "Amount: {$order->amount} {$order->currency}\n"
+                        . "Amount: {$order->currency} {$order->amount}\n"
                         . "Transaction ID: {$order->transaction_id}\n"
                         . "Paid at: " . now()->toDateTimeString();
                     if ($adminEmail != null) {
@@ -463,28 +477,6 @@ class CheckoutController extends Controller
 
         return response()->json(['status' => 'ok']);
     }
-
-
-    // public function success(Request $request): View
-    // {
-    //     // Get transaction_id from cache instead of session (since jobs run asynchronously)
-    //     $transactionId = \Cache::get('payment_success_' . Auth::id());
-
-    //     // Clear the cache value after use
-    //     if ($transactionId) {
-    //         \Cache::forget('payment_success_' . Auth::id());
-    //     }
-
-    //     // Get order details for success page
-    //     $order = null;
-    //     if ($transactionId) {
-    //         $order = PlanOrder::with(['plan', 'user'])
-    //             ->where('transaction_id', $transactionId)
-    //             ->first();
-    //     }
-
-    //     return view('web.checkout-success', compact('transactionId', 'order'));
-    // }
 
 
     public function success(Request $request): View

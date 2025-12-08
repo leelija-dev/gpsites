@@ -1,6 +1,7 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'Checkout')
+@section('indexing', 'no')
 
 @section('content')
 
@@ -34,7 +35,8 @@
 <section class="flex justify-center items-center min-h-screen w-full h-auto px-6 py-12">
     <div class="max-w-7xl w-full">
         @php
-        $trialMode = session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] == config('paypal.trial_plan_id')) || session('trial_plan') == config('paypal.trial_plan_id');
+        // Use trialMode passed from controller, fallback to calculation if not set
+        $trialMode = $trialMode ?? (session()->has('trial_mode') || (isset($_POST['plan']) && $_POST['plan'] == config('paypal.trial_plan_id')) || session('trial_plan') == config('paypal.trial_plan_id'));
         $trialUsed = session('trial_used', false) || (auth()->check() && (int)(auth()->user()->is_trial) === 1);
         @endphp
 
@@ -260,7 +262,7 @@
 
         <!-- <div class="max-w-7xl mx-auto lg:px-6 px-0 grid grid-cols-1 md:grid-cols-3 gap-8 ">
 
-      
+
             <div class="bg-white rounded-2xl shadow-md px-8 pb-8 pt-0 border border-gray-100 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
                 <div class="text-center">
                     <div class="bg-purple-100  text-purple-600 relative top-[-3px] py-[7px] px-[22px] mb-[3rem] rounded-b-[10px] text-sm font-semibold inline-block">
@@ -295,7 +297,7 @@
                 </div>
             </div>
 
-          
+
             <div class="bg-gradient-to-br from-black to-primary text-white rounded-2xl shadow-xl px-8 pb-8  overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
                 <div class="text-center">
                     <div class="bg-purple-600 text-white relative top-[-3px] py-[7px] px-[22px] mb-[3rem] rounded-b-[10px] text-sm font-semibold inline-block">
@@ -330,7 +332,7 @@
                 </div>
             </div>
 
-    
+
             <div class="bg-white rounded-2xl shadow-md px-8 pb-8 border border-gray-100 overflow-hidden hover:scale-[1.04] transition-all duration-300 ease-in-out">
                 <div class="text-center">
                     <div class="bg-purple-100 text-purple-600 relative top-[-3px] py-[7px] px-[22px] mb-[3rem] rounded-b-[10px] text-sm font-semibold inline-block">
@@ -432,19 +434,22 @@
         // Pass plan data from PHP to JavaScript
         const planData = @json($planModel ?? null);
         const trialMode = @json($trialMode ?? false);
-        
+
+        // Global country mapping for converting codes to names
+        let countryCodeToName = {};
+
         // Initialize intl-tel-input for phone field
         const phoneInput = document.querySelector("#phone");
         let iti = null;
         let maxNationalDigits = 15; // Default fallback for national number (without country code)
         let currentCountryCode = 'in'; // Default country code
-        
+
         // Phone validation configuration
         const PHONE_CONFIG = {
             ALLOWED_CHARS: /^[0-9+\-\s()]*$/, // Only allow digits, plus, hyphen, space, parentheses
             DIGITS_ONLY: /^[0-9]*$/ // For final validation - digits only
         };
-        
+
         if (phoneInput && typeof window.intlTelInput === 'function') {
             // Initialize intl-tel-input first to get the placeholder
             iti = window.intlTelInput(phoneInput, {
@@ -459,39 +464,39 @@
                 customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
                     // Store current country code
                     currentCountryCode = selectedCountryData.iso2;
-                    
+
                     // Extract max digits from placeholder text - get ALL digits from placeholder
                     // This gives us the maximum NATIONAL number digits (without country code)
                     const digitsOnly = selectedCountryPlaceholder.replace(/[^\d]/g, '');
                     maxNationalDigits = digitsOnly.length;
-                    
+
                     // Get the example number from intl-tel-input
                     const exampleNumber = selectedCountryPlaceholder;
                     console.log(`Country: ${selectedCountryData.name}, National number max digits: ${maxNationalDigits}`);
-                    
+
                     return `${exampleNumber} (max ${maxNationalDigits} digits)`;
                 },
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
             });
-            
+
             // Track when country changes
             phoneInput.addEventListener('countrychange', function() {
                 if (iti) {
                     const selectedCountryData = iti.getSelectedCountryData();
                     currentCountryCode = selectedCountryData.iso2;
-                    
+
                     // Get the current placeholder to update maxNationalDigits
                     const placeholder = phoneInput.placeholder;
                     const digitsOnly = placeholder.replace(/[^\d]/g, '');
                     maxNationalDigits = digitsOnly.length;
-                    
+
                     console.log(`Country changed to: ${selectedCountryData.name}, New national max digits: ${maxNationalDigits}`);
-                    
+
                     // Clear any existing error
                     clearError(phoneInput);
                 }
             });
-            
+
             // Get current NATIONAL digit count (without country code)
             function getCurrentNationalDigitCount(value) {
                 // First, try to get the national number using intl-tel-input
@@ -510,10 +515,10 @@
                         console.log("Couldn't parse number with intl-tel-input, falling back");
                     }
                 }
-                
+
                 // Fallback: Remove all non-digits and country code if present
                 let digitsOnly = value.replace(/[^\d]/g, '');
-                
+
                 // Try to remove country code based on current country
                 if (iti) {
                     const countryData = iti.getSelectedCountryData();
@@ -525,14 +530,14 @@
                         }
                     }
                 }
-                
+
                 return digitsOnly.length;
             }
-            
+
             // Get national number only (without country code)
             function getNationalNumber(value) {
                 let digitsOnly = value.replace(/[^\d]/g, '');
-                
+
                 if (iti) {
                     const countryData = iti.getSelectedCountryData();
                     if (countryData && countryData.dialCode) {
@@ -543,15 +548,15 @@
                         }
                     }
                 }
-                
+
                 return digitsOnly;
             }
-            
+
             // Helper to format national number
             function formatNationalNumber(number, countryCode) {
                 // Simple formatting based on country
                 if (!number) return '';
-                
+
                 switch(countryCode) {
                     case 'us':
                     case 'ca':
@@ -570,41 +575,41 @@
                         }
                         break;
                 }
-                
+
                 // Default: just return the number
                 return number;
             }
-            
+
             // Restrict input to digits and basic phone characters
             phoneInput.addEventListener('input', function(e) {
                 let value = this.value;
-                
+
                 // Get cursor position before any changes
                 const cursorPos = this.selectionStart;
-                
+
                 // Remove any non-allowed characters
                 const cleaned = value.replace(/[^0-9+\-\s()]/g, '');
-                
+
                 // Get national digit count (without country code)
                 const nationalDigitCount = getCurrentNationalDigitCount(cleaned);
-                
+
                 // If NATIONAL digits exceed max, truncate
                 if (nationalDigitCount > maxNationalDigits) {
                     // Get national number only
                     let nationalNumber = getNationalNumber(cleaned);
-                    
+
                     // Truncate to max national digits
                     nationalNumber = nationalNumber.substring(0, maxNationalDigits);
-                    
+
                     // Now we need to reconstruct the full number with formatting
                     let result = '';
-                    
+
                     if (iti) {
                         const countryData = iti.getSelectedCountryData();
                         if (countryData && countryData.dialCode) {
                             // Start with + and country code
                             result = `+${countryData.dialCode}`;
-                            
+
                             // Add formatting if the national number is not empty
                             if (nationalNumber.length > 0) {
                                 result += ' ' + formatNationalNumber(nationalNumber, currentCountryCode);
@@ -617,16 +622,16 @@
                         // No intl-tel-input, just use the truncated number
                         result = nationalNumber;
                     }
-                    
+
                     this.value = result;
-                    
+
                     // Adjust cursor position
                     const newCursorPos = Math.min(cursorPos, result.length);
                     this.setSelectionRange(newCursorPos, newCursorPos);
                 } else if (cleaned !== value) {
                     this.value = cleaned;
                 }
-                
+
                 // Update filled state
                 if (this.value.trim()) {
                     this.classList.add('filled');
@@ -634,39 +639,39 @@
                     this.classList.remove('filled');
                 }
             });
-            
+
             // Prevent paste of invalid characters and enforce max digits
             phoneInput.addEventListener('paste', function(e) {
                 e.preventDefault();
-                
+
                 // Get pasted text
                 const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                
+
                 // Clean the pasted text - keep only digits
                 let pastedDigits = pastedText.replace(/[^0-9]/g, '');
-                
+
                 // Get current national digits count
                 const currentNationalNumber = getNationalNumber(this.value);
                 const currentNationalDigitCount = currentNationalNumber.length;
-                
+
                 // Calculate how many digits we can add
                 const availableDigits = maxNationalDigits - currentNationalDigitCount;
-                
+
                 if (availableDigits <= 0) {
                     // Already at max national digits
                     return;
                 }
-                
+
                 // Take only as many digits as we can fit
                 pastedDigits = pastedDigits.substring(0, availableDigits);
-                
+
                 if (pastedDigits.length === 0) {
                     return;
                 }
-                
+
                 // Append to current national number
                 const newNationalNumber = (currentNationalNumber + pastedDigits).substring(0, maxNationalDigits);
-                
+
                 // Format the new number
                 let newValue = '';
                 if (iti) {
@@ -679,37 +684,37 @@
                 } else {
                     newValue = newNationalNumber;
                 }
-                
+
                 this.value = newValue;
-                
+
                 // Move cursor to end
                 this.setSelectionRange(newValue.length, newValue.length);
-                
+
                 // Update filled state
                 if (this.value.trim()) {
                     this.classList.add('filled');
                 }
             });
-            
+
             // Prevent keydown for adding more NATIONAL digits if at max
             phoneInput.addEventListener('keydown', function(e) {
                 // Get current national digit count
                 const currentNationalNumber = getNationalNumber(this.value);
                 const currentNationalDigitCount = currentNationalNumber.length;
-                
+
                 // Check if it's a digit key (0-9 or numpad)
                 const isDigit = /^\d$/.test(e.key) || (e.key >= '0' && e.key <= '9');
-                
+
                 // Check if it's a control key
                 const isControl = [
-                    'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 
+                    'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
                     'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End',
                     'Enter', 'Escape'
                 ].includes(e.key);
-                
+
                 // Check if it's a formatting character that we allow
                 const isFormattingChar = /[+\-\s()]/.test(e.key);
-                
+
                 if (isDigit && !e.ctrlKey && !e.metaKey && !e.altKey) {
                     // If already at max NATIONAL digits, prevent adding more
                     if (currentNationalDigitCount >= maxNationalDigits) {
@@ -717,32 +722,32 @@
                         return;
                     }
                 }
-                
+
                 // Allow control keys and formatting characters
                 if (!isDigit && !isControl && !isFormattingChar && !e.ctrlKey && !e.metaKey && !e.altKey) {
                     // Prevent typing other characters
                     e.preventDefault();
                 }
             });
-            
+
             // Real-time digit count display (optional - for debugging)
             phoneInput.addEventListener('input', function() {
                 const nationalDigits = getNationalNumber(this.value);
                 console.log(`National digits: ${nationalDigits.length}/${maxNationalDigits}`);
             });
-            
+
             // Format the number on blur if valid
             phoneInput.addEventListener('blur', function() {
                 // Count current national digits
                 const nationalNumber = getNationalNumber(this.value);
-                
+
                 // STRICT enforcement - truncate if exceeds max NATIONAL digits
                 if (nationalNumber.length > maxNationalDigits) {
                     const truncatedNational = nationalNumber.substring(0, maxNationalDigits);
-                    
+
                     // Reformat with country code
                     let formatted = '';
-                    
+
                     if (iti) {
                         const countryData = iti.getSelectedCountryData();
                         if (countryData && countryData.dialCode) {
@@ -753,10 +758,10 @@
                     } else {
                         formatted = truncatedNational;
                     }
-                    
+
                     this.value = formatted;
                 }
-                
+
                 // Validate with intl-tel-input if we have enough digits
                 if (iti && nationalNumber.length >= 6 && nationalNumber.length <= maxNationalDigits) {
                     if (iti.isValidNumber()) {
@@ -764,14 +769,14 @@
                         this.value = formattedNumber;
                     }
                 }
-                
+
                 if (this.value.trim()) {
                     this.classList.add('filled');
                 } else {
                     this.classList.remove('filled');
                 }
             });
-            
+
             // Set initial filled state for phone
             if (phoneInput.value) {
                 phoneInput.classList.add('filled');
@@ -788,35 +793,35 @@
                 showError(input, 'This field is required');
                 return false;
             }
-            
+
             if (id === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                 showError(input, 'Please enter a valid email');
                 return false;
             }
-            
+
             if (id === 'phone' && value) {
                 // Get national number digits (without country code)
                 const nationalNumber = getNationalNumber ? getNationalNumber(value) : value.replace(/[^0-9]/g, '');
                 const nationalDigitCount = nationalNumber.length;
-                
+
                 // First, check national digit count
                 if (nationalDigitCount > maxNationalDigits) {
                     showError(input, `Phone number cannot exceed ${maxNationalDigits} digits for ${currentCountryCode.toUpperCase()}`);
                     return false;
                 }
-                
+
                 if (nationalDigitCount < 6) { // Minimum reasonable length for a phone number
                     showError(input, 'Phone number is too short');
                     return false;
                 }
-                
+
                 // Then check with intl-tel-input validation if available
                 if (iti) {
                     if (!iti.isValidNumber()) {
                         showError(input, 'Please enter a valid phone number');
                         return false;
                     }
-                    
+
                     if (!PHONE_CONFIG.ALLOWED_CHARS.test(value.replace(/\+[0-9]+\s?/, ''))) {
                         showError(input, 'Only digits and basic phone characters (+, -, (, ), space) are allowed');
                         return false;
@@ -830,12 +835,12 @@
                     }
                 }
             }
-            
+
             if (id === 'zip' && value && !/^\d{6}(-\d{4})?$/.test(value)) {
                 showError(input, 'Invalid ZIP code');
                 return false;
             }
-            
+
             return true;
         }
 
@@ -853,7 +858,7 @@
             style: 'currency',
             currency: 'USD'
         });
-        
+
         let validationBlocked = false;
 
         // === LOAD COUNTRIES FROM API ===
@@ -879,6 +884,9 @@
                     option.value = country.cca2;
                     option.textContent = country.name.common;
                     countrySelect.appendChild(option);
+
+                    // Store mapping for later use
+                    countryCodeToName[country.cca2] = country.name.common;
                 });
 
                 console.log(`Loaded ${countries.length} countries successfully`);
@@ -910,6 +918,9 @@
                     option.value = country.code;
                     option.textContent = country.name;
                     countrySelect.appendChild(option);
+
+                    // Store mapping for later use
+                    countryCodeToName[country.code] = country.name;
                 });
 
                 console.log('Using fallback countries due to API error');
@@ -1136,6 +1147,18 @@
         }
 
         function getBillingInfo() {
+            const countryCode = document.getElementById('country').value;
+            const countryName = countryCodeToName[countryCode] || countryCode;
+
+            // Get phone country code from intl-tel-input
+            let phoneCountryCode = '';
+            if (iti) {
+                const selectedCountryData = iti.getSelectedCountryData();
+                if (selectedCountryData && selectedCountryData.dialCode) {
+                    phoneCountryCode = `+${selectedCountryData.dialCode}`;
+                }
+            }
+
             return {
                 first_name: document.getElementById('firstName').value,
                 last_name: document.getElementById('lastName').value,
@@ -1143,9 +1166,11 @@
                 address1: document.getElementById('address1').value,
                 address2: document.getElementById('address2').value,
                 city: document.getElementById('city').value,
-                country: document.getElementById('country').value,
+                country: countryName, // Use full country name instead of code
+                country_code: countryCode, // Keep the original country code for reference
                 zip: document.getElementById('zip').value,
-                phone: document.getElementById('phone').value
+                phone: document.getElementById('phone').value,
+                phone_country_code: phoneCountryCode // Add phone country code
             };
         }
 
@@ -1185,6 +1210,7 @@
 
         // REPLACE PACKAGE - ONLY ONE PACKAGE ALLOWED AT A TIME
         function replacePackage(pkg) {
+            console.log('replacePackage called with:', pkg);
             selectedWrapper.innerHTML = '';
 
             const wasEmpty = selectedWrapper.children.length === 0;
@@ -1220,6 +1246,8 @@
 
             selectedWrapper.appendChild(row);
             updateTotals();
+
+            console.log('Package successfully added to order review:', pkg.name, 'Price:', pkg.price);
 
             setTimeout(initPayPalButtons, 100);
         }
@@ -1483,6 +1511,7 @@
         // Auto-select plan 14 for trial mode
         if (@json($trialMode ?? false)) {
             const allPlans = @json($allPlans ?? []);
+            console.log('Trial mode active, checking allPlans:', allPlans);
             const trialPlan = allPlans.find(plan => plan.id == {{ config('paypal.trial_plan_id') }});
 
             if (trialPlan) {
@@ -1492,9 +1521,10 @@
                     name: trialPlan.name,
                     price: parseFloat(trialPlan.price)
                 });
-                console.log('Trial plan selected successfully');
+                console.log('Trial plan selected successfully and added to order review');
             } else {
-                console.error('Trial plan (id: {{ config("paypal.trial_plan_id") }}) not found');
+                console.error('Trial plan (id: {{ config("paypal.trial_plan_id") }}) not found in allPlans');
+                console.log('Available plans:', allPlans.map(p => ({id: p.id, name: p.name})));
             }
         }
 

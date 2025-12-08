@@ -27,10 +27,7 @@ use Carbon\Carbon;
 
 // ... existing routes ...
 
-Route::post('/start-trial', function (Request $request) {
-    session(['trial_plan' => 14]);
-    return redirect()->route('checkout');
-})->name('start.trial');
+Route::post('/start-trial', [HomeController::class, 'startTrial'])->name('start.trial');
 
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
