@@ -522,7 +522,7 @@ class BlogController extends Controller
             'user_id' => $user_id,
             'site_url' => $blog['site_url'],
             'subject' => $subject,
-            'message' => $messageForDB,
+            'message' => $messageBody,
             'file' => !empty($attachment) ? implode(',', $attachment) : null,
             'status'=>true
             
