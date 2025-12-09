@@ -22,6 +22,7 @@ class Dashboard extends Page //BaseDashboard
     {
         // Send total customer count to Blade
         $this->totalCustomers = User::count();
+        $this->verifiedUser= User::where('email_verified_at', '!=', null)->count();
         $this->totalOrders= PlanOrder::where('status', 'completed')->with('plan')->orderBy('created_at', 'desc')->get();//where('status', 'completed')->count();
 
         $this->totalMailSent = UserMailHistory::count();

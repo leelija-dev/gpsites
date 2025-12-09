@@ -116,11 +116,19 @@
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </div>
+                        
                             <dt class="text-muted">
+                                <div>
                                 <span class="text-muted font-semibold" style="font-size: 15px;">Users: </span>
                                 <span class=" font-semibold text-success"
                                     style="font-size: 15px; font-color: success;   ">{{ $this->totalCustomers }}</span>
-                            </dt>
+                                </div>
+                                <div>
+                                <span class="text-muted font-semibold" style="font-size: 11px;">Verified User: </span>
+                                <span class=" font-semibold text-success"
+                                    style="font-size: 11px; font-color: success;   ">{{ $this->verifiedUser }}</span>
+                                </div>
+                                </dt>
                         </div>
                     </div>
                 </a>
@@ -155,7 +163,7 @@
                         <div class="text-left">
                             <div class="text-muted" style="font-size: 15px;">Total Orders: <span
                                     class="text-danger font-semibold">{{ $this->totalOrders->count() }}</span></div>
-                            <div class="text-muted" style="font-size: 15px;">Active Orders: <span
+                            <div class="text-muted" style="font-size: 11px;">Active Orders: <span
                                     class="text-success font-semibold">{{ $activeOrders }}</span></div>
                         </div>
                     </div>
@@ -185,7 +193,7 @@
                         <div class="text-left">
                             <div class="text-muted" style="font-size: 15px;">Total Mail: <span
                                     class="text-danger font-semibold">{{ $totalMails }}</span></div>
-                            <div class="text-muted" style="font-size: 15px;">Mail Sent: <span
+                            <div class="text-muted" style="font-size: 11px;">Mail Sent: <span
                                     class="text-success font-semibold">{{ $this->totalMailSent }}</span></div>
                         </div>
                     </div>
@@ -283,7 +291,7 @@
                                             </td>
                                         <td class="truncate max-w-[180px]">
                                             {{ $contact->subject }}<br>
-                                             <span style="font-size: 10px;">{{ $contact->created_at->format('d M Y') }} </span>
+                                             <span style="font-size: 11px;">{{ $contact->created_at->format('d M Y') }} </span>
                                         </td>
                                         
                                     </tr>
