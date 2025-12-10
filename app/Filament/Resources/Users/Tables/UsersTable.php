@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use App\Filament\Pages\UserMail;
 use Filament\Actions\ViewAction;
+use Filament\Schemas\Components\View;
 use Illuminate\Support\Facades\Log;
 class UsersTable
 {
@@ -73,9 +74,16 @@ class UsersTable
 
             // ])
             ->recordActions([
+            \Filament\Actions\Action::make('view_orders')
+                ->label('Orders')
+                ->icon('heroicon-o-shopping-bag')
+                ->color('info')
+                ->url(fn ($record) => route('filament.admin.resources.orders.index', [
+                 'user_id' => $record->id,
+            ])),
             EditAction::make(),
             ViewAction::make('view_mail_history')
-                ->label('Mail History')
+                ->label('History')
                 ->icon('heroicon-o-inbox-stack')
                 ->url(fn ($record) => route('filament.admin.pages.client-mail-history', ['user_id' => $record->id]))
                 ->openUrlInNewTab(false),

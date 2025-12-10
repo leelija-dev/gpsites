@@ -139,7 +139,7 @@
                         </span>
                     </td>
                     <td class="truncate max-w-[150px]">{{ $promotional_mail->created_at->format('d M Y ') }}</td>
-                   <td class="truncate max-w-[150px]">
+                   
                         <td class="truncate max-w-[150px]">
                             <a href="{{ url('admin/view-mail?id=' . $promotional_mail->id) }}"
                             class="text-blue-600 hover:text-blue-800">
@@ -148,7 +148,7 @@
                         </td>
 
 
-                    </td>
+                
                 </tr>
             @endforeach
             @else
