@@ -196,7 +196,7 @@ class BlogController extends Controller
             }
         }
         if(count($selectedIds) == 1){
-            $blogId = $selectedIds[0];
+            $blogId = $selectedIds;
             $blog = collect($blogs['data'])->firstWhere('blog_id', $blogId);
             $email=$blog['contact_email_id'] ?? '';
             if($email==null){
@@ -522,7 +522,7 @@ class BlogController extends Controller
             'user_id' => $user_id,
             'site_url' => $blog['site_url'],
             'subject' => $subject,
-            'message' => $messageForDB,
+            'message' => $messageBody,
             'file' => !empty($attachment) ? implode(',', $attachment) : null,
             'status'=>true
             

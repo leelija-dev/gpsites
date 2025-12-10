@@ -11,7 +11,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use App\Filament\Pages\UserMail;
 use Filament\Actions\ViewAction;
-
+use Filament\Schemas\Components\View;
+use Illuminate\Support\Facades\Log;
 class UsersTable
 {
     public static function configure(Table $table): Table
@@ -42,12 +43,28 @@ class UsersTable
                         ->success()
                         ->send();
                 }),
-                // ->beforeStateUpdated(function ($record, $state) {
-                //     // Runs before the state is saved to the database.
-                // })
-                // ->afterStateUpdated(function ($record, $state) {
-                //     // Runs after the state is saved to the database.
-                // })
+
+          ToggleColumn::make('email_verified_at')
+            ->label('Verified')
+            ->updateStateUsing(function ($record, $state) {
+                // Override the state before saving: true → now(), false → null
+                return $state ? now() : null;
+            })
+            ->afterStateUpdated(function ($record, $state) {
+               
+            if($state){
+                        $record->email_verified_at=now();
+                    }else{
+                        $record->email_verified_at = null;
+                }
+                    $record->save();
+                    // Filament Alert Notification
+                    \Filament\Notifications\Notification::make()
+                        ->title($state ? 'Verified on' : 'Verified off')
+                        ->body('Verified updated successfully.')
+                        ->success()
+                        ->send();
+            }),
             ])
             ->filters([
                 //
@@ -57,9 +74,16 @@ class UsersTable
 
             // ])
             ->recordActions([
+            \Filament\Actions\Action::make('view_orders')
+                ->label('Orders')
+                ->icon('heroicon-o-shopping-bag')
+                ->color('info')
+                ->url(fn ($record) => route('filament.admin.resources.orders.index', [
+                 'user_id' => $record->id,
+            ])),
             EditAction::make(),
             ViewAction::make('view_mail_history')
-                ->label('Mail History')
+                ->label('History')
                 ->icon('heroicon-o-inbox-stack')
                 ->url(fn ($record) => route('filament.admin.pages.client-mail-history', ['user_id' => $record->id]))
                 ->openUrlInNewTab(false),

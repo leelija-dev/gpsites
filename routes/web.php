@@ -17,6 +17,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\web\OrderController;
 use App\Http\Controllers\web\NewsletterController;  
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use App\Models\Plan;
 use App\Models\PlanOrder;
 use App\Models\MailAvailable;
@@ -137,7 +138,7 @@ Route::middleware('auth')->group(function () {
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
+        ->name('logout')->withoutMiddleware(ValidateCsrfToken::class);  // Skip CSRF only here;
 
     // Start Trial (no email verification required)
     Route::post('/trial/start', [HomeController::class, 'startTrial'])->name('trial.start');

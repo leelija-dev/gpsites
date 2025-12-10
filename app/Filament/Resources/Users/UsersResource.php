@@ -24,6 +24,10 @@ class UsersResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     protected static ?string $recordTitleAttribute = 'name';
+    public static function getNavigationLabel(): string
+    {
+            return 'Customers'; // This will appear in the sidebar
+    }
    public static function getNavigationGroup(): ?string
     {
         return 'User Management';

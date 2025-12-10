@@ -1,6 +1,102 @@
 <x-filament-panels::page>
-   
-      <table class="w-full text-left border" style="background-color: white; padding-left:5%">
+     <style>
+        .space-y-4>*+* {
+            margin-top: 1rem;
+        }
+
+        .space-y-3>*+* {
+            margin-top: 0.75rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .text-muted {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .text-small {
+            font-size: 14px;
+        }
+
+        /* New class for the right column layout */
+        .right-column-layout {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 16px;
+            height: fit-content;
+        }
+
+        /* Table styling for proper spacing */
+        .table-proper-spacing {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-proper-spacing th,
+        .table-proper-spacing td {
+            padding: 12px 16px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .table-proper-spacing th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            background-color: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .table-proper-spacing td {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table-proper-spacing tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .dark .table-proper-spacing th {
+            background-color: #1f2937;
+            border-bottom: 2px solid #374151;
+            color: #d1d5db;
+        }
+
+        .dark .table-proper-spacing td {
+            border-bottom: 1px solid #374151;
+            color: #e5e7eb;
+        }
+
+        .dark .table-proper-spacing tbody tr:hover {
+            background-color: #374151;
+        }
+    </style>
+    <x-filament::section>
+     <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+        <table class="table-proper-spacing">
             <thead> 
                 <tr class="bg-gray-200 ml-2 text-center" style="border-bottom: 1px solid #ddd;padding-left:5%">
                     <th class="p-2 border text-center">SL No</th>
@@ -77,7 +173,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="7" class="text-center p-4 font-semibold text-gray-600">
+                        <td colspan="8" class="text-center p-4 font-semibold text-gray-600">
                             No mail history found.
                         </td>
                     </tr>
@@ -87,9 +183,7 @@
                   </tbody>
             
         </table>
-        <div class="mt-4">
-   
-     
-</div>
-  
+        
+     </div>
+  </x-filament::section>
 </x-filament-panels::page>

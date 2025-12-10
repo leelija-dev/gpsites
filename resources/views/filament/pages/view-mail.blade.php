@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-  
+   <x-filament::section>
     <div class="space-y-4 ml-2" style="background-color: white; ">
        <div style="padding-left:50px; padding-top:20px">
         <p><strong class="mt-4" >Email:</strong> {{ $mail->email }}  <span style="padding-left:45%;">{{ ($mail->created_at)->format('d M Y,h:i a') }}</span></p>
@@ -17,5 +17,5 @@
         </x-filament::button>
     </div>
     </div>
-
+ </x-filament::section>
 </x-filament-panels::page>
