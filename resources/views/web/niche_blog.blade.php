@@ -1,6 +1,8 @@
 @extends('layouts.web.main-layout')
 
-@section('title', 'home-page')
+@section('title', 'Find Blog')
+@section('description', '')
+@section('indexing', 'no')
 
 @section('content')
 
