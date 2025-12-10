@@ -244,7 +244,7 @@
 
 
 
-
+<!--New order alert for admin --> 
 <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e5e7eb; font-family:Arial,Helvetica,sans-serif;">
     <tr>
         <td align="center" style="padding:20px 10px;">
@@ -306,6 +306,207 @@
                         © 2025 <strong style="color:#ffffff;">MyMailApp</strong> — Admin Notification System
                     </td>
                 </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e5e7eb;">
+    <tr>
+        <td align="center" style="padding:20px 10px;">
+
+            <!-- Main Container -->
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:620px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 12px 32px rgba(0,0,0,0.12);">
+
+                <!-- Header -->
+                <tr>
+                    <td align="center" style="background:linear-gradient(135deg,#7c3aed,#a855f7); padding:40px 20px;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#ffffff; margin-bottom:16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.678 4.74a2.25 2.25 0 0 1-2.004 0L3.57 8.66A2.25 2.25 0 0 1 2.5 6.993V6.75"/>
+                        </svg>
+                        <h1 style="color:#ffffff; margin:0; font-size:26px; font-weight:bold; line-height:1.3;">New Contact Message</h1>
+                        <p style="color:#e9d5ff; margin:12px 0 0; font-size:16px;">Someone just submitted the contact form</p>
+                    </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                    <td style="padding:32px 24px; color:#1f2937; line-height:1.7;">
+
+                        <p style="margin:0 0 16px; font-size:17px;">Hello Admin,</p>
+
+                        <p style="margin:0 0 24px; font-size:15px; color:#374151;">
+                            You have received a new message from the contact form. Here are the details:
+                        </p>
+
+                        <!-- Info Card -->
+                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+                            <tr>
+                                <td style="padding:20px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Sender Name</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 16px; font-size:15px; color:#111827;">Sarah Wilson</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Email Address</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 16px; font-size:15px; color:#111827;">
+                                                <a href="mailto:sarah.wilson@example.com" style="color:#4f46e5; text-decoration:none;">sarah.wilson@example.com</a>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Subject</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 16px; font-size:15px; color:#111827;">Question about Premium Plan & API Access</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Message</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0; font-size:15px; color:#111827; line-height:1.8; word-break:break-word;">
+                                                Hi team,<br><br>
+                                                I have a quick question about the Premium Monthly plan.<br><br>
+                                                • Can I upgrade or purchase additional credits mid-cycle?<br>
+                                                • Does the monthly plan include API access for automation?<br><br>
+                                                Looking forward to your reply!<br><br>
+                                                Thanks,<br>
+                                                Sarah
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="margin:28px 0; padding:16px; background:#f0e6ff; border-left:4px solid #a855f7; border-radius:8px;">
+                            <p style="margin:0; font-size:14px; color:#6b46c1;">
+                                Tip: You can reply directly to this email or contact the user at sarah.wilson@example.com
+                            </p>
+                        </div>
+
+                        <p style="margin:32px 0 0; font-size:13px; color:#6b7280; text-align:center;">
+                            This message was sent via the contact form on MyMailApp<br>
+                            Received on December 10, 2025 at 3:45 PM
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td align="center" style="background:#1e293b; padding:24px; color:#94a3b8; font-size:13px;">
+                        © 2025 <strong style="color:#ffffff;">MyMailApp</strong> — Contact Form Notification<br>
+                        All contact inquiries are monitored and responded to within 24 hours.
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eef2f7;">
+    <tr>
+        <td align="center" style="padding:20px 10px;">
+
+            <!-- Main Container -->
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:620px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 12px 32px rgba(0,0,0,0.12);">
+
+                <!-- Header -->
+                <tr>
+                    <td align="center" style="background:linear-gradient(135deg,#f59e0b,#f97316); padding:40px 20px;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#ffffff; margin-bottom:16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 0v3.75m0-3.75h.008m9.75 2.25a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <h1 style="color:#ffffff; margin:0; font-size:26px; font-weight:bold; line-height:1.3;">Your Plan Expires Soon!</h1>
+                        <p style="color:#fff7ed; margin:12px 0 0; font-size:16px;">Renew now to keep sending emails without interruption</p>
+                    </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                    <td style="padding:32px 24px; color:#1f2937; line-height:1.7;">
+
+                        <p style="margin:0 0 16px; font-size:17px;">Hello <strong style="color:#f59e0b;">John Doe</strong>,</p>
+
+                        <p style="margin:0 0 24px; font-size:15px; color:#374151;">
+                            This is a friendly reminder that your current plan is expiring soon. To avoid any disruption in your email campaigns, please renew before the expiry date.
+                        </p>
+
+                        <!-- Info Card -->
+                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+                            <tr>
+                                <td style="padding:20px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Username</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 16px; font-size:15px; color:#111827;">john_doe_92</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Current Plan</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 16px; font-size:15px; color:#111827;">Premium Monthly</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Expiry Date</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0; font-size:15px; color:#dc2626; font-weight:bold;">December 15, 2025</td>
+                                        </tr>
+
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="margin:32px 0; padding:20px; background:#fff7ed; border-left:5px solid #f97316; border-radius:8px;">
+                            <p style="margin:0; font-size:15px; color:#9a3412;">
+                                After <strong>December 15, 2025</strong>, your account will be downgraded to the free plan (500 credits/month) and scheduled campaigns will be paused.
+                            </p>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div align="center" style="margin:32px 0;">
+                            <a href="https://yourapp.com/pricing" target="_blank" style="background:#f59e0b; color:#ffffff; font-weight:bold; font-size:16px; text-decoration:none; padding:16px 40px; border-radius:10px; display:inline-block; margin:0 8px;">
+                                Renew Plan Now
+                            </a>
+                            <br><br>
+                            <a href="https://yourapp.com/dashboard" target="_blank" style="color:#f59e0b; font-size:14px; text-decoration:underline;">
+                                View Plan Details →
+                            </a>
+                        </div>
+
+                        <p align="center" style="margin:32px 0 0; font-size:13px; color:#6b7280;">
+                            Need help choosing a plan? Contact us at <a href="mailto:support@yourapp.com" style="color:#f59e0b;">support@yourapp.com</a>
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td align="center" style="background:#1e293b; padding:24px; color:#94a3b8; font-size:13px;">
+                        © 2025 <strong style="color:#ffffff;">MyMailApp</strong>. All rights reserved.<br>
+                        This is an automated reminder • No reply needed
+                    </td>
+                </tr>
+
             </table>
         </td>
     </tr>
