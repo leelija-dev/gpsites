@@ -5,10 +5,7 @@
     <!-- Company Info -->
     <div>
       <div class="flex items-center mb-4">
-        <div class="w-14 min-w-14 h-14 min-h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3 overflow-hidden">
-          <img src="{{asset('images/bg-8.webp')}}" alt="Post 1" class="w-full h-full  object-cover" />
-        </div>
-        <h3 class="text-h4-xs sm:text-h4-sm md:text-h4-md lg:text-h4-lg font-bold gradient-text">{{ config('app.name') }}</h3>
+        <img class="w-[150px]" src="{{ asset('images/site-img/logo.png') }}" alt="{{ config('app.name') }}">
       </div>
       <p class="text-sm md:text-md lg:text-[1rem] leading-relaxed text-white mb-6">
         Convert your quality prospects through GPsites’ automation & streamline your personalized outreach workflow. 

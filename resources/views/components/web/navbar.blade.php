@@ -8,7 +8,7 @@
                 <div class="flex items-center space-x-1">
                     <!-- Purple curved shape (using SVG) -->
                     <a href="/">
-                        <img class="w-[150px]" src="{{ asset('images/site-img/logo.png') }}" alt="">
+                        <img class="w-[150px]" src="{{ asset('images/site-img/logo.png') }}" alt="{{ config('app.name') }}">
                     </a>
                 </div>
             </div>
