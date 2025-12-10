@@ -188,7 +188,7 @@
         <!-- Badge -->
         <div class="inline-flex items-center gap-2 bg-indigo-100 text-primary text-p-xs sm:text-p-sm md:text-p-md  font-semibold px-3 py-1 rounded-full w-fit  mb-4">
             <span class="w-2 h-2 bg-primary rounded-full"></span>
-            Our Creatinve Team
+            Our Creative Team
             <span class="w-2 h-2 bg-primary rounded-full ml-1"></span>
         </div>
 
