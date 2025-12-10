@@ -7,16 +7,9 @@
             <div class="flex-shrink-0 flex items-center">
                 <div class="flex items-center space-x-1">
                     <!-- Purple curved shape (using SVG) -->
-                    <a href="/"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            class="text-purple-600">
-                            <path
-                                d="M16 2C11.7565 2 8 5.75652 8 10V22C8 26.2435 11.7565 30 16 30C20.2435 30 24 26.2435 24 22V10C24 5.75652 20.2435 2 16 2Z"
-                                fill="currentColor" />
-                            <path
-                                d="M16 8C13.7909 8 12 9.79086 12 12V20C12 22.2091 13.7909 24 16 24C18.2091 24 20 22.2091 20 20V12C20 9.79086 18.2091 8 16 8Z"
-                                fill="white" />
-                        </svg></a>
-                    <a href="/"> <span class="text-xl font-bold text-gray-900">Logo</span></a>
+                    <a href="/">
+                        <img class="w-[150px]" src="{{ asset('images/site-img/logo.png') }}" alt="">
+                    </a>
                 </div>
             </div>
 

@@ -9,6 +9,19 @@
     @else
         <meta name="robots" content="index, follow">
     @endif
+
+    <!-- Standard Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/site-img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/site-img/favicon-16x16.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/site-img/favicon.ico') }}">
+    
+    <!-- Apple Touch Icon (iPhone, iPad) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/site-img/apple-touch-icon.png') }}">
+
+    {{-- <!-- Meta for theme colors -->
+    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#da532c"> --}}
+
     <title>@yield('title') - {{ config('app.name') }}</title>
     <meta name="description" content="@yield('description')">
     <meta name="keywords" content="@yield('keywords')">
