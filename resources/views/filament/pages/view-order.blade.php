@@ -68,7 +68,7 @@
                         </div>
 
                         <div>
-                            <dt class="text-muted">Plan Expiry: {{ $expiryDate->format('M d, Y h:i A') }}</dt>
+                            <dt class="text-muted">Plan Expiry: {{ $this->record->expire_at->format('M d, Y h:i A') ?? '' }}</dt>
                         </div>
 
                         <div>

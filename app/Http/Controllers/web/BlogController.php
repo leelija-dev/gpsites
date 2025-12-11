@@ -54,7 +54,8 @@ class BlogController extends Controller
                     if ($plan) {
                         // Exclude trial plan from valid plans
                         if ($plan->id == config('paypal.trial_plan_id')) {
-                            $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                            // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
+                            $expiryDate=Carbon::parse($plan_order->expire_at);
                             $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
                             if($isValid)
                             {
@@ -64,7 +65,8 @@ class BlogController extends Controller
                             continue; // Skip trial plan - trial users cannot access blog content
                         }
 
-                        $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                        // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
+                        $expiryDate=Carbon::parse($plan_order->expire_at);
                         $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
 
                         if ($isValid) {
@@ -129,8 +131,8 @@ class BlogController extends Controller
 
                 $plan_id = Plan::where('id', $plan_order->plan_id)->first();
                 // $plan_expire=$plan_id->duration >=$plan_order->created_at;
-                $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_id->duration);
-
+                // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
+                $expiryDate = Carbon::parse($plan_order->expire_at ?? 0);
                 $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate) ? Carbon::now()->lessThanOrEqualTo($expiryDate) : false;
                 if (!$isValid) { // is expired 
 
@@ -446,7 +448,8 @@ class BlogController extends Controller
             if (!$order) continue;
             $plan = Plan::where('id', $order->plan_id)->first();
             if (!$plan) continue;
-            $expiryDate = Carbon::parse($order->created_at)->addDays($plan->duration);
+            // $expiryDate = Carbon::parse($order->created_at)->addDays($order->duration ?? 0);
+            $expiryDate = Carbon::parse($order->expire_at ?? 0);
             if (Carbon::now()->lte($expiryDate) && $m->available_mail > 0) {
                 $hasPaidPlanCredit = true;
                 break;
@@ -549,7 +552,8 @@ class BlogController extends Controller
             if (!$plan) continue;
 
             // Calculate expiry from PlanOrder created_at + plan duration
-            $expiryDate = Carbon::parse($order->created_at)->addDays($plan->duration);
+            // $expiryDate = Carbon::parse($order->created_at)->addDays($order->duration ?? 0);
+            $expiryDate = Carbon::parse($order->expire_at ?? 0);
 
             if (Carbon::now()->greaterThan($expiryDate)) {
                 continue; // skip expired plan
@@ -601,8 +605,10 @@ class BlogController extends Controller
             if ($plan->id == config('paypal.trial_plan_id')) {
                 continue; // Skip trial plan - trial users cannot access blog content
             }
+            $duration = round(\Carbon\Carbon::parse($order->created_at)
+                    ->floatDiffInDays(\Carbon\Carbon::parse($order->expire_at)));
 
-            if (now()->lte($order->created_at->addDays($plan->duration))) {
+            if (now()->lte($order->created_at->addDays($duration ?? 0))) {
                 $isValidPlan = true;
                 $total_mail_available += $mail->available_mail;
                 $total_mail += $mail->total_mail;

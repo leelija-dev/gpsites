@@ -511,3 +511,194 @@
         </td>
     </tr>
 </table>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Expiry Date Update</title>
+    <style>
+        /* Inline styles for email compatibility */
+        @media only screen and (max-width: 600px) {
+            .mobile-full {
+                width: 100% !important;
+            }
+            .mobile-padding {
+                padding: 20px 15px !important;
+            }
+            .mobile-text-center {
+                text-align: center !important;
+            }
+            .mobile-heading {
+                font-size: 22px !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; color: #333333;">
+    <!-- Main wrapper table -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f5f5f5; padding: 30px 0;">
+        <tr>
+            <td align="center">
+                <!-- Main content table -->
+                <table width="600" cellpadding="0" cellspacing="0" border="0" class="mobile-full" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    
+                    <!-- Header with logo/brand -->
+                    <tr>
+                        <td align="center" style="padding: 30px 0; background-color: #2c3e50;">
+                            <table cellpadding="2" cellspacing="2" border="0">
+                            
+                                <tr>
+                                    <td style="font-size: 20px; font-weight: bold; color: #ffffff;">Your Account Expiry Date Has Been Updated</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Hero section -->
+                    <tr>
+                        <td class="mobile-padding" style="padding: 40px 40px 30px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                {{-- <tr>
+                                    <td align="center" style="padding-bottom: 25px;">
+                                        <table cellpadding="0" cellspacing="0" border="0" style="background-color: #f0f7ff; border-radius: 50%; width: 80px; height: 80px; display: inline-block;">
+                                            <tr>
+                                                <td align="center" valign="middle">
+                                                    <span style="font-size: 36px; color: #3498db;">✓</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr> --}}
+                                <td align="center" class="mobile-text-center">
+                                 
+                                </td>
+                                 <p style="font-size:17px; margin:0 0 14px;">
+                                    Hello <strong style="color:#4f46e5;">John Doe</strong>,
+                                </p>
+                                <tr>
+                                    <td align="center" class="mobile-text-center">
+                                       
+                                        <p style="font-size: 16px; line-height: 1.6; color: #555555; margin: 0;">We've updated your account expiry date as requested. Please see the details below.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Updated information section -->
+                    <tr>
+                        <td class="mobile-padding" style="padding: 0 40px 20px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f9f9f9; border-radius: 8px; border: 1px solid #eeeeee;">
+                                <tr>
+                                    <td style="padding: 30px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td align="center" style="padding-bottom: 20px;">
+                                                    <h2 style="font-size: 20px; font-weight: bold; color: #2c3e50; margin: 0;">Updated Account Details</h2>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- User details -->
+                                            <tr>
+                                                <td>
+                                                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                        <tr>
+                                                            <td width="50%" style="padding: 12px 0; border-bottom: 1px solid #eeeeee;">
+                                                                <strong style="color: #555555;">Account Holder:</strong>
+                                                            </td>
+                                                            <td width="50%" style="padding: 12px 0; border-bottom: 1px solid #eeeeee;">
+                                                                <span style="color: #2c3e50;">John Doe</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="50%" style="padding: 12px 0; border-bottom: 1px solid #eeeeee;">
+                                                                <strong style="color: #555555;">Account ID:</strong>
+                                                            </td>
+                                                            <td width="50%" style="padding: 12px 0; border-bottom: 1px solid #eeeeee;">
+                                                                <span style="color: #2c3e50;">USR-7890-2023</span>
+                                                            </td>
+                                                        </tr>
+                                                        {{-- <tr>
+                                                            <td width="50%" style="padding: 12px 0; border-bottom: 1px solid #eeeeee;">
+                                                                <strong style="color: #555555;">Previous Expiry Date:</strong>
+                                                            </td>
+                                                            <td width="50%" style="padding: 12px 0; border-bottom: 1px solid #eeeeee;">
+                                                                <span style="color: #e74c3c;">December 31, 2023</span>
+                                                            </td>
+                                                        </tr> --}}
+                                                        <tr>
+                                                            <td width="50%" style="padding: 12px 0;">
+                                                                <strong style="color: #555555; font-size: 16px;">New Expiry Date:</strong>
+                                                            </td>
+                                                            <td width="50%" style="padding: 12px 0;">
+                                                                <span style="color: #27ae60; font-size: 16px; font-weight: bold;">June 30, 2024</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Important notice -->
+                    <tr>
+                        <td class="mobile-padding" style="padding: 0 40px 30px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #fff8e1; border-left: 4px solid #ffc107; border-radius: 4px;">
+                                <tr>
+                                    
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Action buttons -->
+                    <tr>
+                        <td class="mobile-padding" style="padding: 0 40px 40px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="https://yourapp.com/pricing" target="_blank" style="background:#f59e0b; color:#ffffff; font-weight:bold; font-size:16px; text-decoration:none; padding:16px 40px; border-radius:10px; display:inline-block; margin:0 8px;">
+                                             View Plan Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 30px 40px; background-color: #f8f9fa; border-top: 1px solid #eeeeee;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="center" class="mobile-text-center" style="padding-bottom: 20px;">
+                                        <p style="font-size: 14px; line-height: 1.5; color: #777777; margin: 0;">
+                                            This is an automated notification regarding your account status. Please do not reply to this email.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" class="mobile-text-center">
+                                        <p style="font-size: 14px; color: #777777; margin: 0 0 10px 0;">
+                                            &copy; 2023 YourBrand. All rights reserved.
+                                        </p>
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -34,8 +34,9 @@
                             @if($orders->isNotEmpty())
                                 @foreach ($orders as $order)
                                     @php
-                                        $expiryDate = \Carbon\Carbon::parse($order->created_at)->addDays($order->plan->duration);
-                                        $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
+                                        // $expiryDate = \Carbon\Carbon::parse($order->created_at)->addDays($order->duration);
+                                        $expiryDate = $order->expire_at ? \Carbon\Carbon::parse($order->expire_at) : null;
+                                        $isActive = $expiryDate ? now()->lessThanOrEqualTo($expiryDate): false; 
                                         $isCompleted = $order->status === 'completed';
                                         $page = request()->get('page', 1);
                                         $serial = ($page - 1) * $orders->perPage() + $loop->iteration;
@@ -77,7 +78,8 @@
                                         </td>
                                         <td class="px-6 py-4 text-center text-sm text-gray-600">
                                         @if($order->status == 'completed')    
-                                        {{$expiryDate->format('d-m-Y, h:i A')}}</td>
+                                        {{ $order->expire_at ? $order->expire_at->format('d-m-Y, h:i A') : '' }}
+                                        </td>
                                         @else
                                         <span class="text-gray-400 text-xs"></span>
                                         @endif

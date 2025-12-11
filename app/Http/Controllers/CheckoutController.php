@@ -110,12 +110,14 @@ class CheckoutController extends Controller
 
             // Get plan details from database
             $plan = Plan::findOrFail($request->plan_id);
-
+            $expiryDate = Carbon::parse(now())->addDays($plan->duration ?? 0);
             // Create order record in database
             $order = PlanOrder::create([
                 'user_id' => Auth::id(),
                 'plan_id' => $plan->id,
                 'amount' => $plan->price,
+                'duration'=> $plan->duration,
+                'expire_at'=>$expiryDate,
                 'currency' => config('app.currency'),
                 'status' => 'pending',
                 'billing_info' => $request->billing_info,
@@ -180,12 +182,15 @@ class CheckoutController extends Controller
             if (!$plan) {
                 return response()->json(['success' => false, 'message' => 'Trial plan not found'], 404);
             }
-
+            $expiryDate = Carbon::parse(now())->addDays($plan->duration ?? 0);
+            // $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
             // Create trial order record
             $order = PlanOrder::create([
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
                 'amount' => 0, // Free trial
+                'duration'=> $plan->duration,
+                'expire_at'=>$expiryDate,
                 'currency' => config('app.currency'),
                 'status' => 'completed',
                 'payment_status' => 'trial',

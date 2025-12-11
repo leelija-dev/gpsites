@@ -8,7 +8,8 @@
     use Carbon\Carbon;
     
     $loggedUserId = Auth::id();
-    $expiryDate = Carbon::parse($order->created_at)->addDays($order->plan->duration);
+    // $expiryDate = Carbon::parse($order->created_at)->addDays($order->duration);
+    $expiryDate = Carbon::parse($order->expire_at);
     $isActive = Carbon::now()->lessThanOrEqualTo($expiryDate);
     $sentMail = ($order->mailAvailable->total_mail ?? 0) - ($order->mailAvailable->available_mail ?? 0);
     $availableMail = $order->mailAvailable->available_mail ?? 0;
@@ -116,15 +117,19 @@
                                 <label class="block text-sm font-medium text-gray-500">Expires On</label>
                                 <p class="mt-1 text-lg font-semibold {{ $isActive ? 'text-green-600' : 'text-red-600' }}">
                                     @if($order->status === 'completed')
-                                        {{ $expiryDate->format('M d, Y h:i A') }}
+                                        {{ $order->expire_at ? $order->expire_at->format('M d, Y h:i A') : '' }}
                                     @else
                                         —
                                     @endif
                                 </p>
                             </div>
                             <div>
+                                @php                               
+                                    $days = round(Carbon::parse($order->created_at)
+                                            ->floatDiffInDays(Carbon::parse($order->expire_at)));                                
+                                @endphp
                                 <label class="block text-sm font-medium text-gray-500">Duration</label>
-                                <p class="mt-1 text-gray-800">{{ $order->plan->duration }} days</p>
+                                <p class="mt-1 text-gray-800">{{ $days ?? 0}} days</p>
                             </div>
                         </div>
                     </div>
