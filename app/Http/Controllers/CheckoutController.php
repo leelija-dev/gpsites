@@ -110,12 +110,14 @@ class CheckoutController extends Controller
 
             // Get plan details from database
             $plan = Plan::findOrFail($request->plan_id);
-
+            $expiryDate = Carbon::parse(now())->addDays($plan->duration ?? 0);
             // Create order record in database
             $order = PlanOrder::create([
                 'user_id' => Auth::id(),
                 'plan_id' => $plan->id,
                 'amount' => $plan->price,
+                'duration'=> $plan->duration,
+                'expire_at'=>$expiryDate,
                 'currency' => config('app.currency'),
                 'status' => 'pending',
                 'billing_info' => $request->billing_info,
@@ -180,12 +182,15 @@ class CheckoutController extends Controller
             if (!$plan) {
                 return response()->json(['success' => false, 'message' => 'Trial plan not found'], 404);
             }
-
+            $expiryDate = Carbon::parse(now())->addDays($plan->duration ?? 0);
+            // $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
             // Create trial order record
             $order = PlanOrder::create([
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
                 'amount' => 0, // Free trial
+                'duration'=> $plan->duration,
+                'expire_at'=>$expiryDate,
                 'currency' => config('app.currency'),
                 'status' => 'completed',
                 'payment_status' => 'trial',
@@ -194,28 +199,25 @@ class CheckoutController extends Controller
                 'billing_info' => $request->billing_info ?: [],
                 'payment_details' => json_encode(['type' => 'trial', 'activated_at' => now()])
             ]);
-                    $userEmail = $order->user->email;
-                    $userSubject = "Your plan '{$plan->name}' is activated!";
-                    $userBody = "Hello {$order->user->name},\n\n"
-                        . "Your order for the plan '{$plan->name}' has been successfully completed.\n"
-                        . "Transaction ID: {$order->transaction_id}\n"
-                        . "Plan Duration: {$plan->duration} Day\n"
-                        . "Mail Credits: {$plan->mail_available}\n\n"
-                        . "Thank you for choosing " . config('app.name') . ".";
-                    if($userEmail!=null){
-                    try{
-                        Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
+            $userEmail = $order->user->email;
+            $userSubject = "Your plan '{$plan->name}' is activated!";
+            $app_name = config('app.name');
+            $support_mail = config('mail.admin_email');
+            $userBody = $this->userTrialMail($order->user->name,$plan->name,$plan->duration,$order->transaction_id,$plan->mail_available,$app_name,$support_mail);
+            
+            if ($userEmail != null) {
+                try {
+                    Mail::html($userBody, function ($message) use ($userEmail, $userSubject) {
                         $message->to($userEmail)
                             ->subject($userSubject);
                     });
-                    }catch(\Exception $e)
-                    {
-                        Log::error('Mail sending exception: '.$e->getMessage(), [
-                            'email' => $userEmail,
-                            'exception' => $e
-                        ]);
-                    }
-                    }
+                } catch (\Exception $e) {
+                    Log::error('Mail sending exception: ' . $e->getMessage(), [
+                        'email' => $userEmail,
+                        'exception' => $e
+                    ]);
+                }
+            }
             // Create mail credits for trial
             MailAvailable::create([
                 'user_id' => $user->id,
@@ -231,7 +233,6 @@ class CheckoutController extends Controller
             $user->save();
 
             return response()->json(['success' => true, 'message' => 'Trial activated successfully']);
-
         } catch (\Exception $e) {
             Log::error('Trial activation failed: ' . $e->getMessage(), [
                 'exception' => $e,
@@ -364,8 +365,8 @@ class CheckoutController extends Controller
                         'transaction_id' => $paypalOrder->purchase_units[0]->payments->captures[0]->id,
                         'payment_details' => json_encode($paypalOrder)
                     ]);
-                
-                $plan = Plan::findOrFail($order->plan_id);
+
+                    $plan = Plan::findOrFail($order->plan_id);
                     MailAvailable::create([
                         'user_id' => $order->user_id,
                         'order_id' => $order->id,
@@ -377,36 +378,31 @@ class CheckoutController extends Controller
                     //order mail for user
                     $userEmail = $order->user->email;
                     $userSubject = "Your plan '{$plan->name}' is activated!";
-                    $userBody = "Hello {$order->user->name},\n\n"
-                        . "Your order for the plan '{$plan->name}' has been successfully completed.\n"
-                        . "Transaction ID: {$order->transaction_id}\n"
-                        . "Plan Duration: {$plan->duration} Day\n"
-                        . "Mail Credits: {$plan->mail_available}\n\n"
-                        . "Thank you for choosing " . config('app.name') . ".";
-                    if($userEmail!=null){
-                    Mail::raw($userBody, function ($message) use ($userEmail, $userSubject) {
-                        $message->to($userEmail)
-                            ->subject($userSubject);
-                    });
+                    $amount="{$order->currency}{$order->amount}";
+                    $app_name = config('app.name');
+                    $support_mail = config('mail.admin_email');
+                    $userBody=$this->orderUserMail($order->user->name,$plan->name,$plan->duration,$order->transaction_id,$plan->mail_available,$amount,$order->paid_at,$app_name,$support_mail);
+                    if ($userEmail != null) {
+                        Mail::html($userBody, function ($message) use ($userEmail, $userSubject) {
+                            $message->to($userEmail)
+                                ->subject($userSubject);
+                        });
                     }
-                    
+
 
                     //admin mail
                     $adminEmail = config('mail.admin_email'); // set in .env
                     $adminSubject = "New Plan Ordered";
-                    $adminBody = "User: {$order->user->name} ({$order->user->email})\n"
-                        . "Plan: {$plan->name}\n"
-                        . "Amount: {$order->currency} {$order->amount}\n"
-                        . "Transaction ID: {$order->transaction_id}\n"
-                        . "Paid at: " . now()->toDateTimeString();
-                    if($adminEmail!=null){
-                        
-                    $mail_status=Mail::raw($adminBody, function ($message) use ($adminEmail, $adminSubject) {
-                        $message->to($adminEmail)
-                            ->subject($adminSubject);
-                    });
+                    // $amount="{$order->currency} {$order->amount}";
                     
-                     }
+                    $adminBody = $this->orderAdminMail($order->user->name,$order->user->email,$plan->name,$amount,$order->transaction_id,$order->paid_at,$app_name);
+                    if ($adminEmail != null) {
+
+                        $mail_status = Mail::html($adminBody, function ($message) use ($adminEmail, $adminSubject) {
+                            $message->to($adminEmail)
+                                ->subject($adminSubject);
+                        });
+                    }
 
                     //end mail
 
@@ -511,4 +507,358 @@ class CheckoutController extends Controller
     {
         return redirect()->route('home')->with('error', 'Payment was cancelled.');
     }
+
+    public function userTrialMail($name,$plan,$plan_duration,$transection_id,$mail_available,$app_name,$support_mail){
+
+        $dashbord=route('dashboard');
+        $contact=route('contact');
+        $body='<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eef2f7;">
+    <tr>
+        <td align="center" style="padding:22px 8px;">
+
+            <!-- MAIN CONTAINER -->
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+                style="max-width:620px; margin:0 auto; background:white; border-radius:14px; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,0.12);">
+
+                <!-- HEADER -->
+                <tr>
+                    <td align="center"
+                        style="background:linear-gradient(135deg,#4f46e5,#6366f1); padding:38px 16px;">
+                        <svg style="color: #34ff34;width: 60px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                        </svg>
+
+                        <h1
+                            style="color:#ffffff; margin:0; font-size:24px; font-weight:bold; line-height:1.25; font-family:Arial,Helvetica,sans-serif;">
+                            Your Plan is Activated
+                        </h1>
+                        <p
+                            style="color:#e0e7ff; margin:12px 0 0 0; font-size:14px; line-height:1.5; font-family:Arial,Helvetica,sans-serif;">
+                            Your subscription is now live
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- BODY -->
+                <tr>
+                    <td
+                        style="padding:28px 18px; font-family:Arial,Helvetica,sans-serif; color:#1f2937; line-height:1.7;">
+
+                        <p style="font-size:16px; margin:0 0 18px 0;">
+                            Hello <strong style="color:#4f46e5;">'.$name.'</strong>,
+                        </p>
+
+                        <p style="font-size:14px; margin:0 0 22px 0; color:#374151;">
+                            Your order for the plan <strong>'.$plan.'</strong> has been successfully completed. Below are your activation details:
+                        </p>
+
+                        <!-- INFO CARD -->
+                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+                            style="background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+
+                            <tr>
+                                <td style="padding:16px 14px;">
+
+                                    <!-- STACKED GRID -->
+                                    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+
+                                        <tr>
+                                            <td style="padding:6px 0; font-size:12px; color:#6b7280;"><strong>Transaction ID</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 12px 0; font-size:13px; color:#111827; word-break:break-all;">
+                                                '.$transection_id.'
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:6px 0; font-size:12px; color:#6b7280;"><strong>Plan Duration</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 0 12px 0; font-size:13px; color:#111827;">
+                                                '.$plan_duration.' Days
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding:6px 0; font-size:12px; color:#6b7280;"><strong>Mail Credits</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0; font-size:13px; color:#111827;">
+                                                '.$mail_available.'(total)
+                                            </td>
+                                        </tr>
+
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="font-size:14px; margin:22px 0 26px 0; color:#374151;">
+                            Thank you for choosing <strong style="color:#4f46e5;">'.$app_name.'</strong>. You may now begin sending email campaigns instantly.
+                        </p>
+
+                        <!-- CTA BUTTON -->
+                        <div align="center" style="margin:12px 0 22px;">
+                            <a href="'.$dashbord.'" target="_blank"
+                                style="background:#4f46e5; color:#ffffff; font-size:15px; font-weight:bold; text-decoration:none; padding:14px 36px; border-radius:10px; display:inline-block;">
+                                Go to Dashboard →
+                            </a>
+                        </div>
+
+                        <p align="center" style="margin:0; font-size:12px; color:#6b7280;">
+                            Need help? Contact our support anytime.
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr>
+                    <td align="center"
+                        style="background:#f3f4f6; padding:22px 16px; color:#6b7280; font-size:12px; line-height:1.6; font-family:Arial,sans-serif;">
+                        © 2025 <strong>'.$app_name.'</strong>. All rights reserved.<br><br>
+                        Support:
+                        <a href='.$contact.'
+                            style="color:#4f46e5; font-weight:bold; text-decoration:none;">
+                          Contact us
+                        </a>
+                    </td>
+                </tr>
+
+            </table>
+            <!-- END CONTAINER -->
+
+        </td>
+    </tr>
+</table>';
+return $body;
+    }
+
+    public function orderAdminMail($name,$email,$plan,$amount,$transection_id,$paid_at,$app_name){
+        $body='
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e5e7eb; font-family:Arial,Helvetica,sans-serif;">
+            <tr>
+                <td align="center" style="padding:20px 10px;">
+
+                    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:620px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 12px 32px rgba(0,0,0,0.12);">
+                        
+                        <!-- Header - Warning Style -->
+                        <tr>
+                            <td align="center" style="background:linear-gradient(135deg,#dc2626,#ef4444); padding:40px 20px;">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#ffffff; margin-bottom:16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
+                                </svg>
+                                <h1 style="color:#ffffff; margin:0; font-size:26px; font-weight:bold; line-height:1.3;">New Plan Order</h1>
+                                <p style="color:#fecaca; margin:12px 0 0; font-size:16px;">Admin Notification</p>
+                            </td>
+                        </tr>
+
+                        <!-- Body -->
+                        <tr>
+                            <td style="padding:32px 24px; color:#1f2937; line-height:1.7;">
+                                <p style="margin:0 0 16px; font-size:17px;">Hello Admin,</p>
+                                
+                                <p style="margin:0 0 24px; font-size:15px; color:#374151;">
+                                    A new user has successfully purchased a subscription. Please review the details below:
+                                </p>
+
+                                <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+                                    <tr>
+                                        <td style="padding:20px;">
+                                            <table width="100%" cellpadding="0" cellspacing="0">
+                                                <tr><td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>User</strong></td></tr>
+                                                <tr><td style="padding:0 0 12px; font-size:15px; color:#111827;">'.$name.'<br><span style="color:#4f46e5;">'.$email.'</span></td></tr>
+
+                                                <tr><td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Plan</strong></td></tr>
+                                                <tr><td style="padding:0 0 12px; font-size:15px; color:#111827;">'.$plan.'</td></tr>
+
+                                                <tr><td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Amount</strong></td></tr>
+                                                <tr><td style="padding:0 0 12px; font-size:15px; color:#16a34a; font-weight:bold;">'.$amount.'</td></tr>
+
+                                                <tr><td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Transaction ID</strong></td></tr>
+                                                <tr><td style="padding:0 0 12px; font-size:15px; color:#111827; word-break:break-all;">'.$transection_id.'</td></tr>
+
+                                                <tr><td style="padding:8px 0; font-size:13px; color:#6b7280;"><strong>Paid At</strong></td></tr>
+                                                <tr><td style="padding:0; font-size:15px; color:#111827;">'.$paid_at .'</td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:16px; margin:24px 0;">
+                                    <p style="margin:0; font-size:14px; color:#b91c1c;">⚠️ Please verify this transaction and activate the user account if not already done.</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Footer -->
+                        <tr>
+                            <td align="center" style="background:#1e293b; padding:24px; color:#94a3b8; font-size:13px;">
+                                © 2025 <strong style="color:#ffffff;">'.$app_name.'</strong> — Admin Notification System
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>';
+        return $body;
+    }
+    public function orderUserMail($name, $plan, $plan_duration, $transection_id, $mail_available, $amount, $paid_at,$app_name,$support_mail)
+{
+    $dashboardUrl = route("dashboard");
+    $contact=route("contact");
+    $body = '
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"
+        style="background-color:#eef2f7; font-family:Arial,Helvetica,sans-serif;">
+        <tr>
+            <td align="center" style="padding:15px 8px;">
+
+                <!-- Main Wrapper -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"
+                    style="max-width:620px; margin:0 auto; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,0.12);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center"
+                            style="background:#4f46e5; background:linear-gradient(135deg,#4f46e5,#6366f1); padding:36px 18px;">
+                            <svg style="color: #34ff34;width: 60px;" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.67 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                            </svg>
+
+                            <h1 style="color:#ffffff; margin:0; font-size:26px; font-weight:bold; line-height:1.3;">
+                                Plan Activated Successfully!
+                            </h1>
+
+                            <p style="color:#e0e7ff; margin:10px 0 0; font-size:15px; line-height:1.5;">
+                                Welcome aboard! You\'re all set to start.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:28px 20px; color:#1f2937; line-height:1.6;">
+
+                            <p style="font-size:17px; margin:0 0 14px;">
+                                Hello <strong style="color:#4f46e5;">' . $name . '</strong>,
+                            </p>
+
+                            <p style="font-size:15px; margin:0 0 24px; color:#374151;">
+                                Your order for the <strong>' . $plan . '</strong> plan has been completed successfully.
+                                Below are your plan details:
+                            </p>
+
+                            <!-- Info Box -->
+                            <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+                                style="background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+
+                                <tr>
+                                    <td style="padding:16px 14px;">
+
+                                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+
+                                            <tr>
+                                                <td style="padding:6px 0; font-size:12px; color:#6b7280;">
+                                                    <strong>Transaction ID</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 0 12px 0; font-size:13px; color:#111827;">
+                                                    ' . $transection_id . '
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="padding:6px 0; font-size:12px; color:#6b7280;">
+                                                    <strong>Plan Duration</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 0 12px 0; font-size:13px; color:#111827;">
+                                                    ' . $plan_duration . ' days
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="padding:6px 0; font-size:12px; color:#6b7280;">
+                                                    <strong>Mail Credits</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0; font-size:13px; color:#111827;">
+                                                    ' . $mail_available . '/day
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="padding:6px 0; font-size:12px; color:#6b7280;">
+                                                    <strong>Amount</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0; font-size:13px; color:#111827;">
+                                                    ' . $amount . '
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="padding:6px 0; font-size:12px; color:#6b7280;">
+                                                    <strong>Paid At</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0; font-size:13px; color:#111827;">
+                                                    ' . $paid_at . '
+                                                </td>
+                                            </tr>
+
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-size:15px; margin:26px 0 0; color:#374151;">
+                                Thank you for choosing <strong style="color:#4f46e5;">'.$app_name.'</strong>. You can start creating
+                                and sending campaigns instantly.
+                            </p>
+
+                            <!-- Button -->
+                            <div align="center" style="margin:32px 0 8px;">
+                                <a href=' . $dashboardUrl . '
+                                    target="_blank"
+                                    style="background:#4f46e5; color:#ffffff; font-weight:bold; font-size:16px; text-decoration:none; padding:14px 32px; border-radius:8px; display:inline-block;">
+                                    Go to Dashboard →
+                                </a>
+                            </div>
+
+                            <p align="center" style="font-size:13px; color:#6b7280; margin:18px 0 0;">
+                                Need help? Our support team is always ready to assist.<a href='.$contact.' target="_blank" style="color:#4f46e5; font-weight:bold; text-decoration:none;">Contact us</a>
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center"
+                            style="background:#f3f4f6; padding:24px 18px; color:#6b7280; font-size:12.5px; line-height:1.7;">
+                            © 2025 <strong>'.$app_name.'</strong>. All rights reserved.
+                           
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>';
+
+    return $body;
+}
+
+
 }

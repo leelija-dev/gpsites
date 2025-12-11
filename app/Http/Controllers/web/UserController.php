@@ -43,7 +43,8 @@ class UserController extends Controller
                 $plan = Plan::where('id', $plan_order->plan_id)->first();
 
                 if ($plan) {
-                    $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                    // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan->duration);
+                    $expiryDate = Carbon::parse($plan_order->expire_at);
                     $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
 
                     // Include both trial and paid plans if they're valid and not expired

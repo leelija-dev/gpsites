@@ -87,7 +87,7 @@
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="6" class="px-6 py-16 text-center text-gray-500 text-lg font-medium">
+                                        <td colspan="7" class="px-6 py-16 text-center text-gray-500 text-lg font-medium">
                                             No mail history found.
                                         </td>
                                     </tr>

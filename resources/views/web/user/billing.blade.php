@@ -5,6 +5,7 @@
 
 @php
     use Illuminate\Support\Facades\Auth;
+    use carbon\Carbon;
     $loggedUserId = Auth::id();
 @endphp
 
@@ -46,7 +47,8 @@
                             @if($bills->isNotEmpty())
                                 @foreach ($bills as $bill)
                                     @php
-                                        $expiryDate = \Carbon\Carbon::parse($bill->created_at)->addDays($bill->plan->duration);
+                                        // $expiryDate = \Carbon\Carbon::parse($bill->created_at)->addDays($bill->duration);
+                                        $expiryDate = \Carbon\Carbon::parse($bill->expire_at);
                                         $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
                                         $page=$_GET['page'] ?? 1;
                                     @endphp
@@ -78,7 +80,12 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
-                                            {{ $bill->plan->duration }} day{{ $bill->plan->duration > 1 ? 's' : '' }}
+                                            {{-- {{ $bill->duration }} day{{ $bill->duration > 1 ? 's' : '' }} --}}
+                                            @php 
+                                            $duration = round(Carbon::parse($bill->created_at)
+                                            ->floatDiffInDays(Carbon::parse($bill->expire_at))); 
+                                            @endphp
+                                            {{ $duration }} day{{ $duration > 1 ? 's' : '' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
                                             {{ $bill->created_at->format('d-m-Y, h:i A') }}

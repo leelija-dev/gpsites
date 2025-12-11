@@ -74,6 +74,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/',[HomeController::class,'index'])->name('home');
+Route::get('/mailtemp',[HomeController::class,'mailtemp'])->name('mailtemp');
 
 // Public route to store intended plan in session for guests
 Route::post('/intent/plan', [HomeController::class, 'storeIntentPlan'])->name('intent.plan');

@@ -25,7 +25,7 @@ class Dashboard extends Page //BaseDashboard
         $this->verifiedUser= User::where('email_verified_at', '!=', null)->count();
         $this->totalOrders= PlanOrder::where('status', 'completed')->with('plan')->orderBy('created_at', 'desc')->get();//where('status', 'completed')->count();
 
-        $this->totalMailSent = UserMailHistory::count();
+        $this->totalMailSent = UserMailHistory::where('status', 1)->count();
         $this->totalMail = MailAvailable::all();
         // $this->latestContact = Contact::all();
         $this->latestContact = Contact::orderBy('created_at', 'desc')->get();
