@@ -79,7 +79,7 @@ class UserMailHistory extends Page implements Tables\Contracts\HasTable
                     ->label('View')
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record): string => url('admin/view-mail?id=' . $record->id))
-                    ->openUrlInNewTab(),
+                    ,
             ])
             ->emptyStateHeading('Not Available!')
             ->emptyStateDescription('User mail history not available.')

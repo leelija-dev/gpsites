@@ -142,7 +142,8 @@
 
                 @foreach ($this->totalOrders as $order)
                     @php
-                        $expiryDate = Carbon::parse($order->created_at)->addDays($order->plan->duration);
+                        // $expiryDate = Carbon::parse($order->created_at)->addDays($order->plan->duration);
+                        $expiryDate = Carbon::parse($order->expire_at);
                         $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
                         if ($isValid) {
                             $activeOrders++;

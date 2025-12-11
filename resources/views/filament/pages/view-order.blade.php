@@ -32,7 +32,8 @@
     </style>
 
     @php
-        $expiryDate = \Carbon\Carbon::parse($this->record->created_at)->addDays($record->plan->duration);
+        // $expiryDate = \Carbon\Carbon::parse($this->record->created_at)->addDays($record->plan->duration);
+        $expiryDate = \Carbon\Carbon::parse($this->record->expire_at);
         $isActive = \Carbon\Carbon::now()->lessThanOrEqualTo($expiryDate);
         $badgeColor = $isActive ? 'success' : ($isActive === false ? 'gray' : 'danger');
         $badgeText = $isActive ? 'Active' : ($isActive === false ? 'Expired' : 'Unknown');
