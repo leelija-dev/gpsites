@@ -216,7 +216,7 @@
                             <input type="checkbox" class="mt-1 w-4 h-4 accent-blue-600" required>
                             <span>
                                 Please check to acknowledge our
-                                <a href="#" class="text-blue-600 underline">Privacy & Terms Policy</a>
+                                <a href="{{route('privacy-policy')}}" class="text-blue-600 underline">Privacy</a> & <a class="text-blue-600 underline" href="{{route('terms-of-service')}}"> Terms Policy</a>
                             </span>
                         </label>
 
@@ -1463,9 +1463,7 @@
             row.innerHTML = `
                 <div class="flex flex-col smx:flex-row smx:items-center gap-2 sm:gap-6 w-full ">
                   <div class="flex items-center gap-4 flex-1 min-w-0 xs:flex-row flex-col ">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
-                      ${pkg.name}
-                    </div>
+                    
                     <div class="xs:flex-1 xs:min-w-0 xs:w-auto w-full xs:text-left text-center">
                       <p class="package-name font-bold text-gray-800 text-lg truncate ">
                         ${pkg.name}

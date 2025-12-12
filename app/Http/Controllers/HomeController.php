@@ -144,5 +144,11 @@ class HomeController extends Controller
     {
         return view('web.check-template');
     }
+    public function termsOfService(){
+        return view('web.term-of-service');
+    }
+    public function pirvecyPolicy(){
+        return view('web.privacy-policy');
+    }
 }
 

@@ -191,8 +191,8 @@
   <div class="container mx-auto  text-center text-lg text-white  pt-6 flex lg:flex-row lg:justify-between flex-col items-center gap-2  ">
     <p>Copyright © {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-secondary transition-all duration-300 ease-in-out">{{ config('app.name') }}</a> All Rights Reserved.</p>
     <div class="flex justify-center items-center sm:flex-row flex-col gap-4 mt-2">
-      <a href="#" class="hover:text-secondary transition-all duration-300 ease-in-out">Privacy policy</a>
-      <a href="#" class="hover:text-secondary transition-all duration-300 ease-in-out">Terms of use</a>
+      <a href="{{route('privacy-policy')}}" class="hover:text-secondary transition-all duration-300 ease-in-out">Privacy policy</a>
+      <a href="{{route('terms-of-service')}}" class="hover:text-secondary transition-all duration-300 ease-in-out">Terms of use</a>
       <a href="#" class="hover:text-secondary transition-all duration-300 ease-in-out">Site map</a>
     </div>
   </div>

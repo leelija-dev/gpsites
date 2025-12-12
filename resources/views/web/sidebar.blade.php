@@ -78,8 +78,12 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
       <div class="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100 min-h-[73px]">
          <div class="flex items-center space-x-3 transition-all duration-300 hide-when-collapsed">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-               <x-application-logo class="h-10 w-10 fill-current text-blue-600 flex-shrink-0" />
-               <span class="text-xl font-bold text-gray-800 sidebar-text ">GP Sites</span>
+               {{-- <x-application-logo class="h-10 w-10 fill-current text-blue-600 flex-shrink-0" /> --}}
+                 <a href="/">
+                        <img class="w-[150px]" src="{{ asset('images/site-img/logo.png') }}" alt="{{ config('app.name') }}">
+                    </a>
+    
+               {{-- <span class="text-xl font-bold text-gray-800 sidebar-text ">GP Sites</span> --}}
             </a>
          </div>
 

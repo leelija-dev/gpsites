@@ -89,7 +89,8 @@ Route::middleware(['web'])->group(function () {
 });
 // Checkout routes (require authentication AND email verification)
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
-
+Route::get('/term-of-service', [HomeController::class, 'termsOfService'])->name('terms-of-service');
+Route::get('/privacy-policy', [HomeController::class, 'pirvecyPolicy'])->name('privacy-policy');
 // Define specific checkout routes before the parameterized one
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout/free-complete', [CheckoutController::class, 'completeTrial'])->name('checkout.free-complete');
