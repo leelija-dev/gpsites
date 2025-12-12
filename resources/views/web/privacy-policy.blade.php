@@ -870,7 +870,7 @@
              
             <div class="w-full  px-12 mx-auto text-left space-y-2"
                 style="text-align: justify; width: 100%; font-size: 18px; font-family: 'Poppins', sans-serif;">
-                <h2 class="text-3xl md:text-3xl font-bold text-gray-700 mb-6 mt-5">How We Share Our Collected Information </h2>
+                <h2 class="text-3xl md:text-3xl font-bold text-gray-700  mt-5">How We Share Our Collected Information </h2>
                 <h3 class="text-2xl md:text-2xl font-bold text-gray-500 mt-3  indigo-100 text-primary rounded-full w-fit ">
 
                 Service Providers
