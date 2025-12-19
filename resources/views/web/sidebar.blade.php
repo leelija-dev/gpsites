@@ -166,6 +166,23 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
                   <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Billing</span>
                </a>
             </li>
+            <li>
+               <a href="{{route('mail-setting')}}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                                      {{ request()->routeIs('mail-setting','edit-mail-setting','add-mail') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  {{-- <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('order-billing') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg> --}}
+
+                  <svg class="w-6 h-6 text-gray-500  {{ request()->routeIs('mail-setting*','add-mail','edit-mail-setting') ? 'text-blue-800' : 'text-gray-500 group-hover:text-blue-600' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13v-2a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L14 4.757V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L4.929 6.343a1 1 0 0 0 0 1.414l.536.536L4.757 10H4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0 1.414l1.414 1.414a1 1 0 0 0 1.414 0l.536-.535 1.707.707V20a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H20a1 1 0 0 0 1-1Z"/>
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                  </svg>
+
+
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Mail Setting</span>
+               </a>
+            </li>
             @endif
             @endauth
          </ul>

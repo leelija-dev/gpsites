@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-
+use App\Services\UserSmtpMailer;
+use App\Models\UserMailSetting;
 class BlogController extends Controller
 {
     protected $APIBASEURL;
@@ -198,14 +199,16 @@ class BlogController extends Controller
             }
         }
         if(count($selectedIds) == 1){
-            $blogId = $selectedIds;
+            $blogId = $selectedIds[0];
+            
             $blog = collect($blogs['data'])->firstWhere('blog_id', $blogId);
             $email=$blog['contact_email_id'] ?? '';
+            
             if($email==null){
                 return redirect()->route('blog.index')->with('error', 'No email address available at the moment.');
             }
         }
-        
+        $count=0;
         foreach ($selectedIds as $id) {
             $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
 
@@ -233,6 +236,7 @@ class BlogController extends Controller
                     'description'=>'Mail record not found.'
 
                 ]);
+                $count++;
                 Log::error('Email is null. Mail cannot be sent.', [
                 'email' => $email,
                 'blog_id' => $id ?? null,
@@ -242,12 +246,32 @@ class BlogController extends Controller
                 continue;
             }
             try{
-            Mail::to($email)->send(new \App\Mail\MailWithAttachment(
-                $subject,
-                $messageBody,
-                $attachment // this is an array of strings (paths)
-            ));
+            // Mail::to($email)->send(new (
+            //     $subject,
+            //     $messageBody,
+            //     $attachment // this is an array of strings (paths)
+            // ));
+             $smtp = UserMailSetting::where('user_id', auth()->id())
+                 //->where('is_primary', true)
+                ->first();
+            
+                if(!$smtp){
+                    
+                    return redirect()->route('blog.index')
+                        ->with('error', 'Please add mail configuration in mail settings ');
+                }
+                $primary= UserMailSetting::where('user_id', auth()->id())
+                    ->where('is_primary', true)
+                    ->first();
+                if(!$primary){
+                    return redirect()->route('blog.index')
+                        ->with('error', 'Please set a primary mail ');
+                }
                 
+                UserSmtpMailer::send(auth()->id(),$email,
+                    new \App\Mail\MailWithAttachment($subject, $messageBody, $attachment));
+                
+
                 UserMailHistory::create([
                     'user_id' => $user_id,
                     'site_url' => $blog['site_url'],
@@ -277,17 +301,24 @@ class BlogController extends Controller
                     'message' => $messageBody,
                     'file' => !empty($attachment) ? implode(',', $attachment) : null,
                     'status'=>false,
-                    'description'=>'Mail not send'.$e->getMessage()
+                    'description'=>'Mail authentication failed'
 
                 ]);
+                $count++;
             Log::error('Mail sending exception: '.$e->getMessage(), [
+                'site url'=> $blog['site_url'],
                 'email' => $email,
                 'exception' => $e
             ]);
         }
             
         }
-        return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
+        if(count($selectedIds) == $count){
+            return redirect()->route('blog.index')->with('error', 'Failed to send mail to all selected blogs.');
+        }elseif(count($selectedIds) > $count && $count > 0){
+            return redirect()->route('blog.index')->with('warning', 'Email sent successfully to some blogs (' . ($selectedIds->count() - $count) . ' failed)');
+        }
+        return redirect()->route('blog.index')->with('success', 'Email sent successfully to all selected blogs.');
     }
     // public function singleMail(Request $request)
     // {
@@ -491,11 +522,29 @@ class BlogController extends Controller
         ->with('error', 'No email address available at the moment.'); //usermessage
         }
        try {
-        Mail::to($email)->send(new \App\Mail\MailWithAttachment(
-            $subject,
-            $messageBody,
-            $attachment // this is an array of strings (paths)
-        ));
+        // Mail::to($email)->send(new \App\Mail\MailWithAttachment(
+        //     $subject,
+        //     $messageBody,
+        //     $attachment // this is an array of strings (paths)
+        // ));
+        $smtp = UserMailSetting::where('user_id', auth()->id())
+        //->where('is_primary', true)
+        ->first();
+       
+        if(!$smtp){
+            
+            return redirect()->route('blog.index')
+                ->with('error', 'Please add mail configuration in mail settings ');
+        }
+        $primary= UserMailSetting::where('user_id', auth()->id())
+            ->where('is_primary', true)
+            ->first();
+        if(!$primary){
+            return redirect()->route('blog.index')
+                ->with('error', 'Please set a primary mail ');
+        }
+        UserSmtpMailer::send(auth()->id(),$email,
+                    new \App\Mail\MailWithAttachment($subject, $messageBody, $attachment));
         // Check if mail failed
         }catch (\Exception $e) {
 
@@ -507,10 +556,11 @@ class BlogController extends Controller
                     'message' => $messageBody,
                     'file' => !empty($attachment) ? implode(',', $attachment) : null,
                     'status'=>false,
-                    'description'=>$e->getMessage(),
+                    'description'=>'Mail authentication failed',
 
                 ]);
             Log::error('Mail sending exception: '.$e->getMessage(), [
+                'site url'=> $blog['site_url'],
                 'email' => $email,
                 'exception' => $e
             ]);

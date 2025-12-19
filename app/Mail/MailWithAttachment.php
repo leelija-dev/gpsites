@@ -32,10 +32,10 @@ class MailWithAttachment extends Mailable
     $user = Auth::user();
 
     return new Envelope(
-        from: new Address(config('mail.from.address'), config('mail.from.name')),
-        replyTo: [
-            new Address($user->email, $user->name),
-        ],
+        // from: new Address(config('mail.from.address'), config('mail.from.name')),
+        // replyTo: [
+        //     new Address($user->email, $user->name),
+        // ],
         subject: $this->subject
     );
     }

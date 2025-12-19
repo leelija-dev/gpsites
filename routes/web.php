@@ -18,6 +18,7 @@ use App\Http\Controllers\web\OrderController;
 use App\Http\Controllers\web\NewsletterController;  
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use App\Http\Controllers\web\UserMailSettingController;
 use App\Models\Plan;
 use App\Models\PlanOrder;
 use App\Models\MailAvailable;
@@ -104,13 +105,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/mail-history', [MailController::class, 'mailHistory'])->name('blog.mailHistory');
     Route::get('/viewMail/{id}', [MailController::class, 'viewMail'])->name('blog.view-mail');
-
+    
+    
     //order routes
     Route::get('/my-orders', [OrderController::class, 'index'])->name('my-orders');
     Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('view-my-order');
     Route::get('/billing',[OrderController::class,'billing'])->name('order-billing');
     //contact routes
     
+});
+//user mail setting
+Route::prefix('mail-setting')->middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/',[UserMailSettingController::class,'mailSetting'])->name('mail-setting');
+    Route::get('/add-mail',[UserMailSettingController::class,'addMail'])->name('add-mail');
+    Route::post('/add-mail',[UserMailSettingController::class,'store'])->name('mail-store');
+    Route::get('/edit-mail/{id}',[UserMailSettingController::class,'editMail'])->name('edit-mail-setting');
+    Route::post('/update-mail/{id}',[UserMailSettingController::class,'updateMail'])->name('mail-update');
+    Route::post('/admin/email/set-primary', [UserMailSettingController::class, 'setPrimary'])->name('setPrimary');
+    Route::delete('/delete-mail/{id}',[UserMailSettingController::class,'destroy'])->name('mail-delete');
+
 });
 
 // Authenticated routes (require authentication only)
