@@ -51,7 +51,7 @@
                               <!-- From Email -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-600">Email<sup class="text-red-500">*</sup></label>
-                                <input type="email" name="email" required placeholder="exapmle@gmail.com"
+                                <input type="email" name="email" required placeholder="example@gmail.com"
                                     class="mt-1 w-full rounded-lg border-gray-300">
                                 <span class="invalid-feedback text-red-500 text-xs mt-1 hidden">Please enter a valid email address!</span>
                             
