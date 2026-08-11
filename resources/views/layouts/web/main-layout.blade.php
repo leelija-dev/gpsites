@@ -52,14 +52,13 @@
 
 </head>
 
-<body class="overflow-x-hidden ">
+<body class=" ">
 
     <!-- ==== NEW WRAPPER ==== -->
-    <div id="smooth-wrapper">
+   
 
         <x-web.navbar />
 
-        <div id="smooth-content">
 
             <main class="">
                 @yield('content')
@@ -68,7 +67,6 @@
 
             <x-web.footer />
 
-        </div>
     </div>
 
 
@@ -92,7 +90,7 @@
 
 
     <!-- gsap smooth scrolling  -->
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', () => {
 
             // If current page is NOT checkout → enable ScrollSmoother
@@ -110,14 +108,14 @@
 
             // Else: Do nothing → smooth scroll disabled on checkout
         });
-    </script>
+    </script> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- gsap smooth scrolling  -->
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', () => {
 
             // If current page is NOT checkout → enable ScrollSmoother
@@ -125,7 +123,7 @@
                 // Your GSAP code here
             }
         });
-    </script>
+    </script> -->
 
 
     <!-- Contact Form Validation Script -->

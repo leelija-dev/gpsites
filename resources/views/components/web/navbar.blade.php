@@ -1,5 +1,5 @@
 <!-- Navigation Bar -->
-<nav class="w-full bg-white shadow-sm relative z-[100] px-4 sm:px-6 lg:px-8">
+<nav class="w-full bg-white shadow-sm relative z-[100] px-4 sm:px-6 lg:px-8 sticky top-[0px]">
     <div class="container mx-auto ">
         <div class="flex justify-between items-center h-16">
 
