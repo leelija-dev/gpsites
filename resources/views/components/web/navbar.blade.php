@@ -28,7 +28,7 @@
                     <a href="/about"
                         class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">About
                         Us</a>
-                        <a href="{{route('all-blog')}}"
+                        <a href="{{route('all-blogs.index')}}"
                         class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Blog</a>
                     <a href="/contact"
                         class="text-gray-700 hover:text-secondary font-medium transition-all duration-300 ease-in-out">Contact

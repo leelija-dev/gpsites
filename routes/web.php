@@ -34,7 +34,7 @@ Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
 
 Route::get('/about', fn() => view('web.about'))->name('about');
-Route::get('/blogs', fn() => view('web.all-blog'))->name('all-blog');
+// Route::get('/blogs', fn() => view('web.all-blog'))->name('all-blog');
 Route::get('/single-blog', fn() => view('web.single-blog'))->name('single-blog');
 Route::get('/contact', fn() => view('web.contact'))->name('contact');
 
