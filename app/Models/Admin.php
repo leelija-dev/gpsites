@@ -58,22 +58,25 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use App\Notifications\AdminResetPassword;
-
+use Spatie\Permission\Traits\HasRoles;
 class Admin extends Authenticatable implements CanResetPassword
 {
     use HasFactory, Notifiable;
-
+    use HasRoles;
     /**
      * @property int $id
      * @property string $name
      * @property string $email
      * @property string $password
      */
-
+    protected $guard_name = 'admin';
     protected $fillable = [
         'name',
         'email',
         'password',
+        'description',
+        'image'
+
     ];
 
     protected $hidden = [

@@ -6,11 +6,12 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\Admin;
-
+use App\Models\Role;
 class AdminSeeder extends Seeder
 {
     public function run(): void
     {
+        # Before run admin seeder please make sure permission seeder already created or seeded
         $this->command->info('Starting Admin Seeder...');
         
         try {
@@ -27,7 +28,7 @@ class AdminSeeder extends Seeder
                 ['email' => $adminData['email']],
                 $adminData
             );
-
+            
             if ($admin->wasRecentlyCreated) {
                 $this->command->info('✓ Admin user created successfully!');
                 $this->command->line('  Email: ' . $admin->email);
@@ -39,6 +40,15 @@ class AdminSeeder extends Seeder
                 $this->command->info('✓ Admin user already exists');
                 $this->command->line('  Email: ' . $admin->email);
             }
+            $superAdminRole = Role::where('name', 'superadmin')
+                ->where('guard_name', 'admin')
+                ->firstOrFail();
+            $admin->syncRoles([
+                $superAdminRole
+            ]);
+            $this->command->info(
+                '✓ Superadmin role assigned successfully!'
+            );
 
             $this->command->info('Admin seeding completed successfully!');
 

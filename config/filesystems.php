@@ -47,6 +47,15 @@ return [
             'report' => false,
         ],
 
+         'blog_images' => [
+            'driver' => 'local',
+            'root' => public_path('blog_images'),
+            'url' => env('APP_URL') . '/blog_images',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+        
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -59,6 +68,7 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        
 
     ],
 
@@ -76,5 +86,6 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
+    
 
 ];
