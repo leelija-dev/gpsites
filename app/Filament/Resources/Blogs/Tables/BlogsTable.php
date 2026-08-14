@@ -33,7 +33,7 @@ class BlogsTable
                     ->label('Slug')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('category')
+                TextColumn::make('blogCategory.name')
                     ->label('Category')
                     ->searchable()
                     ->sortable(),
