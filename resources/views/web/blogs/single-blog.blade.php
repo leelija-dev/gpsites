@@ -1,7 +1,7 @@
 @extends('layouts.web.main-layout')
-@section('title', $blog->title )
+@section('title', $blog->meta_title ?? '' )
 @section('description', $blog->meta_description ?? '' )
-@section('keywords', $blog->meta_keywords ?? '' )
+@section('keywords', $blog->keywords ?? '' )
 @section('content')
 
 <style>
