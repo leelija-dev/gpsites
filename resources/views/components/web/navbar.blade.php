@@ -107,7 +107,11 @@
             <a href="/about"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">About
                 Us</a>
-            <a href="/"
+                
+                <a href="{{route('all-blogs.index')}}"
+                class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Blog
+                </a>
+                <a href="/"
                 class="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">Contact
                 Us</a>
             {{-- <a href="/login" class="block px-4 py-3 btn-primary text-center mt-6">Login</a> --}}
