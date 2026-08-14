@@ -29,4 +29,12 @@ class MailHistory extends Page
     {
         return MailHistories::where('sent_at','promotional mail')->get();
     }
+     public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view promotions mail');
+    }
+
 }

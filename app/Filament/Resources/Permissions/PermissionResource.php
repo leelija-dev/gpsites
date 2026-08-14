@@ -56,4 +56,11 @@ class PermissionResource extends Resource
             'edit' => EditPermission::route('/{record}/edit'),
         ];
     }
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view permission');
+    }
 }

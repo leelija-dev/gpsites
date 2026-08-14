@@ -58,4 +58,11 @@ class PlansResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view plans');
+    }
 }

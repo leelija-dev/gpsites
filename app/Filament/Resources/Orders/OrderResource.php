@@ -61,4 +61,11 @@ class OrderResource extends Resource
             'view' => ViewOrder::route('/{record}/view'),
         ];
     }
+     public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view orders');
+    }
 }

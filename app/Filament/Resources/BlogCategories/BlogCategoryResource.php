@@ -48,5 +48,12 @@ class BlogCategoryResource extends Resource
             'edit' => EditBlogCategory::route('/{record}/edit'),
         ];
     }
+public static function shouldRegisterNavigation(): bool
+{
+    $user = auth()->user();
+
+    return $user?->hasRole('superadmin')
+        || $user?->hasPermissionTo('view blog category');
+}
     
 }

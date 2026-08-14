@@ -55,4 +55,10 @@ class AdminsResource extends Resource
             'edit' => EditAdmins::route('/{record}/edit'),
         ];
     }
+    public static function shouldRegisterNavigation(): bool
+{
+    $user = auth()->user();
+
+    return $user?->hasRole('superadmin') || $user?->hasPermissionTo('view admin');
+}
 }

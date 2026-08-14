@@ -87,4 +87,11 @@ class UserMailHistory extends Page implements Tables\Contracts\HasTable
                 // You can add actions here if needed
             ]);
     }
+     public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view mail history');
+    }
 }

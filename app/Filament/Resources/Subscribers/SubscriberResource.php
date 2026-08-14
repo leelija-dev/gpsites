@@ -57,4 +57,11 @@ class SubscriberResource extends Resource
             'edit' => EditSubscriber::route('/{record}/edit'),
         ];
     }
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view newsletter');
+    }
 }

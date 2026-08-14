@@ -151,4 +151,11 @@ class Promotion extends Page implements HasForms
         // Reset form
         $this->reset(['send_to', 'email', 'message']);
     }
+     public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->hasRole('superadmin')
+            || $user?->hasPermissionTo('view promotions mail');
+    }
 }
