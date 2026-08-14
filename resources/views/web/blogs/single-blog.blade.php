@@ -90,6 +90,9 @@
 #blog-content-wrapper ol, ul, menu{
     list-style:disc !important;
 }
+#blog-content-wrapper #tocList ol, #blog-content-wrapper #tocList ul, #blog-content-wrapper #tocList menu{
+    list-style:none !important;
+}
 
 /* ============================================
    HEADINGS - Hierarchical Differentiation
