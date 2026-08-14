@@ -64,8 +64,8 @@ class OrderResource extends Resource
      public static function shouldRegisterNavigation(): bool
     {
         $user = auth()->user();
+       
 
-        return $user?->hasRole('superadmin')
-            || $user?->hasPermissionTo('view orders');
+        return $user?->hasPermissionTo('view orders') || $user?->hasRole('superadmin');
     }
 }

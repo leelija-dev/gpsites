@@ -17,7 +17,13 @@ class RoleForm
                 //->required()
                 ->label(fn () => new HtmlString('Name<sup style="color:red">*</sup>'))
                 ->placeholder('Enter role name')
-                ->rules(['required','unique:roles,name'])
+                // ->rules(['required','unique:roles,name'])
+                ->required()
+                ->unique(
+                    table: 'roles',
+                    column: 'name',
+                    ignoreRecord: true
+                )
                 ->validationMessages([
                     'required' => 'Role name can not be blank!',
                     'unique' => 'This role name is already taken!',

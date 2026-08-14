@@ -100,16 +100,16 @@ class AdminsForm
                             ->pluck('name', 'id')
                             ->toArray()
                     )
-                    ->afterStateHydrated(function (Radio $component, $state, $record) {
-                        // Edit page only
-                        if ($record) {
-                            $role = $record->roles()
-                                ->where('guard_name', 'admin')
-                                ->first();
+                    // ->afterStateHydrated(function (Radio $component, $state, $record) {
+                    //     // Edit page only
+                    //     if ($record) {
+                    //         $role = $record->roles()
+                    //             ->where('guard_name', 'admin')
+                    //             ->first();
 
-                            $component->state($role?->id);
-                        }
-                    })
+                    //         $component->state($role?->id);
+                    //     }
+                    // })
                     ->required()
                     ->validationMessages([
                         'required' => 'Please select a role!',
