@@ -889,10 +889,10 @@
                 categories.forEach(cat => {
                     const isActive = cat.value === activeCategory;
                     itemsHtml += `
-                    <div class="dropdown-item ${isActive ? 'active' : ''}" data-value="${cat.value}" role="option" aria-selected="${isActive}">
-                        <a href="{{ url('/blogs') }}?search=${cat.slug}"> <span class="item-icon">${cat.label}</span> </a>
+                    <a href="{{ url('/blogs') }}?search=${cat.slug}"> <div class="dropdown-item ${isActive ? 'active' : ''}" data-value="${cat.value}" role="option" aria-selected="${isActive}">
+                        <span class="item-icon">${cat.label}</span> 
                         <span class="check-mark"><i class="fas fa-check"></i></span>
-                    </div>
+                    </div></a>
                 `;
                 });
                 dropdownMenu.innerHTML = itemsHtml;
