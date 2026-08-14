@@ -108,4 +108,8 @@ class Admin extends Authenticatable implements CanResetPassword
     {
         $this->notify(new AdminResetPassword($token));
     }
+    public function role()
+{
+    return $this->belongsTo(Role::class);
+}
 }

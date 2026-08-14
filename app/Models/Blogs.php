@@ -34,4 +34,8 @@ public function faq(){
 public function admin(){
     return $this->belongsTo(Admin::class,'created_by','id');
 }
+public function blogCategory()
+    {
+        return $this->belongsTo(BlogCategory::class, 'category', 'id');
+    }
 }

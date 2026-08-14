@@ -13,4 +13,5 @@ class BlogCategory extends Model
             'description',
             'status',
     ];
+
 }

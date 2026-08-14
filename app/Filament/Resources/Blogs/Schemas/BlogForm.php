@@ -57,7 +57,7 @@ class BlogForm
                     ->placeholder('Select category')
                     ->options(
                         BlogCategory::query()
-                            ->pluck('name', 'name')
+                            ->pluck('name', 'id')
                             ->toArray()
                     )
                     ->searchable()

@@ -1,5 +1,5 @@
 @extends('layouts.web.main-layout')
-
+@section('title',  $blog->title )
 @section('content')
 
 <!-- Reading Progress -->
@@ -18,9 +18,9 @@
     <nav class="flex items-center gap-2 text-sm text-slate-400 pb-6 flex-wrap border-b border-slate-100/40 mb-8" aria-label="Breadcrumb">
         <a href="javascript:void(0)" onclick="goToBlogIndex()" class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer"><i class="fas fa-home"></i> Blog</a>
         <span class="text-slate-300 text-xs"><i class="fas fa-chevron-right"></i></span>
-        <a href="javascript:void(0)" onclick="filterByCategory('digital-marketing')" class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer">Digital Marketing</a>
+        <a href="{{url('/blogs') }}?search={{$blog->blogCategory->slug}}" class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer">{{ $blog->blogCategory->name ?? ''}}</a>
         <span class="text-slate-300 text-xs"><i class="fas fa-chevron-right"></i></span>
-        <span class="text-slate-700 font-semibold truncate">The Ultimate Guide to Link Building in 2026</span>
+        <span class="text-slate-700 font-semibold truncate">{{$blog->title ?? ''}}</span>
     </nav>
 
     <!-- Grid -->
@@ -127,42 +127,42 @@
 
             <!-- Post Header -->
             <header class="mb-8">
-                <div class="text-5xl mb-2 inline-block">🚀</div>
-                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight my-2 tracking-tight">The Ultimate Guide to Link Building in 2026</h1>
+                
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight my-2 tracking-tight">{{$blog->title ?? ''}}</h1>
 
                 <div class="flex flex-wrap items-center gap-3 md:gap-5 py-4 border-t border-b border-slate-100 mb-2">
                     <span class="flex items-center gap-2 text-slate-600 text-sm">
                         <i class="fas fa-user-circle text-[#6C3CE1]"></i>
-                        <span>By <span class="font-semibold text-slate-900">Sarah Johnson</span></span>
+                        <span>By <span class="font-semibold text-slate-900">{{$blog->admin?->name}}</span></span>
                     </span>
                     <span class="flex items-center gap-2 text-slate-600 text-sm">
                         <i class="fas fa-calendar-alt text-[#6C3CE1]"></i>
-                        <span>January 15, 2026</span>
+                        <span>{{$blog->created_at->format('M d, Y')}}</span>
                     </span>
-                    <span class="flex items-center gap-2 text-slate-600 text-sm">
+                    {{-- <span class="flex items-center gap-2 text-slate-600 text-sm">
                         <i class="fas fa-clock text-[#6C3CE1]"></i>
-                        <span>8 min read</span>
+                        
                     </span>
                     <span class="flex items-center gap-2 text-slate-600 text-sm">
                         <i class="fas fa-eye text-[#6C3CE1]"></i>
-                        <span id="viewCountModern">12,847 views</span>
-                    </span>
+                      
+                    </span> --}}
                     <span class="inline-flex items-center gap-1.5 bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide shadow-[0_2px_8px_rgba(108,60,225,0.25)] transition-transform duration-200 hover:scale-105 hover:shadow-[0_4px_16px_rgba(108,60,225,0.35)]">
-                        <i class="fas fa-tag"></i> Digital Marketing
+                        <i class="fas fa-tag"></i> {{$blog->blogCategory->name}}
                     </span>
                 </div>
 
                 <div class="flex flex-wrap gap-2 mt-4">
-                    <span class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1] hover:-translate-y-px" onclick="filterByTag('link-building')">#link-building</span>
-                    <span class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1] hover:-translate-y-px" onclick="filterByTag('seo')">#seo</span>
-                    <span class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1] hover:-translate-y-px" onclick="filterByTag('digital-marketing')">#digital-marketing</span>
-                    <span class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1] hover:-translate-y-px" onclick="filterByTag('outreach')">#outreach</span>
+                    {{-- @foreach($blog->tags as $tag)
+                    <span class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1] hover:-translate-y-px" onclick="filterByTag('link-building')">#{{$tag}}</span>
+                     @endforeach --}}
                 </div>
+               
             </header>
 
             <!-- Featured Image -->
             <div class="relative rounded-2xl overflow-hidden mb-10 shadow-[0_12px_40px_rgba(0,0,0,0.06)] bg-slate-100 group">
-                <img src="https://images.unsplash.com/photo-1432889821006-6d2a5bd3f6c0?w=1200&q=80" alt="Link Building Guide 2026" loading="lazy" class="w-full h-auto max-h-[480px] object-cover transition-transform duration-700 group-hover:scale-105">
+                <img src="{{asset('blog_images/'.$blog->feature_image)}}" alt="{{$blog->feature_image_alt ?? ''}}" loading="lazy" class="w-full h-auto max-h-[480px] object-cover transition-transform duration-700 group-hover:scale-105">
                 <span class="absolute bottom-6 left-6 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-medium border border-white/10">
                     <i class="fas fa-camera"></i> Featured
                 </span>
@@ -171,16 +171,17 @@
             <!-- Content -->
             <div class="bg-white rounded-2xl p-5 md:p-8 lg:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-slate-100">
 
-                <p id="section-intro" class="text-base md:text-lg leading-relaxed text-slate-600 mb-5">Link building remains one of the most critical factors for SEO success in 2026. But the landscape has evolved dramatically. Gone are the days of spammy directory submissions and low-quality guest posts. Today, it's all about building genuine relationships, creating remarkable content, and earning links that actually move the needle.</p>
+                <p id="section-intro" class="text-base md:text-lg leading-relaxed text-slate-600 mb-5">{{$blog->excerpt ?? ''}}</p>
+                {!! $blog->content ?? '' !!}
 
-                <div class="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-2xl p-5 md:p-6 flex items-start gap-4 my-6">
+                {{-- <div class="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-2xl p-5 md:p-6 flex items-start gap-4 my-6">
                     <div class="text-2xl text-[#6C3CE1] flex-shrink-0 mt-0.5"><i class="fas fa-bullseye"></i></div>
                     <div>
                         <strong class="text-slate-800">Key Insight:</strong> <span class="text-slate-600">According to recent studies, pages with high-quality backlinks rank <strong class="text-slate-800">3.5x higher</strong> in search results than those with few or low-quality links.</span>
                     </div>
-                </div>
+                </div> --}}
 
-                <h2 id="section-why" class="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 tracking-tight pb-2 border-b-3 border-slate-100 scroll-mt-8">Why Link Building Still Matters</h2>
+                {{-- <h2 id="section-why" class="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 tracking-tight pb-2 border-b-3 border-slate-100 scroll-mt-8">Why Link Building Still Matters</h2>
                 <p class="text-base md:text-lg leading-relaxed text-slate-600 mb-5">Even with Google's increasingly sophisticated algorithms, backlinks remain one of the top ranking factors. They serve as a vote of confidence from other websites, signaling to search engines that your content is valuable, credible, and worth ranking higher.</p>
 
                 <h3 id="section-evolving" class="text-xl md:text-2xl font-semibold text-slate-800 mt-7 mb-3 scroll-mt-8">The Evolving Landscape</h3>
@@ -253,11 +254,11 @@
                         <a href="javascript:void(0)" onclick="filterByTag('digital-marketing')" class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs no-underline transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]">#digital-marketing</a>
                         <a href="javascript:void(0)" onclick="filterByTag('outreach')" class="bg-slate-100 text-slate-600 px-4 py-1 rounded-full text-xs no-underline transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]">#outreach</a>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Post Footer Actions -->
-            <div class="flex flex-wrap justify-between items-center gap-5 mt-10 pt-8 border-t-2 border-slate-100">
+            {{-- <div class="flex flex-wrap justify-between items-center gap-5 mt-10 pt-8 border-t-2 border-slate-100">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="text-sm font-medium text-slate-400 mr-1"><i class="fas fa-share-alt"></i> Share:</span>
                     <a href="#" class="w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_6px_16px_rgba(108,60,225,0.15)] hover:border-[#6C3CE1] hover:text-[#6C3CE1] hover:bg-[#1DA1F2] hover:border-[#1DA1F2] hover:text-white" onclick="sharePost('twitter')" aria-label="Share on Twitter">
@@ -282,47 +283,69 @@
                         Next <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- ===== FEATURED AUTHOR BLOCK ===== -->
             <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] mt-10 transition-shadow duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
                 <div class="flex flex-col sm:flex-row gap-5 items-start">
-                    <div class="w-20 h-20 rounded-full flex-shrink-0 bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] flex items-center justify-center text-white text-3xl font-bold shadow-[0_4px_20px_rgba(108,60,225,0.25)] relative">
-                        SJ
-                        <span class="absolute bottom-1 right-1 w-[18px] h-[18px] bg-green-500 rounded-full border-3 border-white shadow-[0_2px_8px_rgba(34,197,94,0.4)]"></span>
-                    </div>
+                   <div class="w-20 h-20 rounded-full flex-shrink-0
+                bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6]
+                flex items-center justify-center
+                text-white text-3xl font-bold
+                shadow-[0_4px_20px_rgba(108,60,225,0.25)]
+                relative">
+
+                @if($blog->admin?->image)
+                    <img
+                        src="{{ asset('admin_image/' . $blog->admin->image) }}"
+                        alt="{{ $blog->admin?->name ?? 'Admin' }}"
+                        class="w-full h-full object-cover rounded-full">
+                @else
+                    <span>
+                        {{ strtoupper(substr($blog->admin?->name ?? 'A', 0, 1)) }}
+                    </span>
+                @endif
+
+                <span class="absolute bottom-1 right-1
+                            w-[18px] h-[18px]
+                            bg-green-500 rounded-full
+                            border-[3px] border-white
+                            shadow-[0_2px_8px_rgba(34,197,94,0.4)]">
+                </span>
+
+            </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-wrap items-center gap-2 md:gap-4 mb-1">
-                            <h4 class="text-xl font-bold text-slate-900 m-0">Sarah Johnson</h4>
-                            <span class="bg-gradient-to-br from-amber-400 to-amber-500 text-slate-900 text-[0.6rem] font-bold px-3 py-0.5 rounded-full uppercase tracking-wide"><i class="fas fa-star"></i> Top Contributor</span>
-                            <span class="bg-slate-100 text-slate-600 text-[0.65rem] font-medium px-3 py-0.5 rounded-full"><i class="fas fa-pen-fancy"></i> 47 articles</span>
+                            <h4 class="text-xl font-bold text-slate-900 m-0">{{$blog->admin?->name ?? ''}}</h4>
+                            
+                            
                         </div>
-                        <div class="text-sm text-[#6C3CE1] font-medium mb-2">Senior SEO Strategist &amp; Digital Marketing Expert</div>
+                       <div class="text-sm text-[#6C3CE1] font-medium mb-2">
+                            {{ $blog->admin?->getRoleNames()->first() ?? '' }}
+                        </div>
                         <p class="text-sm leading-relaxed text-slate-600 mb-3">
-                            Sarah is a seasoned SEO strategist with over 12 years of experience in digital marketing. 
-                            She specializes in link building, content strategy, and technical SEO. She has helped 200+ 
-                            businesses achieve top rankings and sustainable organic growth.
+                            {{ $blog->admin?->description ?? '' }}
                         </p>
-                        <div class="flex flex-wrap gap-4 py-3 border-y border-slate-100 mb-3">
+                        {{-- <div class="flex flex-wrap gap-4 py-3 border-y border-slate-100 mb-3">
                             <span class="flex items-center gap-1.5 text-sm text-slate-500"><i class="fas fa-pen-fancy text-[#6C3CE1]"></i> <strong class="text-slate-900">47</strong> Published Posts</span>
                             <span class="flex items-center gap-1.5 text-sm text-slate-500"><i class="fas fa-heart text-red-500"></i> <strong class="text-slate-900">2.4K</strong> Likes</span>
                             <span class="flex items-center gap-1.5 text-sm text-slate-500"><i class="fas fa-comment text-[#6C3CE1]"></i> <strong class="text-slate-900">312</strong> Comments</span>
                             <span class="flex items-center gap-1.5 text-sm text-slate-500"><i class="fas fa-trophy text-amber-500"></i> <strong class="text-slate-900">#3</strong> Top Author</span>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
+                        </div> --}}
+                        {{-- <div class="flex flex-wrap gap-2">
                             <a href="#" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 hover:bg-[#6C3CE1] hover:text-white hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(108,60,225,0.25)]"><i class="fab fa-twitter"></i></a>
                             <a href="#" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 hover:bg-[#6C3CE1] hover:text-white hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(108,60,225,0.25)]"><i class="fab fa-linkedin-in"></i></a>
                             <a href="#" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 hover:bg-[#6C3CE1] hover:text-white hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(108,60,225,0.25)]"><i class="fab fa-github"></i></a>
                             <a href="#" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 hover:bg-[#6C3CE1] hover:text-white hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(108,60,225,0.25)]"><i class="fab fa-youtube"></i></a>
                             <a href="#" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 hover:bg-[#6C3CE1] hover:text-white hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(108,60,225,0.25)]"><i class="fas fa-globe"></i></a>
                             <a href="#" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 hover:bg-[#6C3CE1] hover:text-white hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(108,60,225,0.25)]"><i class="fas fa-envelope"></i></a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
 
             <!-- Comments -->
-            <div class="mt-10 pt-8 border-t-2 border-slate-100">
+            {{-- <div class="mt-10 pt-8 border-t-2 border-slate-100">
                 <div class="flex items-center gap-3 text-xl font-bold text-slate-900 mb-6">
                     <i class="fas fa-comments text-[#6C3CE1]"></i>
                     Comments (24)
@@ -331,10 +354,10 @@
                     <i class="fas fa-comment-dots text-4xl text-[#6C3CE1] opacity-30 block mb-2"></i>
                     <p class="text-slate-400 mb-0 text-sm">Comments are coming soon. Join the discussion and share your thoughts!</p>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Related Posts -->
-            <div class="mt-12 pt-10 border-t-2 border-slate-100">
+            {{-- <div class="mt-12 pt-10 border-t-2 border-slate-100">
                 <div class="flex items-center gap-3 text-2xl font-bold text-slate-900 mb-6">
                     <i class="fas fa-book-open text-[#6C3CE1]"></i>
                     You Might Also Like
@@ -361,7 +384,7 @@
                         <span class="text-xs text-slate-400">9 min read • Jan 12, 2026</span>
                     </a>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
 
@@ -374,16 +397,19 @@
                     <i class="fas fa-fire text-red-500 text-sm"></i>
                     Popular Posts
                 </div>
-
-                <div class="flex gap-3 py-2.5 border-b border-slate-100 cursor-pointer transition-all duration-200 items-center hover:pl-1" onclick="navigateToPost('popular1')">
-                    <span class="text-xs font-bold text-slate-300 w-5 flex-shrink-0 text-center">01</span>
+                @foreach($latestBlogs as $letestBlog)
+                <a href="{{route('blog.show', $letestBlog->slug)}}">
+                <div class="flex gap-3 py-2.5 border-b border-slate-100 cursor-pointer transition-all duration-200 items-center hover:pl-1" >
+                    <span class="text-xs font-bold text-slate-300 w-5 flex-shrink-0 text-center">{{$loop->iteration ?? ''}}</span>
                     <span class="text-xl flex-shrink-0">📱</span>
                     <div class="flex-1 min-w-0">
-                        <h5 class="text-sm font-semibold text-slate-900 m-0 mb-0.5 leading-tight">Mobile-First Indexing: Complete Guide</h5>
-                        <span class="text-[0.65rem] text-slate-400">3.2K views • Jan 10, 2026</span>
+                        <h5 class="text-sm font-semibold text-slate-900 m-0 mb-0.5 leading-tight">{{$letestBlog->title ?? ''}}</h5>
+                        <span class="text-[0.65rem] text-slate-400">{{$letestBlog->created_at->format('M d, Y')}}</span>
                     </div>
                 </div>
-                <div class="flex gap-3 py-2.5 border-b border-slate-100 cursor-pointer transition-all duration-200 items-center hover:pl-1" onclick="navigateToPost('popular2')">
+                </a>
+                @endforeach
+                {{-- <div class="flex gap-3 py-2.5 border-b border-slate-100 cursor-pointer transition-all duration-200 items-center hover:pl-1" onclick="navigateToPost('popular2')">
                     <span class="text-xs font-bold text-slate-300 w-5 flex-shrink-0 text-center">02</span>
                     <span class="text-xl flex-shrink-0">🤖</span>
                     <div class="flex-1 min-w-0">
@@ -428,10 +454,10 @@
                 <button onclick="alert('Thanks for subscribing! 🎉')" class="w-full py-2.5 border-none rounded-xl bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] text-white font-semibold text-sm cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(108,60,225,0.3)]">
                     <i class="fas fa-paper-plane"></i> Subscribe
                 </button>
-            </div>
+            </div> --}}
 
             <!-- About Author Mini -->
-            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 border border-slate-100 shadow-[0_4px_16px_rgba(0,0,0,0.02)]">
+            {{-- <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 border border-slate-100 shadow-[0_4px_16px_rgba(0,0,0,0.02)]">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-wide mb-4">
                     <i class="fas fa-user-astronaut text-[#6C3CE1]"></i>
                     About the Author
@@ -447,7 +473,7 @@
                 <a href="javascript:void(0)" class="text-[#6C3CE1] font-semibold text-xs no-underline inline-flex items-center gap-1.5 transition-all duration-200 hover:gap-2.5 hover:text-[#4A1A8A] cursor-pointer">
                     View all posts <i class="fas fa-arrow-right"></i>
                 </a>
-            </div>
+            </div> --}}
 
             <!-- Categories -->
             <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_16px_rgba(0,0,0,0.02)]">
@@ -456,12 +482,16 @@
                     Categories
                 </div>
                 <div class="flex flex-wrap gap-1.5">
-                    <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('seo')">SEO</span>
-                    <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('content-marketing')">Content Marketing</span>
+                    @foreach($categories as $cat)
+                    {{-- @dd($cat) --}}
+                    <a href="{{url('/blogs') }}?search={{$cat->slug}}"><span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" >{{$cat->name ?? ''}}</span>
+                    </a>
+                    @endforeach
+                    {{-- <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('content-marketing')">Content Marketing</span>
                     <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('link-building')">Link Building</span>
                     <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('analytics')">Analytics</span>
                     <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('business')">Business</span>
-                    <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('trends')">Trends</span>
+                    <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-slate-200 hover:border-[#6C3CE1] hover:text-[#6C3CE1]" onclick="filterByCategory('trends')">Trends</span> --}}
                 </div>
             </div>
 
@@ -478,40 +508,40 @@
             <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 flex items-center gap-3 m-0">
                 <i class="fas fa-star text-amber-500"></i>
                 Featured Blogs
-                <span class="text-sm font-normal text-slate-400 bg-slate-100 px-3 py-0.5 rounded-full ml-2">Editor's Pick</span>
             </h2>
-            <a href="javascript:void(0)" onclick="goToBlogIndex()" class="text-[#6C3CE1] font-semibold text-sm no-underline flex items-center gap-1.5 transition-all duration-300 hover:text-[#4A1A8A] hover:translate-x-1 cursor-pointer">
+            <a href="{{route('all-blogs.index')}}"  class="text-[#6C3CE1] font-semibold text-sm no-underline flex items-center gap-1.5 transition-all duration-300 hover:text-[#4A1A8A] hover:translate-x-1 cursor-pointer">
                 View All <i class="fas fa-arrow-right"></i>
             </a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
+            @foreach($latestBlogs as $latestBlog)
             <!-- Card 1 -->
-            <a href="javascript:void(0)" onclick="navigateToPost('featured1')" class="group bg-white rounded-2xl overflow-hidden border border-slate-100 transition-all duration-500 no-underline text-inherit shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(108,60,225,0.08)] hover:border-[#6C3CE1]">
+            <a href="{{route('blog.show', ['slug' => $latestBlog->slug])}}"  class="group bg-white rounded-2xl overflow-hidden border border-slate-100 transition-all duration-500 no-underline text-inherit shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(108,60,225,0.08)] hover:border-[#6C3CE1]">
                 <div class="relative overflow-hidden bg-slate-100 h-48">
-                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80" alt="SEO Strategy" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                    <span class="absolute top-4 left-4 bg-[#6C3CE1]/90 backdrop-blur-md text-white px-4 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide border border-white/10">SEO Strategy</span>
-                    <span class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xl shadow-[0_2px_12px_rgba(0,0,0,0.08)]">📈</span>
+                    <img src="{{asset('blog_images/'.$latestBlog->feature_image)}}" alt="{{$latestBlog->feature_image_alt ?? ''}}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <span class="absolute top-4 left-4 bg-[#6C3CE1]/90 backdrop-blur-md text-white px-4 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide border border-white/10">{{$latestBlog->blogCategory->name ?? ''}}</span>
+                    
                 </div>
                 <div class="p-5 pb-6">
                     <div class="flex items-center gap-2 text-xs text-slate-400 mb-2">
-                        <span class="w-6 h-6 rounded-full bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">JD</span>
-                        <span class="font-semibold text-slate-600">John Doe</span>
+                        <span class="w-6 h-6 rounded-full bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0"><img src="{{asset('admin_image/'.$latestBlog->admin?->image)}}" alt="image" class="w-full h-full object-cover rounded-full"></span>
+                        <span class="font-semibold text-slate-600">{{$latestBlog->admin?->name ?? ''}}</span>
                         <span>•</span>
-                        <span>Jan 12, 2026</span>
+                        <span>{{$latestBlog->created_at->format('M d, Y')}}</span>
                     </div>
-                    <h3 class="text-base font-bold text-slate-900 mt-1 mb-2 leading-tight transition-colors duration-200 group-hover:text-[#6C3CE1]">10 SEO Strategies That Will Dominate 2026</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed mb-3 line-clamp-2">Discover the most effective SEO strategies that top marketers are using to rank higher and drive more organic traffic in 2026.</p>
+                    <h3 class="text-base font-bold text-slate-900 mt-1 mb-2 leading-tight transition-colors duration-200 group-hover:text-[#6C3CE1]">{{$latestBlog->title ?? ''}}</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-3 line-clamp-2">{{$latestBlog->excerpt ?? ''}}</p>
                     <div class="flex justify-between items-center pt-3 border-t border-slate-100">
-                        <span class="text-xs text-slate-400 flex items-center gap-1"><i class="far fa-clock"></i> 6 min read</span>
+                        {{-- <span class="text-xs text-slate-400 flex items-center gap-1"><i class="far fa-clock"></i> 6 min read</span> --}}
                         <span class="text-[#6C3CE1] font-semibold text-xs flex items-center gap-1 transition-all duration-300 group-hover:gap-2">Read More <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
+            @endforeach
 
             <!-- Card 2 -->
-            <a href="javascript:void(0)" onclick="navigateToPost('featured2')" class="group bg-white rounded-2xl overflow-hidden border border-slate-100 transition-all duration-500 no-underline text-inherit shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(108,60,225,0.08)] hover:border-[#6C3CE1]">
+            {{-- <a href="javascript:void(0)" onclick="navigateToPost('featured2')" class="group bg-white rounded-2xl overflow-hidden border border-slate-100 transition-all duration-500 no-underline text-inherit shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(108,60,225,0.08)] hover:border-[#6C3CE1]">
                 <div class="relative overflow-hidden bg-slate-100 h-48">
                     <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&q=80" alt="Content Marketing" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     <span class="absolute top-4 left-4 bg-[#6C3CE1]/90 backdrop-blur-md text-white px-4 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide border border-white/10">Content Marketing</span>
@@ -577,7 +607,7 @@
                         <span class="text-[#6C3CE1] font-semibold text-xs flex items-center gap-1 transition-all duration-300 group-hover:gap-2">Read More <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </div>
-            </a>
+            </a> --}}
 
         </div>
     </section>
@@ -881,6 +911,7 @@
     .share-btn.facebook:hover { background: #4267B2; border-color: #4267B2; color: white; }
     .share-btn.linkedin:hover { background: #0A66C2; border-color: #0A66C2; color: white; }
     .share-btn.copy:hover { background: #6C3CE1; border-color: #6C3CE1; color: white; }
+    
 </style>
 
 @endsection

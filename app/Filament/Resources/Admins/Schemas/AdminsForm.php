@@ -30,11 +30,22 @@ class AdminsForm
                 TextInput::make('email')
                     ->label(fn() => new HtmlString('Email<sup style="color:red">*</sup>'))
                     ->placeholder('Enter email address')
-                    ->rules([
-                        'required',
-                        'email',
-                        'unique:admins,email'
-                    ])
+                    // ->rules([
+                    //     'required',
+                    //     'email',
+                    //     'unique:admins,email'
+                    // ])
+                    ->required()
+                    ->email()
+                    ->unique(
+                    table: 'admins',
+                    column: 'email',
+                    ignoreRecord: true
+                )
+                    ->disabled(fn (string $operation): bool =>
+                        $operation === 'edit'
+                    )
+                    ->dehydrated()
                     ->validationMessages([
                         'required' => 'Email can not be blank!',
                         'email' => 'Please provide a valid email address!',
@@ -63,13 +74,23 @@ class AdminsForm
 
                 TextInput::make('password')
                     ->label(fn() => new HtmlString('Password<sup style="color:red">*</sup>'))
-                    ->placeholder('Enter password')
+                     ->placeholder(fn(string $operation): string =>
+                    $operation === 'edit'
+                        ? 'Leave blank to keep current password'
+                        : 'Enter password'
+                        )
                     ->password()
-                    ->rules(['required'])
+                    ->revealable()
+                    ->required(fn(string $operation): bool =>
+                        $operation === 'create'
+                    )
+                    
                     ->validationMessages([
                         'required' => 'Password can not be blank!',
                     ])
-                    ->revealable()
+                    ->dehydrated(fn(?string $state): bool =>
+                        filled($state)
+                    )
                     ->columnSpanFull(),
                 Radio::make('role_id')
                     ->label('Role')

@@ -55,6 +55,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'admin_image' => [
+            'driver' => 'local',
+            'root' => public_path('admin_image'),
+            'url' => env('APP_URL') . '/admin_image',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
         
         's3' => [
             'driver' => 's3',

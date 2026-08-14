@@ -35,12 +35,12 @@ Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.ni
 
 Route::get('/about', fn() => view('web.about'))->name('about');
 // Route::get('/blogs', fn() => view('web.all-blog'))->name('all-blog');
-Route::get('/single-blog', fn() => view('web.single-blog'))->name('single-blog');
+// Route::get('/single-blog', fn() => view('web.single-blog'))->name('single-blog');
 Route::get('/contact', fn() => view('web.contact'))->name('contact');
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/blogs',[App\Http\Controllers\BlogController::class,'index'])->name('all-blogs.index');
-Route::get('/blog/{slug}',[App\Http\Controllers\BlogController::class,'viewMail'])->name('blog.show');
+Route::get('/blog/{slug}',[App\Http\Controllers\BlogController::class,'singleBlog'])->name('blog.show');
 Route::get('/newsletter/subscribe', function() {
     return redirect()->route('contact');
 })->name('newsletter.subscribe.get');
