@@ -87,6 +87,13 @@
     font-weight: 600;
 }
 
+#blog-content-wrapper ol, #blog-content-wrapper ul, #blog-content-wrapper menu{
+    list-style:disc !important;
+}
+ #tocList ol,  #tocList ul,  #tocList menu{
+    list-style:none !important;
+}
+
 /* ============================================
    HEADINGS - Hierarchical Differentiation
    ============================================ */
