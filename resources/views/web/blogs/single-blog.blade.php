@@ -2,8 +2,150 @@
 @section('title', $blog->meta_title ?? '' )
 @section('description', $blog->meta_description ?? '' )
 @section('keywords', $blog->keywords ?? '' )
-@section('content')
 
+@php
+$blogSchema = [
+    "@context" => "https://schema.org",
+    "@graph" => [
+        [
+            "@type" => "WebPage",
+            "@id" => config('app.url') .'/blog/'. $blog->slug . "/#webpage",
+            "url" => config('app.url')."/blog/" . $blog->slug . "/",
+            "name" => $blog->meta_title ?? '',
+            "isPartOf" => ["@id" => config('app.url')."/blog/#website"],
+            "primaryImageOfPage" => ["@id" => config('app.url'). $blog->slug . "/#primaryimage"],
+            "image" => ["@id" => config('app.url') .'/'. $blog->slug . "/#primaryimage"],
+            "thumbnailUrl" => config('app.url').'/blog_images/'.$blog->feature_image ?? '',
+            "datePublished" => $blog->created_at ? date('c', strtotime($blog->created_at)) : date('c'),
+            "dateModified" => $blog->updated_at ? date('c', strtotime($blog->updated_at)) : date('c'),
+            "description" => $blog->meta_description ?? $blog->excerpt ?? strip_tags($blog->content ?? ''),
+            "breadcrumb" => ["@id" => config('app.url')."/blog/" . $blog->slug . "/#breadcrumb"],
+            "inLanguage" => "en-US",
+            "potentialAction" => [
+                [
+                    "@type" => "ReadAction",
+                    "target" => [config('app.url')."/blog/" . $blog->slug . "/"]
+                ]
+            ]
+        ],
+        [
+            "@type" => "ImageObject",
+            "inLanguage" => "en-US",
+            "@id" => config('app.url')."/blog/" . $blog->slug . "/#primaryimage",
+            "url" =>config('app.url').'/blog_images/' .$blog->feature_image ?? '',
+            "contentUrl" => config('app.url').'/blog_images/' .$blog->feature_image ?? '',
+            "width" => 1200,
+            "height" => 675
+        ],
+        [
+            "@type" => "BreadcrumbList",
+            "@id" => config('app.url')."/blog/" . $blog->slug . "/#breadcrumb",
+            "itemListElement" => [
+                [
+                    "@type" => "ListItem",
+                    "position" => 1,
+                    "name" => "Home",
+                    "item" => config('app.url')."/blog/"
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 2,
+                    "name" => $blog->meta_title ?? $blog->title ?? ''
+                ]
+            ]
+        ],
+        [
+            "@type" => "WebSite",
+            "@id" => config('app.url')."/blog/#website",
+            "url" => config('app.url')."/blog/",
+            "name" => "GPSites",
+            "description" => "Explore stories · filter by topic · search anything",
+            "publisher" => ["@id" => config('app.url')."/blog/#organization"],
+            "potentialAction" => [
+                [
+                    "@type" => "SearchAction",
+                    "target" => [
+                        "@type" => "EntryPoint",
+                        "urlTemplate" => config('app.url')."/blog?search={search_term_string}"
+                    ],
+                    "query-input" => [
+                        "@type" => "PropertyValueSpecification",
+                        "valueRequired" => true,
+                        "valueName" => "search_term_string"
+                    ]
+                ]
+            ],
+            "inLanguage" => "en-US"
+        ],
+        [
+            "@type" => "Organization",
+            "@id" => config('app.url')."/blog/#organization",
+            "name" => "GPSites",
+            "url" => config('app.url')."/blog/",
+            "logo" => [
+                "@type" => "ImageObject",
+                "inLanguage" => "en-US",
+                "@id" => config('app.url')."/blog/#/schema/logo/image/",
+                "url" => config('app.url')."/images/site-img/logo.png",
+                "contentUrl" => config('app.url')."/images/site-img/logo.png",
+                "width" => 281,
+                "height" => 109,
+                "caption" => "GPSites"
+            ],
+            "image" => ["@id" => config('app.url')."/blog/#/schema/logo/image/"]
+        ],
+        [
+            "@type" => "Person",
+            "@id" =>  config('app.url')."/blog/#/schema/person/author_" . ($blog->created_by ?? 0),
+            "name" => $blog->admin->name ?? 'Author',
+            "image" => [
+                "@type" => "ImageObject",
+                "inLanguage" => "en-US",
+                "@id" => "Author image",
+                "url" => config('app.url').'/admin_image/'.$blog->admin->image ?? '',
+                "contentUrl" => $blog->admin->image ?? '',
+                "caption" => $blog->admin->name ?? 'Author'
+            ],
+            "description" => $blog->admin->description ?? '',
+            "url" => config('app.url')."/blog/author/" . ($blog->admin->name ?? 'author') . "/"
+        ],
+        [
+            "@type" => "Article",
+            "@id" => config('app.url')."/blog/" . $blog->slug . "/#article",
+            "isPartOf" => ["@id" => config('app.url')."/blog/" . $blog->slug . "/"],
+            "author" => ["@id" => config('app.url')."/blog/#/schema/person/author_" . ($blog->created_by ?? 0)],
+            "headline" => $blog->meta_title ?? $blog->title ?? '',
+            "datePublished" => $blog->created_at ? date('c', strtotime($blog->created_at)) : date('c'),
+            "dateModified" => $blog->updated_at ? date('c', strtotime($blog->updated_at)) : date('c'),
+            "mainEntityOfPage" => ["@id" => config('app.url')."/blog/" . $blog->slug . "/"],
+            "wordCount" => str_word_count(strip_tags($blog->content ?? '')),
+            "commentCount" => 0,
+            "publisher" => ["@id" => config('app.url')."/blog/#organization"],
+            "image" => ["@id" => config('app.url')."/blog_images/" . $blog->feature_image . "#primaryimage"],
+            "thumbnailUrl" => config('app.url').'/blog_images/'.$blog->feature_image ?? '',
+            "articleSection" => [$blog->blogCategory->name ?? ''],
+            "inLanguage" => "en-US",
+            "potentialAction" => [
+                [
+                    "@type" => "CommentAction",
+                    "name" => "Comment",
+                    "target" => [config('app.url')."/blog/" . $blog->slug . "/#respond"]
+                ]
+            ]
+        ]
+    ],
+];
+@endphp
+
+
+
+@section('content')
+<script type="application/ld+json">
+    {!! json_encode(
+        $blogSchema,
+        JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+    ) !!}
+</script>
 <style>
     /* ============================================
    Blog Content Wrapper - Complete Styling
@@ -709,7 +851,7 @@
     }
 }
 </style>
-
+{{-- @dd($blog); --}}
 <!-- Reading Progress -->
 <div id="readingProgressModern" class="fixed top-0 left-0 h-1 z-[1000] bg-gradient-to-r from-[#6C3CE1] via-[#8B5CF6] to-[#A78BFA] shadow-[0_2px_12px_rgba(108,60,225,0.3)] transition-[width] duration-75 ease-linear" style="width:0%;"></div>
 

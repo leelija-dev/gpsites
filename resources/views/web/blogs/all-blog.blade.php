@@ -7,9 +7,37 @@
     automation tool​, automated outreach system​, backlink marketplace, backlinks websites, outreach automation tool')
 @section('indexing', 'no')
 
+@php
+    $blogSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'CollectionPage',
+        'name' => 'GPSites Blog',
+        'description' => 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.',
+        'url' => url('/blogs'),
+
+        'mainEntity' => [
+            '@type' => 'ItemList',
+            'itemListElement' => $blogs->values()->map(function ($blog, $index) {
+                return [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'url' => url('/blog/' . $blog->slug),
+                    'name' => $blog->title,
+                ];
+            })->toArray(),
+        ],
+    ];
+@endphp
+
+<script type="application/ld+json">
+{!! json_encode(
+    $blogSchema,
+    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+) !!}
+</script>
 @section('content')
 
-    <style>
+      <style>
         /* ----- SMOOTH CARD HOVER EFFECTS ----- */
         .blog-card {
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
