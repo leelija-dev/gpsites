@@ -881,7 +881,7 @@
                     class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer"><i
                         class="fas fa-home"></i> Blog</a>
                 <span class="text-slate-300 text-xs"><i class="fas fa-chevron-right"></i></span>
-                <a href="{{ url('/blogs') }}?search={{ $blog->blogCategory->slug }}"
+                <a href="{{ url('/blogs/category',$blog->blogCategory->slug) }}"
                     class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer">{{ $blog->blogCategory->name ?? '' }}</a>
                 <span class="text-slate-300 text-xs"><i class="fas fa-chevron-right"></i></span>
                 <span class="text-slate-700 font-semibold truncate">{{ $blog->title ?? '' }}</span>
