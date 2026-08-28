@@ -948,10 +948,11 @@
                                 <i class="fas fa-calendar-alt text-[#6C3CE1]"></i>
                                 <span>{{ $blog->created_at->format('M d, Y') }}</span>
                             </span>
-                            <span
+                             <a href="{{ url('/blogs/category', $blog->blogCategory->slug) }}"><span
                                 class="inline-flex items-center gap-1.5 bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide shadow-[0_2px_8px_rgba(108,60,225,0.25)] transition-transform duration-200 hover:scale-105 hover:shadow-[0_4px_16px_rgba(108,60,225,0.35)]">
-                                <i class="fas fa-tag"></i> {{ $blog->blogCategory->name }}
+                                 {{ $blog->blogCategory->name }}
                             </span>
+                             </a>
                         </div>
                     </header>
 
