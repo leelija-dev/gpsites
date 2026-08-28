@@ -70,7 +70,7 @@ class AdminsForm
                     ->label('Description')
                     ->placeholder('Enter description')
                     ->rows(5)
-                    ->maxLength(500),
+                    ->maxLength(1000),
 
                 TextInput::make('password')
                     ->label(fn() => new HtmlString('Password<sup style="color:red">*</sup>'))
