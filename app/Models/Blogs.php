@@ -27,7 +27,12 @@ class Blogs extends Model
         'created_by'
         
     ];
-
+protected function casts(): array
+{
+    return [
+        'tags' => 'array',
+    ];
+}
 public function faq(){
     return $this->hasMany(BlogFaqs::class,'blog_id','id');
 }

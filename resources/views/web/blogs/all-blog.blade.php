@@ -1,7 +1,15 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'Blogs')
-@section('description', 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.')
+{{-- @section('description', 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.') --}}
+@section(
+    'description',
+    request()->routeIs('all-blogs.index')
+        ? 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.'
+        : (request()->routeIs('blog.category')
+            ? ($category->description ?? '')
+            : '')
+)
 @section('keywords',
     'Link Building Outreach Automation​, Outreach Automation, Link Building Outreach Tool, outreach
     automation tool​, automated outreach system​, backlink marketplace, backlinks websites, outreach automation tool')
@@ -12,8 +20,12 @@
         '@context' => 'https://schema.org',
         '@type' => 'CollectionPage',
         'name' => 'GPSites Blog',
-        'description' => 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.',
-        'url' => url('/blogs'),
+        'description' => request()->routeIs('all-blogs.index')
+        ? 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.'
+        : (request()->routeIs('blog.category')
+            ? ($category->description ?? '')
+            : ''),
+        'url' => url()->current(),
 
         'mainEntity' => [
             '@type' => 'ItemList',
@@ -639,7 +651,8 @@
                     'author' => $blog->admin->name ?? '',
                     'emoji' => '⚛️',
                     'image' => asset('blog_images/' . $blog->feature_image ?? null),
-                    'imageAlt' => $blog->feature_image_alt ?? null
+                    'imageAlt' => $blog->feature_image_alt ?? null,
+                    'tags' => $blog->tags ?? null
                 ];
             })
             ->values()
@@ -847,10 +860,24 @@
 
                     grid.classList.remove('hidden');
                     emptyState.classList.add('hidden');
-
+                    
                     // build cards with smooth hover effects
                     let html = '';
                     filtered.forEach((b) => {
+                        const tags = b.tags
+                        ? b.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
+                        : [];
+
+                    const tagsHtml = tags.map(tag => `
+                        <a href="{{ url('/blogs/tag') }}/${encodeURIComponent(tag)}"
+                        class="inline-flex items-center px-2.5 py-1 mr-1 mb-1 rounded-full
+                                bg-slate-100 text-slate-600 text-xs font-medium
+                                hover:bg-primary hover:text-white transition-all duration-200"
+                        title="View blogs with tag: ${tag}">
+                            <i class="fa fa-tag mr-1 text-[10px]"></i>
+                            ${tag}
+                        </a>
+                    `).join('');
                         html += `
                         <div class="blog-card group">
                             <!-- Shine effect overlay -->
@@ -898,6 +925,11 @@
                                         <span>${b.date}</span> 
                                     </span>
                                 </div>
+                                <div class="card-footer border-t border-primary/10 pt-3 mt-2">
+    <div class="flex flex-wrap items-center">
+        ${tagsHtml}
+    </div>
+</div>
                             </div>
                         </div>
                     `;
@@ -911,21 +943,44 @@
 
             // ---------- BUILD CUSTOM DROPDOWN MENU ----------
             function buildDropdown() {
-                let itemsHtml = '';
-                categories.forEach(cat => {
-                    const isActive = cat.value === activeCategory;
-                    itemsHtml += `
-                    <a href="{{ url('/blogs') }}?search=${cat.slug}"> <div class="dropdown-item ${isActive ? 'active' : ''}" data-value="${cat.value}" role="option" aria-selected="${isActive}">
-                        <span class="item-icon">${cat.label}</span> 
-                        <span class="check-mark"><i class="fas fa-check"></i></span>
-                    </div></a>
-                `;
-                });
-                dropdownMenu.innerHTML = itemsHtml;
-                // update trigger label
-                const activeCat = categories.find(c => c.value === activeCategory);
-                selectedLabel.textContent = activeCat ? activeCat.label : '📋 All categories';
-            }
+    let itemsHtml = '';
+
+    categories.forEach(cat => {
+        const isActive = cat.value === activeCategory;
+
+        let url;
+
+        // All categories → /blogs
+        if (cat.value === 'all' || cat.slug === 'all') {
+            url = "{{ url('/blogs') }}";
+        } else {
+            // Specific category → /blog-category/{slug}
+            url = "{{ url('/blogs/category') }}/" + encodeURIComponent(cat.slug);
+        }
+
+        itemsHtml += `
+            <a href="${url}">
+                <div class="dropdown-item ${isActive ? 'active' : ''}"
+                     data-value="${cat.value}"
+                     role="option"
+                     aria-selected="${isActive}">
+                    <span class="item-icon">${cat.label}</span>
+                    <span class="check-mark">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </div>
+            </a>
+        `;
+    });
+
+    dropdownMenu.innerHTML = itemsHtml;
+
+    const activeCat = categories.find(c => c.value === activeCategory);
+
+    selectedLabel.textContent = activeCat
+        ? activeCat.label
+        : '📋 All categories';
+}
 
             // ---------- DROPDOWN TOGGLE ----------
             function toggleDropdown(forceState) {

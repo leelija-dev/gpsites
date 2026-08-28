@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BlogCategory;
 use App\Models\Blogs;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 class BlogController extends Controller
 {
     public function index(Request $request)
@@ -48,5 +48,58 @@ public function singleBlog($slug){
     $latestBlogs = Blogs::where('status', true)->with('admin','faq')->latest()->limit(5)->get();
     $categories = BlogCategory::where('status', true)->get();
     return view('web.blogs.single-blog',compact('blog','latestBlogs','categories'));
+}
+
+public function category($slug){
+    try{
+    $category = BlogCategory::where('slug', $slug)->first();
+    $blogs = Blogs::where('category', $category->id)->where('status', true)->with('admin','blogCategory','faq')->orderBy('id', 'DESC')->get();
+     $latestBlog = Blogs::where('status', true)
+        ->with('blogCategory','faq')
+        ->latest()
+        ->first();
+
+    $blogCategory = BlogCategory::where('status', true)
+        ->get();
+    return view(
+        'web.blogs.all-blog',
+        compact('category','blogs', 'latestBlog', 'blogCategory')
+    );
+    }catch(\Exception $e){       
+        Log::info($e->getMessage());
+    }
+}
+public function Tag($tag)
+{
+    
+    try {
+
+        $tag = urldecode($tag);
+        $blogs = Blogs::where('tags', 'like', '%' . $tag . '%')->where('status', true)->with('admin','blogCategory','faq')->orderBy('id', 'DESC')->get();
+
+        $latestBlog = Blogs::where('status', true)
+            ->with('blogCategory', 'faq')
+            ->latest()
+            ->first();
+
+        $blogCategory = BlogCategory::where('status', true)
+            ->get();
+       
+        
+        return view(
+            'web.blogs.all-blog',
+            compact(
+                'blogs',
+                'latestBlog',
+                'blogCategory'
+            )
+        );
+
+    } catch (\Exception $e) {
+
+        Log::error('Blog Tag Error: ' . $e->getMessage());
+
+        abort(404);
+    }
 }
 }

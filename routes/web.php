@@ -41,6 +41,8 @@ Route::get('/contact', fn() => view('web.contact'))->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/blogs',[App\Http\Controllers\BlogController::class,'index'])->name('all-blogs.index');
 Route::get('/blog/{slug}',[App\Http\Controllers\BlogController::class,'singleBlog'])->name('blog.show');
+Route::get('/blogs/category/{slug}',[App\Http\Controllers\BlogController::class,'category'])->name('blog.category');
+Route::get('/blogs/tag/{tag}',[App\Http\Controllers\BlogController::class,'tag'])->name('blog.tag');
 Route::get('/newsletter/subscribe', function() {
     return redirect()->route('contact');
 })->name('newsletter.subscribe.get');
