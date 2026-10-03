@@ -994,7 +994,7 @@
                                                 <i class="fas fa-chevron-down faq-toggle-icon"></i>
                                             </div>
                                             <div class="faq-answer">
-                                                {!! $faq->answer ?? '' !!}
+                                                {!! nl2br(e($faq->answer ?? '')) !!}
                                             </div>
                                         </div>
                                     @endforeach
