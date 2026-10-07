@@ -60,7 +60,7 @@ class BlogCategoryForm
                     ->label('Description')
                     ->placeholder('Enter category description ')
                     ->rows(3)
-                    ->maxLength(100),
+                    ->maxLength(1000),
                 Toggle::make('status')
                     ->label('Status')
                     ->onColor('success')

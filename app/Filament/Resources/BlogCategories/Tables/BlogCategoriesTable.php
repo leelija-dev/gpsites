@@ -31,7 +31,7 @@ class BlogCategoriesTable
 
                 TextColumn::make('description')
                     ->label('Description')
-                    ->limit(30)
+                    // ->limit(30)
                     ->searchable(),
 
                 IconColumn::make('status')
