@@ -59,6 +59,7 @@ class BlogController extends Controller
                             $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
                             if($isValid)
                             {
+                                $isValidPlan = true;
                                 $total_mail_available+=$mail_available_record->available_mail;
                                 $total_mail +=$mail_available_record->total_mail;
                             }
