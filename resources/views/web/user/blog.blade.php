@@ -195,6 +195,40 @@
         .note-dialog {
             z-index: 10002 !important;
         }
+        /* Range sliders */
+.range-ui { --range-color: #7c3aed; } /* change to #2563eb for your blue theme */
+
+.range-wrap { position: relative; height: 24px; }
+
+.range-track {
+    position: absolute; top: 50%; left: 9px; right: 9px; height: 6px;
+    transform: translateY(-50%); background: #e5e7eb; border-radius: 9999px;
+}
+.range-fill {
+    position: absolute; top: 0; height: 100%;
+    background: var(--range-color); border-radius: 9999px;
+}
+
+.range-wrap input[type=range] {
+    position: absolute; left: 0; top: 0; width: 100%; height: 24px; margin: 0;
+    background: none; pointer-events: none;
+    -webkit-appearance: none; appearance: none;
+}
+.range-wrap input[type=range]::-webkit-slider-runnable-track { background: transparent; height: 24px; }
+.range-wrap input[type=range]::-moz-range-track { background: transparent; }
+
+.range-wrap input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; pointer-events: auto;
+    width: 18px; height: 18px; margin-top: 3px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--range-color);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, .15); cursor: grab;
+}
+.range-wrap input[type=range]::-moz-range-thumb {
+    pointer-events: auto; width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--range-color);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, .15); cursor: grab;
+}
+.range-wrap input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; }
     </style>
 
     <!-- Main content -->
@@ -205,7 +239,7 @@
                 {{-- @if ($total_mail_available) --}}
                 <div class="space-y-4 md:space-y-0 md:flex md:items-center md:justify-between">
                     <!-- Search Section -->
-                    <div class="flex smxl:flex-row flex-col gap-2 items-center ">
+                    {{-- <div class="flex smxl:flex-row flex-col gap-2 items-center ">
                         <div class="relative w-full">
                             <input type="text" id="searchInput" placeholder="Search"
                                 class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
@@ -214,7 +248,38 @@
                             class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
                             Search
                         </button>
-                    </div>
+                    </div> --}}
+                    @php
+    $hasAdvanced = request()->hasAny(['niche','da_min','da_max','dr_min','dr_max','traffic_min','traffic_max']);
+@endphp
+
+<!-- Search Section -->
+<div class="flex flex-col gap-2">
+    <div class="flex smxl:flex-row flex-col gap-2 items-center">
+        <div class="relative w-full">
+            <input type="text" id="searchInput" placeholder="Search"
+                class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+        <button id="searchBtn"
+            class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+            Search
+        </button>
+    </div>
+
+    <!-- Advanced toggle -->
+    <button type="button" id="advancedToggleBtn"
+        class="self-start inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 4h18M6 12h12M10 20h4" />
+        </svg>
+        Advanced
+        <svg id="advancedChevron" class="w-4 h-4 transition-transform duration-300 {{ $hasAdvanced ? 'rotate-180' : '' }}"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+</div>
 
                     <!-- Selection Controls -->
                     <div class="flex xxs:flex-row flex-col gap-2  xxs:items-center items-end space-x-3">
@@ -235,7 +300,90 @@
                         </div>
                     </div>
                 </div>
+                <!-- Advanced Filter Panel -->
+                <div id="advancedPanel" class="mt-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+                    style="{{ $hasAdvanced ? '' : 'display:none;' }}">
+                    <form method="GET" action="{{ url()->current() }}" id="advancedForm" class="p-5">
+                        {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"> --}}
 
+                            <!-- Niche -->
+                            <div class="range-ui grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                    <!-- Niche -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">Niche</label>
+                        <select name="niche"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All niches</option>
+                           @foreach ($niches_data ?? [] as $n)
+                                @php
+                                    $nicheName = is_array($n) ? ($n['niche_name'] ?? '') : ($n->niche_name ?? '');
+                                @endphp
+                                @if ($nicheName !== '' && strtolower($nicheName) !== 'all')
+                                    <option value="{{ $nicheName }}" {{ request('niche') == $nicheName ? 'selected' : '' }}>
+                                        {{ $nicheName }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- DA -->
+                    <div class="range-group" data-type="dual" data-format="number">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-sm font-semibold text-gray-800">DA</label>
+                            <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                        </div>
+                        <div class="range-wrap">
+                            <div class="range-track"><div class="range-fill"></div></div>
+                            <input type="range" name="da_min" min="0" max="100" step="1" data-default="0"
+                                value="{{ request('da_min', 0) }}">
+                            <input type="range" name="da_max" min="0" max="100" step="1" data-default="100"
+                                value="{{ request('da_max', 100) }}">
+                        </div>
+                    </div>
+
+                    <!-- DR -->
+                    <div class="range-group" data-type="dual" data-format="number">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-sm font-semibold text-gray-800">DR</label>
+                            <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                        </div>
+                        <div class="range-wrap">
+                            <div class="range-track"><div class="range-fill"></div></div>
+                            <input type="range" name="dr_min" min="0" max="100" step="1" data-default="0"
+                                value="{{ request('dr_min', 0) }}">
+                            <input type="range" name="dr_max" min="0" max="100" step="1" data-default="100"
+                                value="{{ request('dr_max', 100) }}">
+                        </div>
+                    </div>
+
+                    <!-- Traffic (single handle = minimum traffic) -->
+                    <div class="range-group" data-type="single" data-format="compact">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-sm font-semibold text-gray-800">Traffic</label>
+                            <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                        </div>
+                        <div class="range-wrap">
+                            <div class="range-track"><div class="range-fill"></div></div>
+                            <input type="range" name="traffic_min" min="0" max="1000000" step="10000" data-default="0"
+                                value="{{ request('traffic_min', 0) }}">
+                        </div>
+                    </div>
+                </div>
+
+                        <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 mt-5 pt-4 border-t border-gray-100">
+                            <a href="{{ url()->current() }}"
+                                class="px-4 py-2 text-center border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition">
+                                Reset
+                            </a>
+                            <button type="submit"
+                                class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <!-- Table Container -->
                 <div class="mt-6 overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -370,7 +518,8 @@
 
                 @if (isset($pagination))
                     <div id="pagina-wrapper" class="mt-6 flex justify-center">
-                        {{ $pagination->links('pagination::bootstrap-5') }}
+                        {{-- {{ $pagination->links('pagination::bootstrap-5') }} --}}
+                        {{ $pagination->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             @else
@@ -1083,6 +1232,62 @@
             $(document).on('pjax:success', function() {
                 restoreCheckboxStates();
             });
+            // Advanced panel toggle
+$('#advancedToggleBtn').on('click', function () {
+    $('#advancedPanel').slideToggle(250);
+    $('#advancedChevron').toggleClass('rotate-180');
+});
+
+// ---- Range sliders ----
+function formatRange(n, type) {
+    n = Number(n);
+    if (type !== 'compact') return n;
+    if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 ? 1 : 0) + 'M';
+    if (n >= 1000) return (n / 1000) + 'k';
+    return n;
+}
+
+$('.range-group').each(function () {
+    const $g = $(this);
+    const dual = $g.data('type') === 'dual';
+    const fmt = $g.data('format');
+    const $inputs = $g.find('input[type=range]');
+    const $min = $inputs.first();
+    const $max = dual ? $inputs.last() : null;
+    const $fill = $g.find('.range-fill');
+    const $label = $g.find('.range-label');
+
+    function update(e) {
+        const lo = +$min.attr('min'), hi = +$min.attr('max');
+
+        if (dual) {
+            // prevent handles crossing
+            if (+$min.val() > +$max.val()) {
+                if (e && e.target === $min[0]) $min.val($max.val());
+                else $max.val($min.val());
+            }
+            const a = (($min.val() - lo) / (hi - lo)) * 100;
+            const b = (($max.val() - lo) / (hi - lo)) * 100;
+            $fill.css({ left: a + '%', width: (b - a) + '%' });
+            $label.text(formatRange($min.val(), fmt) + ' – ' + formatRange($max.val(), fmt));
+        } else {
+            const p = (($min.val() - lo) / (hi - lo)) * 100;
+            $fill.css({ left: '0%', width: p + '%' });
+            $label.text(formatRange($min.val(), fmt) + (+$min.val() > 0 ? '+' : ''));
+        }
+    }
+
+    $inputs.on('input', update);
+    update();
+});
+
+// Don't submit empty / default fields (keeps URL clean)
+$('#advancedForm').on('submit', function () {
+    $(this).find('select, input').filter(function () {
+        if (this.type === 'range') return this.value == this.dataset.default;
+        return !this.value;
+    }).prop('disabled', true);
+});
         });
     </script>
 
