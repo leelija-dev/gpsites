@@ -25,231 +25,231 @@ class BlogController extends Controller
     {
         $this->APIBASEURL = config('app.api_url');
     }
-    // public function index(Request $request)
-    // {
-    //     $APPURL  = $this->APIBASEURL . '/api/blogs';
-
-    //     // $response = Http::get(env('API_BASE_URL') . '/api/blogs');
-    //     $params = array_filter([
-    //         'page'        => $request->get('page', 1),
-    //         'niche'       => $request->niche,
-    //         'da_min'      => $request->da_min,
-    //         'da_max'      => $request->da_max,
-    //         'dr_min'      => $request->dr_min,
-    //         'dr_max'      => $request->dr_max,
-    //         'traffic_min' => $request->traffic_min,
-    //     ], fn ($v) => $v !== null && $v !== '');
-    //     $response = Http::get($APPURL, $params);
-
-
-    //     $user = Auth::user();
-    //     $mail_available = MailAvailable::where('user_id', $user->id)->get();
-
-    //     $isValidPlan = false;
-    //     $total_mail_available = 0;
-    //     $total_mail = 0;
-
-    //     // Check for valid paid plans only (trial users should NOT have access to blog content)
-    //     if ($mail_available && $mail_available->count() > 0) {
-    //         foreach ($mail_available as $mail_available_record) {
-    //             $plan_order_id = $mail_available_record->order_id;
-    //             $plan_order = PlanOrder::where('id', $plan_order_id)->latest()->first();
-
-    //             if ($plan_order) {
-    //                 $plan = Plan::where('id', $plan_order->plan_id)->first();
-
-    //                 if ($plan) {
-    //                     // Exclude trial plan from valid plans
-    //                     if ($plan->id == config('paypal.trial_plan_id')) {
-    //                         // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
-    //                         $expiryDate=Carbon::parse($plan_order->expire_at);
-    //                         $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
-    //                         if($isValid)
-    //                         {
-    //                             $isValidPlan = true;
-    //                             $total_mail_available+=$mail_available_record->available_mail;
-    //                             $total_mail +=$mail_available_record->total_mail;
-    //                         }
-    //                         continue; // Skip trial plan - trial users cannot access blog content
-    //                     }
-
-    //                     // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
-    //                     $expiryDate=Carbon::parse($plan_order->expire_at);
-    //                     $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
-
-    //                     if ($isValid) {
-    //                         $isValidPlan = true;
-    //                         $total_mail_available += $mail_available_record->available_mail;
-    //                         $total_mail += $mail_available_record->total_mail;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     // If no valid paid plan, deny access (trial users cannot access blog content)
-    //     if (!$isValidPlan) {
-    //         return view('web.user.blog', compact('isValidPlan'));
-    //     }
-    //     // $plan_expire=$plan_id->duration ?? 0;
-    //     if ($response->failed()) {
-    //         return 'API Request Failed: ' . $response->status();
-    //     }
-
-    //     $blogs = $response->json();
-    //     //$page = LengthAwarePaginator::resolveCurrentPage(); // current page number
-    //     // $perPage = 10; // Show 10 blogs per page
-    //     //$offset = ($page - 1) * $perPage;
-
-    //     //$items = array_slice($blogs, $offset, $perPage);
-
-    //     // $pagination = new LengthAwarePaginator(
-    //     //     $items,
-    //     //     count($blogs), // total count
-    //     //     $perPage,
-    //     //     $page,
-    //     //     ['path' => url()->current()]
-    //     // );
-    //     $pagination = new LengthAwarePaginator(
-    //         $blogs['data'],            // blog list
-    //         $blogs['total'],           // total items
-    //         $blogs['per_page'],        // per page
-    //         $blogs['current_page'],    // current page
-    //         // ['path' => url()->current()]
-    //         ['path' => url()->current(), 'query' => $request->query()]
-    //     );
-    //     $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
-    //     $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
-    //     return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail','niches_data'));
-    // }
     public function index(Request $request)
-{
-    $user = Auth::user();
-    $mail_available = MailAvailable::where('user_id', $user->id)->get();
+    {
+        $APPURL  = $this->APIBASEURL . '/api/blogs';
 
-    $isValidPlan = false;
-    $total_mail_available = 0;
-    $total_mail = 0;
+        // $response = Http::get(env('API_BASE_URL') . '/api/blogs');
+        $params = array_filter([
+            'page'        => $request->get('page', 1),
+            'niche'       => $request->niche,
+            'da_min'      => $request->da_min,
+            'da_max'      => $request->da_max,
+            'dr_min'      => $request->dr_min,
+            'dr_max'      => $request->dr_max,
+            'traffic_min' => $request->traffic_min,
+        ], fn ($v) => $v !== null && $v !== '');
+        $response = Http::get($APPURL, $params);
 
-    // ===== YOUR PLAN CHECK (unchanged) =====
-    if ($mail_available && $mail_available->count() > 0) {
-        foreach ($mail_available as $mail_available_record) {
-            $plan_order_id = $mail_available_record->order_id;
-            $plan_order = PlanOrder::where('id', $plan_order_id)->latest()->first();
 
-            if ($plan_order) {
-                $plan = Plan::where('id', $plan_order->plan_id)->first();
+        $user = Auth::user();
+        $mail_available = MailAvailable::where('user_id', $user->id)->get();
 
-                if ($plan) {
-                    if ($plan->id == config('paypal.trial_plan_id')) {
-                        $expiryDate = Carbon::parse($plan_order->expire_at);
+        $isValidPlan = false;
+        $total_mail_available = 0;
+        $total_mail = 0;
+
+        // Check for valid paid plans only (trial users should NOT have access to blog content)
+        if ($mail_available && $mail_available->count() > 0) {
+            foreach ($mail_available as $mail_available_record) {
+                $plan_order_id = $mail_available_record->order_id;
+                $plan_order = PlanOrder::where('id', $plan_order_id)->latest()->first();
+
+                if ($plan_order) {
+                    $plan = Plan::where('id', $plan_order->plan_id)->first();
+
+                    if ($plan) {
+                        // Exclude trial plan from valid plans
+                        if ($plan->id == config('paypal.trial_plan_id')) {
+                            // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
+                            $expiryDate=Carbon::parse($plan_order->expire_at);
+                            $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+                            if($isValid)
+                            {
+                                $isValidPlan = true;
+                                $total_mail_available+=$mail_available_record->available_mail;
+                                $total_mail +=$mail_available_record->total_mail;
+                            }
+                            continue; // Skip trial plan - trial users cannot access blog content
+                        }
+
+                        // $expiryDate = Carbon::parse($plan_order->created_at)->addDays($plan_order->duration ?? 0);
+                        $expiryDate=Carbon::parse($plan_order->expire_at);
                         $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+
                         if ($isValid) {
                             $isValidPlan = true;
                             $total_mail_available += $mail_available_record->available_mail;
                             $total_mail += $mail_available_record->total_mail;
                         }
-                        continue;
-                    }
-
-                    $expiryDate = Carbon::parse($plan_order->expire_at);
-                    $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
-
-                    if ($isValid) {
-                        $isValidPlan = true;
-                        $total_mail_available += $mail_available_record->available_mail;
-                        $total_mail += $mail_available_record->total_mail;
                     }
                 }
             }
         }
-    }
 
-    if (!$isValidPlan) {
-        return view('web.user.blog', compact('isValidPlan'));
-    }
-
-    // ===== FILTERS =====
-    $num = function ($v) {
-        $s = strtolower(trim((string) $v));
-        $n = (float) preg_replace('/[^\d.]/', '', $s);   // "12,500" -> 12500
-        if (str_ends_with($s, 'k')) $n *= 1000;          // "45.6K"  -> 45600
-        elseif (str_ends_with($s, 'm')) $n *= 1000000;   // "1.2M"   -> 1200000
-        return $n;
-    };
-    $has = fn ($v) => $v !== null && $v !== '';
-
-    // niches from home page ("niches=a,b") or blog page dropdown ("niche=a")
-    $selectedNiches = collect(explode(',', $request->niches . ',' . $request->niche))
-        ->map(fn ($n) => strtolower(trim($n)))
-        ->filter(fn ($n) => $n !== '' && $n !== 'all')
-        ->values();
-
-    $blogs = collect($this->getAllBlogs())->filter(function ($b) use ($request, $selectedNiches, $num, $has) {
-
-        if ($selectedNiches->isNotEmpty()) {
-            $blogNiche = strtolower((string) ($b['website_niche'] ?? ''));
-            if (!$selectedNiches->contains(fn ($n) => str_contains($blogNiche, $n))) return false;
+        // If no valid paid plan, deny access (trial users cannot access blog content)
+        if (!$isValidPlan) {
+            return view('web.user.blog', compact('isValidPlan'));
+        }
+        // $plan_expire=$plan_id->duration ?? 0;
+        if ($response->failed()) {
+            return 'API Request Failed: ' . $response->status();
         }
 
-        $da = $num($b['moz_da'] ?? 0);
-        $dr = $num($b['ahrefs_dr'] ?? 0);
-        $tr = $num($b['ahrefs_traffic'] ?? 0);
+        $blogs = $response->json();
+        //$page = LengthAwarePaginator::resolveCurrentPage(); // current page number
+        // $perPage = 10; // Show 10 blogs per page
+        //$offset = ($page - 1) * $perPage;
 
-        if ($has($request->da_min)      && $da < (float) $request->da_min) return false;
-        if ($has($request->da_max)      && $da > (float) $request->da_max) return false;
-        if ($has($request->dr_min)      && $dr < (float) $request->dr_min) return false;
-        if ($has($request->dr_max)      && $dr > (float) $request->dr_max) return false;
-        if ($has($request->traffic_min) && $tr < (float) $request->traffic_min) return false;
+        //$items = array_slice($blogs, $offset, $perPage);
 
-        return true;
-    })->values();
-    // ===== PAGINATION (10 per page) =====
-    $perPage = 10;
-    $page    = LengthAwarePaginator::resolveCurrentPage();
-
-    $pagination = new LengthAwarePaginator(
-        $blogs->forPage($page, $perPage)->values(),
-        $blogs->count(),
-        $perPage,
-        $page,
-        ['path' => url()->current(), 'query' => $request->query()]
-    );
-
-    $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
-    $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
-
-    return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail', 'niches_data'));
-}
-private function getAllBlogs(): array
-{
-    $cached = Cache::get('all_approved_blogs');
-    if (!empty($cached)) {
-        return $cached;
+        // $pagination = new LengthAwarePaginator(
+        //     $items,
+        //     count($blogs), // total count
+        //     $perPage,
+        //     $page,
+        //     ['path' => url()->current()]
+        // );
+        $pagination = new LengthAwarePaginator(
+            $blogs['data'],            // blog list
+            $blogs['total'],           // total items
+            $blogs['per_page'],        // per page
+            $blogs['current_page'],    // current page
+            // ['path' => url()->current()]
+            ['path' => url()->current(), 'query' => $request->query()]
+        );
+        $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
+        $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
+        return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail','niches_data'));
     }
+//     public function index(Request $request)
+// {
+//     $user = Auth::user();
+//     $mail_available = MailAvailable::where('user_id', $user->id)->get();
 
-    $url  = $this->APIBASEURL . '/api/blogs';
-    $page = 1;
-    $last = 1;
-    $all  = [];
+//     $isValidPlan = false;
+//     $total_mail_available = 0;
+//     $total_mail = 0;
 
-    do {
-        $res = Http::get($url, ['page' => $page]);
-        if ($res->failed()) {
-            break;
-        }
-        $json = $res->json();
-        $all  = array_merge($all, $json['data'] ?? []);
-        $last = (int) ($json['last_page'] ?? 1);
-        $page++;
-    } while ($page <= $last);
+//     // ===== YOUR PLAN CHECK (unchanged) =====
+//     if ($mail_available && $mail_available->count() > 0) {
+//         foreach ($mail_available as $mail_available_record) {
+//             $plan_order_id = $mail_available_record->order_id;
+//             $plan_order = PlanOrder::where('id', $plan_order_id)->latest()->first();
 
-    if (!empty($all)) {
-        Cache::put('all_approved_blogs', $all, 600);
-    }
+//             if ($plan_order) {
+//                 $plan = Plan::where('id', $plan_order->plan_id)->first();
 
-    return $all;
-}
+//                 if ($plan) {
+//                     if ($plan->id == config('paypal.trial_plan_id')) {
+//                         $expiryDate = Carbon::parse($plan_order->expire_at);
+//                         $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+//                         if ($isValid) {
+//                             $isValidPlan = true;
+//                             $total_mail_available += $mail_available_record->available_mail;
+//                             $total_mail += $mail_available_record->total_mail;
+//                         }
+//                         continue;
+//                     }
+
+//                     $expiryDate = Carbon::parse($plan_order->expire_at);
+//                     $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
+
+//                     if ($isValid) {
+//                         $isValidPlan = true;
+//                         $total_mail_available += $mail_available_record->available_mail;
+//                         $total_mail += $mail_available_record->total_mail;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+//     if (!$isValidPlan) {
+//         return view('web.user.blog', compact('isValidPlan'));
+//     }
+
+//     // ===== FILTERS =====
+//     $num = function ($v) {
+//         $s = strtolower(trim((string) $v));
+//         $n = (float) preg_replace('/[^\d.]/', '', $s);   // "12,500" -> 12500
+//         if (str_ends_with($s, 'k')) $n *= 1000;          // "45.6K"  -> 45600
+//         elseif (str_ends_with($s, 'm')) $n *= 1000000;   // "1.2M"   -> 1200000
+//         return $n;
+//     };
+//     $has = fn ($v) => $v !== null && $v !== '';
+
+//     // niches from home page ("niches=a,b") or blog page dropdown ("niche=a")
+//     $selectedNiches = collect(explode(',', $request->niches . ',' . $request->niche))
+//         ->map(fn ($n) => strtolower(trim($n)))
+//         ->filter(fn ($n) => $n !== '' && $n !== 'all')
+//         ->values();
+
+//     $blogs = collect($this->getAllBlogs())->filter(function ($b) use ($request, $selectedNiches, $num, $has) {
+
+//         if ($selectedNiches->isNotEmpty()) {
+//             $blogNiche = strtolower((string) ($b['website_niche'] ?? ''));
+//             if (!$selectedNiches->contains(fn ($n) => str_contains($blogNiche, $n))) return false;
+//         }
+
+//         $da = $num($b['moz_da'] ?? 0);
+//         $dr = $num($b['ahrefs_dr'] ?? 0);
+//         $tr = $num($b['ahrefs_traffic'] ?? 0);
+
+//         if ($has($request->da_min)      && $da < (float) $request->da_min) return false;
+//         if ($has($request->da_max)      && $da > (float) $request->da_max) return false;
+//         if ($has($request->dr_min)      && $dr < (float) $request->dr_min) return false;
+//         if ($has($request->dr_max)      && $dr > (float) $request->dr_max) return false;
+//         if ($has($request->traffic_min) && $tr < (float) $request->traffic_min) return false;
+
+//         return true;
+//     })->values();
+//     // ===== PAGINATION (10 per page) =====
+//     $perPage = 10;
+//     $page    = LengthAwarePaginator::resolveCurrentPage();
+
+//     $pagination = new LengthAwarePaginator(
+//         $blogs->forPage($page, $perPage)->values(),
+//         $blogs->count(),
+//         $perPage,
+//         $page,
+//         ['path' => url()->current(), 'query' => $request->query()]
+//     );
+
+//     $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
+//     $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
+
+//     return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail', 'niches_data'));
+// }
+// private function getAllBlogs(): array
+// {
+//     $cached = Cache::get('all_approved_blogs');
+//     if (!empty($cached)) {
+//         return $cached;
+//     }
+
+//     $url  = $this->APIBASEURL . '/api/blogs';
+//     $page = 1;
+//     $last = 1;
+//     $all  = [];
+
+//     do {
+//         $res = Http::get($url, ['page' => $page]);
+//         if ($res->failed()) {
+//             break;
+//         }
+//         $json = $res->json();
+//         $all  = array_merge($all, $json['data'] ?? []);
+//         $last = (int) ($json['last_page'] ?? 1);
+//         $page++;
+//     } while ($page <= $last);
+
+//     if (!empty($all)) {
+//         Cache::put('all_approved_blogs', $all, 600);
+//     }
+
+//     return $all;
+// }
     public function viewMail($id)
     {
         $id = decrypt($id);
