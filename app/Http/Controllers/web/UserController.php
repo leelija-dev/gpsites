@@ -53,9 +53,9 @@ class UserController extends Controller
                         $totalActivePlans++; // Count all active plans (trial + paid)
 
                         // Track paid plans separately for dashboard access
-                        if ($plan->id != config('paypal.trial_plan_id')) {
+                        // if ($plan->id != config('paypal.trial_plan_id')) {
                             $activePlansCount++;
-                        }
+                        // }
                     }
                 }
             }
