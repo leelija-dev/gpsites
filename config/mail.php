@@ -116,6 +116,7 @@ return [
     ],
     
     'admin_email' => env('MAIL_ADMIN_EMAIL','lakshman.leelija@gmail.com'),
+    'site_inbox' => env('MAIL_FROM_ADDRESS', 'lakshman.leelija@gmail.com')
 
 
 ];

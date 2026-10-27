@@ -18,6 +18,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\Models\MailMessage;
+use Illuminate\Support\Str;
 class BlogController extends Controller
 {
     protected $APIBASEURL;
@@ -178,129 +180,312 @@ class BlogController extends Controller
 
         return view('web.user.client_Mail', compact('id', 'isValidPlan', 'total_mail_available'));
     }
-    public function sendMail(Request $request) //grpup mail
-    {
-        $request->validate([
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-            'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,txt|max:20480|nullable',
-        ]);
-        $APIURL  = $this->APIBASEURL . '/api/blogs';
-        $response = Http::get($APIURL);
+    // public function sendMail(Request $request) //grpup mail
+    // {
+    //     $request->validate([
+    //         'subject' => 'required|string|max:255',
+    //         'message' => 'required|string',
+    //         'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,txt|max:20480|nullable',
+    //     ]);
+    //     $APIURL  = $this->APIBASEURL . '/api/blogs';
+    //     $response = Http::get($APIURL);
 
-        if ($response->failed()) {
-            return 'API Request Failed: ' . $response->status();
-        }
-        $blogs = $response->json();
-        $selectedIds = json_decode($request->selected_ids);
-        $attachment = [];
-        $uploadPath = public_path('attachment'); // Folder path
+    //     if ($response->failed()) {
+    //         return 'API Request Failed: ' . $response->status();
+    //     }
+    //     $blogs = $response->json();
+    //     $selectedIds = json_decode($request->selected_ids);
+    //     $attachment = [];
+    //     $uploadPath = public_path('attachment'); // Folder path
 
-        // Create folder if it doesn't exist
-        if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0755, true); // 0755 permissions, true for recursive
-        }
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                if ($file && $file->isValid()) {
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->move($uploadPath, $fileName);
-                    $attachment[] = 'attachment/' . $fileName; // relative path
-                }
-            }
-        }
-        if(count($selectedIds) == 1){
-            $blogId = $selectedIds;
-            $blog = collect($blogs['data'])->firstWhere('blog_id', $blogId);
-            $email=$blog['contact_email_id'] ?? '';
-            if($email==null){
-                return redirect()->route('blog.index')->with('error', 'No email address available at the moment.');
-            }
-        }
+    //     // Create folder if it doesn't exist
+    //     if (!is_dir($uploadPath)) {
+    //         mkdir($uploadPath, 0755, true); // 0755 permissions, true for recursive
+    //     }
+    //     if ($request->hasFile('attachments')) {
+    //         foreach ($request->file('attachments') as $file) {
+    //             if ($file && $file->isValid()) {
+    //                 $fileName = time() . '_' . $file->getClientOriginalName();
+    //                 $file->move($uploadPath, $fileName);
+    //                 $attachment[] = 'attachment/' . $fileName; // relative path
+    //             }
+    //         }
+    //     }
+    //     if(count($selectedIds) == 1){
+    //         $blogId = $selectedIds;
+    //         $blog = collect($blogs['data'])->firstWhere('blog_id', $blogId);
+    //         $email=$blog['contact_email_id'] ?? '';
+    //         if($email==null){
+    //             return redirect()->route('blog.index')->with('error', 'No email address available at the moment.');
+    //         }
+    //     }
         
-        foreach ($selectedIds as $id) {
-            $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
+    //     foreach ($selectedIds as $id) {
+    //         $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
 
-            $email = $blog['contact_email_id'];
+    //         $email = $blog['contact_email_id'];
 
-            // $email = decrypt($email);
-            $subject = $request->input('subject');
-            $messageBody = $request->input('message'); // From Summernote
-            $user_id = $request->userId;
+    //         // $email = decrypt($email);
+    //         $subject = $request->input('subject');
+    //         $messageBody = $request->input('message'); // From Summernote
+    //         $user_id = $request->userId;
 
 
 
-            // $mail = Mail::raw(strip_tags($messageBody), function ($message) use ($email, $subject) {
-            //     $message->to($email)
-            //         ->subject($subject);
-            // });
-            if($email==null){
-                 UserMailHistory::create([
-                    'user_id' => $user_id,
-                    'site_url' => $blog['site_url'],
-                    'subject' => $subject,
-                    'message' => $messageBody,
-                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
-                    'status'=>false,
-                    'description'=>'Mail record not found.'
+    //         // $mail = Mail::raw(strip_tags($messageBody), function ($message) use ($email, $subject) {
+    //         //     $message->to($email)
+    //         //         ->subject($subject);
+    //         // });
+    //         if($email==null){
+    //              UserMailHistory::create([
+    //                 'user_id' => $user_id,
+    //                 'site_url' => $blog['site_url'],
+    //                 'subject' => $subject,
+    //                 'message' => $messageBody,
+    //                 'file' => !empty($attachment) ? implode(',', $attachment) : null,
+    //                 'status'=>false,
+    //                 'description'=>'Mail record not found.'
 
-                ]);
-                Log::error('Email is null. Mail cannot be sent.', [
-                'email' => $email,
-                'blog_id' => $id ?? null,
-                'site_url' => $blog['site_url'] ?? null,
-                ]); 
+    //             ]);
+    //             Log::error('Email is null. Mail cannot be sent.', [
+    //             'email' => $email,
+    //             'blog_id' => $id ?? null,
+    //             'site_url' => $blog['site_url'] ?? null,
+    //             ]); 
 
-                continue;
-            }
-            try{
-            Mail::to($email)->send(new \App\Mail\MailWithAttachment(
-                $subject,
-                $messageBody,
-                $attachment // this is an array of strings (paths)
-            ));
+    //             continue;
+    //         }
+    //         try{
+    //         Mail::to($email)->send(new \App\Mail\MailWithAttachment(
+    //             $subject,
+    //             $messageBody,
+    //             $attachment // this is an array of strings (paths)
+    //         ));
                 
-                UserMailHistory::create([
-                    'user_id' => $user_id,
-                    'site_url' => $blog['site_url'],
-                    'subject' => $subject,
-                    'message' => $messageBody,
-                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
-                    'status'=>true
+    //             UserMailHistory::create([
+    //                 'user_id' => $user_id,
+    //                 'site_url' => $blog['site_url'],
+    //                 'subject' => $subject,
+    //                 'message' => $messageBody,
+    //                 'file' => !empty($attachment) ? implode(',', $attachment) : null,
+    //                 'status'=>true
 
-                ]);
-                // $lastMail = MailAvailable::where('user_id', Auth::id())
-                //     ->latest() // or ->orderBy('id','desc')
-                //     ->first();
+    //             ]);
+    //             // $lastMail = MailAvailable::where('user_id', Auth::id())
+    //             //     ->latest() // or ->orderBy('id','desc')
+    //             //     ->first();
 
-                // if ($lastMail) {
-                //     $lastMail->decrement('available_mail', 1);
-                // }
-                $this->decrementMailCount();
+    //             // if ($lastMail) {
+    //             //     $lastMail->decrement('available_mail', 1);
+    //             // }
+    //             $this->decrementMailCount();
             
 
          
-        }catch (\Exception $e) {
+    //     }catch (\Exception $e) {
 
-            UserMailHistory::create([
-                    'user_id' => $user_id,
-                    'site_url' => $blog['site_url'],
-                    'subject' => $subject,
-                    'message' => $messageBody,
-                    'file' => !empty($attachment) ? implode(',', $attachment) : null,
-                    'status'=>false,
-                    'description'=>'Mail not send'.$e->getMessage()
+    //         UserMailHistory::create([
+    //                 'user_id' => $user_id,
+    //                 'site_url' => $blog['site_url'],
+    //                 'subject' => $subject,
+    //                 'message' => $messageBody,
+    //                 'file' => !empty($attachment) ? implode(',', $attachment) : null,
+    //                 'status'=>false,
+    //                 'description'=>'Mail not send'.$e->getMessage()
 
-                ]);
-            Log::error('Mail sending exception: '.$e->getMessage(), [
-                'email' => $email,
-                'exception' => $e
-            ]);
-        }
+    //             ]);
+    //         Log::error('Mail sending exception: '.$e->getMessage(), [
+    //             'email' => $email,
+    //             'exception' => $e
+    //         ]);
+    //     }
             
-        }
-        return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
+    //     }
+    //     return redirect()->route('blog.index')->with('success', 'Email sent successfully.');
+    // }
+    public function sendMail(Request $request) // group mail
+{
+    $user    = Auth::user();
+    $user_id = $user->id;
+
+    $selectedIds = json_decode($request->selected_ids, true);
+    if (!is_array($selectedIds) || empty($selectedIds)) {
+        return response()->json(['message' => 'No site selected.'], 422);
     }
+    $selectedIds = array_values(array_unique($selectedIds));
+
+    $blogs = collect();
+$page = 1;
+$lastPage = 1;
+
+do {
+    $res = Http::get($this->APIBASEURL . '/api/blogs', ['page' => $page]);
+
+    if ($res->failed()) {
+        return response()->json(['message' => 'API Request Failed: ' . $res->status()], 502);
+    }
+
+    $blogs = $blogs->merge($res->json('data') ?? []);
+    $lastPage = (int) $res->json('last_page', 1);
+    $page++;
+} while ($page <= $lastPage);
+
+Log::info('Blogs loaded', [
+    'count'   => $blogs->count(),
+    'has_649' => $blogs->contains(fn ($b) => (string) ($b['blog_id'] ?? '') === '649'),
+]);
+    $subject = 'User interested in your blog';
+    $messageBody = '
+        <p>Hello,</p>
+        <p>I am interested in a guest post / collaboration opportunity on your website.</p>
+        <p>Please reply to this email if you are interested.</p>
+        <p>Regards,<br>' . e($user->name) . '<br>' . e($user->email) . '</p>
+    ';
+
+    $sent = 0;
+    $noEmail = 0;
+    $failed = 0;
+    $lastError = null;
+    foreach ($selectedIds as $id) {
+        // $blog = $blogs->firstWhere('blog_id', $id);
+        // $blog = collect($blogs['data'])->firstWhere('blog_id', $id);
+        $blog = $blogs->first(fn ($b) => (string) ($b['blog_id'] ?? '') === (string) $id);
+
+
+        if (!$blog) {
+            Log::error('Blog not found in API', ['blog_id' => $id]);
+            $failed++;
+            continue;
+        }
+
+        $email   = trim($blog['contact_email_id'] ?? '');
+        $siteUrl = $blog['site_url'] ?? null;
+
+        $history = [
+            'user_id'  => $user_id,
+            'site_url' => $siteUrl,
+            'subject'  => $subject,
+            'message'  => $messageBody,
+            'file'     => null,
+        ];
+
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            UserMailHistory::create($history + [
+                'status'      => false,
+                'description' => 'Mail record not found.',
+            ]);
+            Log::error('Email is null/invalid. Mail cannot be sent.', [
+                'email'    => $email,
+                'blog_id'  => $id,
+                'site_url' => $siteUrl,
+            ]);
+            $noEmail++;
+            continue;
+        }
+
+        // $cc = collect([$user->email, config('mail.admin_email')])
+        //     ->filter()
+        //     ->map(fn ($e) => strtolower($e))
+        //     ->unique()
+        //     ->reject(fn ($e) => $e === strtolower($email))
+        //     ->values()
+        //     ->all();
+        // $replyTo = collect([
+        //         ['email' => $user->email, 'name' => $user->name],
+        //         ['email' => config('mail.admin_email'), 'name' => 'Admin'],
+        //     ])->filter(fn ($r) => !empty($r['email']))
+        //     ->unique('email')
+        //     ->values()
+        //     ->all();
+        // try {
+        //     Mail::to($email)->cc($cc)->send(new \App\Mail\MailWithAttachment(
+        //         $subject,
+        //         $messageBody,
+        //         [],
+        //         $replyTo
+        //     ));
+
+        //     UserMailHistory::create($history + ['status' => true]);
+        //     $this->decrementMailCount();
+        //     $sent++;
+        // } catch (\Throwable $e) {
+        // $lastError = $e->getMessage();
+        // UserMailHistory::create($history + [
+        //     'status'      => false,
+        //     'description' => 'Mail not send ' . $e->getMessage(),
+        // ]);
+        // Log::error('Mail sending exception: ' . $e->getMessage(), ['email' => $email]);
+        // $failed++;
+        // continue;
+        $token = Str::lower(Str::random(12));
+[$local, $domain] = explode('@', config('mail.site_inbox'));
+$replyAddress = "{$local}+{$token}@{$domain}";
+
+// BCC so the blog owner can't reply around your site
+$bcc = collect([$user->email, config('mail.admin_email')])
+    ->filter()->map(fn ($e) => strtolower($e))->unique()
+    ->reject(fn ($e) => $e === strtolower($email))
+    ->values()->all();
+
+try {
+    $sentMessage = Mail::to($email)->bcc($bcc)->send(new \App\Mail\MailWithAttachment(
+        $subject,
+        $messageBody,
+        [],
+        [['email' => $replyAddress, 'name' => config('app.name')]]
+    ));
+
+    $thread = UserMailHistory::create($history + [
+        'status'      => true,
+        'reply_token' => $token,
+        'blog_email'  => $email,
+        'blog_id'     => $id,
+    ]);
+
+    $thread->messages()->create([
+        'direction'  => 'initial',
+        'from_email' => config('mail.from.address'),
+        'from_name'  => $user->name,
+        'to_emails'  => [$email],
+        'bcc_emails' => $bcc,
+        'subject'    => $subject,
+        'body_html'  => $messageBody,
+        'message_id' => $sentMessage ? trim((string) $sentMessage->getMessageId(), '<> ') : null,
+        'status'     => 'sent',
+        'sent_at'    => now(),
+    ]);
+
+    $this->decrementMailCount();
+    $sent++;
+} catch (\Throwable $e) {
+    $lastError = $e->getMessage();
+    UserMailHistory::create($history + [
+        'status'      => false,
+        'description' => 'Mail not send ' . Str::limit($e->getMessage(), 500),
+    ]);
+    Log::error('Mail sending exception: ' . $e->getMessage(), ['email' => $email]);
+    $failed++;
+    continue;
+    }
+    }
+
+    // Build an honest response
+  if ($sent === 0) {
+    $msg = $noEmail > 0 && $failed === 0
+        ? 'No email address available for the selected site(s).'
+        : 'Mail could not be sent. Please try again.';
+
+    if (config('app.debug') && $lastError) {
+        $msg .= ' [' . $lastError . ']';
+    }
+    return response()->json(['message' => $msg], 422);
+  }
+    $msg = "{$sent} mail(s) sent successfully.";
+    if ($noEmail) $msg .= " {$noEmail} skipped (no email address).";
+    if ($failed)  $msg .= " {$failed} failed.";
+
+    return response()->json(['message' => $msg]);
+}
     // public function singleMail(Request $request)
     // {
     //     $request->validate([
@@ -506,7 +691,8 @@ class BlogController extends Controller
         Mail::to($email)->send(new \App\Mail\MailWithAttachment(
             $subject,
             $messageBody,
-            $attachment // this is an array of strings (paths)
+            $attachment, // this is an array of strings (paths)
+            []
         ));
         // Check if mail failed
         }catch (\Exception $e) {
@@ -670,4 +856,13 @@ class BlogController extends Controller
             'niches'
         ));
     }
+
+    public function conversation($id)
+{
+    $thread = UserMailHistory::with('messages')
+        ->where('user_id', Auth::id())
+        ->findOrFail($id);
+
+    return view('mail.conversation', compact('thread'));
+}
 }

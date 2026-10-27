@@ -229,6 +229,20 @@
     box-shadow: 0 0 0 3px rgba(124, 58, 237, .15); cursor: grab;
 }
 .range-wrap input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; }
+
+.swal-mail-popup { border-radius: 16px !important; padding: 1.75rem !important; }
+.swal-mail-title { font-size: 1.4rem !important; font-weight: 700 !important; color: #111827 !important; }
+.mail-stats { display: flex; gap: 12px; margin: 1rem 0 0.5rem; }
+.mail-stat { flex: 1; padding: 14px 10px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; }
+.mail-stat .num { font-size: 1.9rem; font-weight: 800; line-height: 1.1; }
+.mail-stat .lbl { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #6b7280; margin-top: 4px; }
+.mail-stat.selected  { background: #eff6ff; border-color: #bfdbfe; }
+.mail-stat.selected .num  { color: #2563eb; }
+.mail-stat.available { background: #f0fdf4; border-color: #bbf7d0; }
+.mail-stat.available .num { color: #16a34a; }
+.mail-stat.after     { background: #faf5ff; border-color: #e9d5ff; }
+.mail-stat.after .num     { color: #7c3aed; }
+.mail-note { font-size: .85rem; color: #6b7280; margin-top: .75rem; }
     </style>
 
     <!-- Main content -->
@@ -762,7 +776,75 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 }
             });
         }
+        function confirmAndSendMail(ids, availableMail) {
+            const selected  = ids.length;
+            const available = Number(availableMail) || 0;
+            const remaining = available - selected;
 
+            Swal.fire({
+                icon: 'question',
+                title: 'Send Mail?',
+                html: `
+                    <div class="mail-stats">
+                        <div class="mail-stat selected"><div class="num">${selected}</div><div class="lbl">Selected</div></div>
+                        <div class="mail-stat available"><div class="num">${available}</div><div class="lbl">Available</div></div>
+                        <div class="mail-stat after"><div class="num">${remaining}</div><div class="lbl">Remaining</div></div>
+                    </div>
+                    <p class="mail-note">${selected} mail(s) will be deducted from your balance.</p>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Send Now',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#6b7280',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: { popup: 'swal-mail-popup', title: 'swal-mail-title' }
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                Swal.fire({
+                    title: 'Sending mails...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: "{{ route('blog.sendMail') }}",
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        selected_ids: JSON.stringify(ids),
+                        userId: "{{ $loggedUserId }}"
+                    },
+                    success: function (res) {
+                        localStorage.removeItem(SELECTED_BLOGS_STORAGE_KEY);
+                        $('.selectSiteCheckbox').prop('checked', false);
+                        $('.main-row').removeClass('selected-row');
+                        updateSelectedCount();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Mail Sent!',
+                            text: res.message || 'Your mails were sent successfully.',
+                            confirmButtonColor: '#2563eb',
+                            customClass: { popup: 'swal-mail-popup' }
+                        }).then(() => location.reload());
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed to send',
+                            text: (xhr.responseJSON && xhr.responseJSON.message) || 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#dc2626',
+                            customClass: { popup: 'swal-mail-popup' }
+                        });
+                    }
+                });
+            });
+        }
         // Proper Summernote initialization
         // Proper Summernote initialization - NO Bootstrap tooltips
         // Proper Summernote Lite initialization
@@ -1051,8 +1133,9 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 }
 
                 // Set selected IDs in hidden field and open modal
-                $('#selectedIdsInput').val(JSON.stringify(selectedBlogs));
-                openModal();
+                // $('#selectedIdsInput').val(JSON.stringify(selectedBlogs));
+                // openModal();
+                confirmAndSendMail(selectedBlogs, availableMail);
             });
 
             // Individual row Send Mail button
@@ -1088,7 +1171,9 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                         }
                     });
                 } else {
-                    window.location.href = url;
+                    // window.location.href = url;
+                    const blogId = String($(this).closest('tr').data('blog-id'));
+                    confirmAndSendMail([blogId], availableMail);
                 }
             });
 

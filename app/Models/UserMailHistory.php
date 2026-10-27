@@ -19,7 +19,14 @@ class UserMailHistory extends Model
         'message',
         'file',
         'status',
-        'description'
+        'description',
+        'reply_token', 
+        'blog_email',
+         'blog_id',
         
     ];
+    public function messages()
+{
+    return $this->hasMany(MailMessage::class, 'user_mail_history_id')->orderBy('created_at');
+}
 }

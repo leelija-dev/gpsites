@@ -116,7 +116,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('view-my-order');
     Route::get('/billing',[OrderController::class,'billing'])->name('order-billing');
     //contact routes
-    
+    Route::get('/mail-history/{id}', [BlogController::class, 'conversation'])->name('mail.conversation');
 });
 
 // Authenticated routes (require authentication only)
@@ -163,3 +163,4 @@ Route::middleware('auth')->group(function () {
 
 // Remove this line since all routes are now in web.php
 // require __DIR__.'/auth.php';
+// Route::get('/mail-history/{id}', [BlogController::class, 'conversation'])->name('mail.conversation');
