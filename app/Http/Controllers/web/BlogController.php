@@ -30,17 +30,17 @@ class BlogController extends Controller
         $APPURL  = $this->APIBASEURL . '/api/blogs';
 
         // $response = Http::get(env('API_BASE_URL') . '/api/blogs');
-        $params = array_filter([
-            'page'        => $request->get('page', 1),
-            'niche'       => $request->niche,
-            'da_min'      => $request->da_min,
-            'da_max'      => $request->da_max,
-            'dr_min'      => $request->dr_min,
-            'dr_max'      => $request->dr_max,
-            'traffic_min' => $request->traffic_min,
+       $params = array_filter([
+            'page'           => $request->get('page', 1),
+            'website_niche'  => $request->input('niche'),
+            'da_min'         => $request->input('da_min'),
+            'da_max'         => $request->input('da_max'),
+            'dr_min'         => $request->input('dr_min'),
+            'dr_max'         => $request->input('dr_max'),
+            'traffic_min'    => $request->input('traffic_min'),
         ], fn ($v) => $v !== null && $v !== '');
         $response = Http::get($APPURL, $params);
-
+        
 
         $user = Auth::user();
         $mail_available = MailAvailable::where('user_id', $user->id)->get();
@@ -118,138 +118,12 @@ class BlogController extends Controller
             // ['path' => url()->current()]
             ['path' => url()->current(), 'query' => $request->query()]
         );
+        // dd($pagination);
         $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
         $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
         return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail','niches_data'));
     }
-//     public function index(Request $request)
-// {
-//     $user = Auth::user();
-//     $mail_available = MailAvailable::where('user_id', $user->id)->get();
 
-//     $isValidPlan = false;
-//     $total_mail_available = 0;
-//     $total_mail = 0;
-
-//     // ===== YOUR PLAN CHECK (unchanged) =====
-//     if ($mail_available && $mail_available->count() > 0) {
-//         foreach ($mail_available as $mail_available_record) {
-//             $plan_order_id = $mail_available_record->order_id;
-//             $plan_order = PlanOrder::where('id', $plan_order_id)->latest()->first();
-
-//             if ($plan_order) {
-//                 $plan = Plan::where('id', $plan_order->plan_id)->first();
-
-//                 if ($plan) {
-//                     if ($plan->id == config('paypal.trial_plan_id')) {
-//                         $expiryDate = Carbon::parse($plan_order->expire_at);
-//                         $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
-//                         if ($isValid) {
-//                             $isValidPlan = true;
-//                             $total_mail_available += $mail_available_record->available_mail;
-//                             $total_mail += $mail_available_record->total_mail;
-//                         }
-//                         continue;
-//                     }
-
-//                     $expiryDate = Carbon::parse($plan_order->expire_at);
-//                     $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
-
-//                     if ($isValid) {
-//                         $isValidPlan = true;
-//                         $total_mail_available += $mail_available_record->available_mail;
-//                         $total_mail += $mail_available_record->total_mail;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     if (!$isValidPlan) {
-//         return view('web.user.blog', compact('isValidPlan'));
-//     }
-
-//     // ===== FILTERS =====
-//     $num = function ($v) {
-//         $s = strtolower(trim((string) $v));
-//         $n = (float) preg_replace('/[^\d.]/', '', $s);   // "12,500" -> 12500
-//         if (str_ends_with($s, 'k')) $n *= 1000;          // "45.6K"  -> 45600
-//         elseif (str_ends_with($s, 'm')) $n *= 1000000;   // "1.2M"   -> 1200000
-//         return $n;
-//     };
-//     $has = fn ($v) => $v !== null && $v !== '';
-
-//     // niches from home page ("niches=a,b") or blog page dropdown ("niche=a")
-//     $selectedNiches = collect(explode(',', $request->niches . ',' . $request->niche))
-//         ->map(fn ($n) => strtolower(trim($n)))
-//         ->filter(fn ($n) => $n !== '' && $n !== 'all')
-//         ->values();
-
-//     $blogs = collect($this->getAllBlogs())->filter(function ($b) use ($request, $selectedNiches, $num, $has) {
-
-//         if ($selectedNiches->isNotEmpty()) {
-//             $blogNiche = strtolower((string) ($b['website_niche'] ?? ''));
-//             if (!$selectedNiches->contains(fn ($n) => str_contains($blogNiche, $n))) return false;
-//         }
-
-//         $da = $num($b['moz_da'] ?? 0);
-//         $dr = $num($b['ahrefs_dr'] ?? 0);
-//         $tr = $num($b['ahrefs_traffic'] ?? 0);
-
-//         if ($has($request->da_min)      && $da < (float) $request->da_min) return false;
-//         if ($has($request->da_max)      && $da > (float) $request->da_max) return false;
-//         if ($has($request->dr_min)      && $dr < (float) $request->dr_min) return false;
-//         if ($has($request->dr_max)      && $dr > (float) $request->dr_max) return false;
-//         if ($has($request->traffic_min) && $tr < (float) $request->traffic_min) return false;
-
-//         return true;
-//     })->values();
-//     // ===== PAGINATION (10 per page) =====
-//     $perPage = 10;
-//     $page    = LengthAwarePaginator::resolveCurrentPage();
-
-//     $pagination = new LengthAwarePaginator(
-//         $blogs->forPage($page, $perPage)->values(),
-//         $blogs->count(),
-//         $perPage,
-//         $page,
-//         ['path' => url()->current(), 'query' => $request->query()]
-//     );
-
-//     $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
-//     $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
-
-//     return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail', 'niches_data'));
-// }
-// private function getAllBlogs(): array
-// {
-//     $cached = Cache::get('all_approved_blogs');
-//     if (!empty($cached)) {
-//         return $cached;
-//     }
-
-//     $url  = $this->APIBASEURL . '/api/blogs';
-//     $page = 1;
-//     $last = 1;
-//     $all  = [];
-
-//     do {
-//         $res = Http::get($url, ['page' => $page]);
-//         if ($res->failed()) {
-//             break;
-//         }
-//         $json = $res->json();
-//         $all  = array_merge($all, $json['data'] ?? []);
-//         $last = (int) ($json['last_page'] ?? 1);
-//         $page++;
-//     } while ($page <= $last);
-
-//     if (!empty($all)) {
-//         Cache::put('all_approved_blogs', $all, 600);
-//     }
-
-//     return $all;
-// }
     public function viewMail($id)
     {
         $id = decrypt($id);
