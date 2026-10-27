@@ -267,18 +267,25 @@
     </div>
 
     <!-- Advanced toggle -->
-    <button type="button" id="advancedToggleBtn"
-        class="self-start inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 4h18M6 12h12M10 20h4" />
-        </svg>
-        Advanced
-        <svg id="advancedChevron" class="w-4 h-4 transition-transform duration-300 {{ $hasAdvanced ? 'rotate-180' : '' }}"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-    </button>
+
+<button type="button" id="advancedToggleBtn"
+    
+class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg-blue-600 border border-blue-700 hover:bg-blue-700 hover:shadow-lg px-4 py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 4h18M6 12h12M10 20h4" />
+    </svg>
+
+    Advanced
+
+    <svg id="advancedChevron"
+        class="w-4 h-4 transition-transform duration-300 {{ $hasAdvanced ? 'rotate-180' : '' }}"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 9l-7 7-7-7" />
+    </svg>
+</button>
+
 </div>
 
                     <!-- Selection Controls -->
