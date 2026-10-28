@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <!-- intl-tel-input – the best free phone input library -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+     <link rel="stylesheet" href="{{ asset('css/gpsites/gpsites.css') }}">
+    <script defer src="../public/gpsites/gpsites.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

@@ -39,7 +39,7 @@ class BlogController extends Controller
         ->get();
 
     return view(
-        'web.blogs.all-blog',
+        'web.blogs.all-blog-new',
         compact('blogs', 'latestBlog', 'blogCategory')
     );
 }

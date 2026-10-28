@@ -33,10 +33,10 @@ Route::post('/start-trial', [HomeController::class, 'startTrial'])->name('start.
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
 
-Route::get('/about', fn() => view('web.about'))->name('about');
+Route::get('/about', fn() => view('web.about-new'))->name('about');
 // Route::get('/blogs', fn() => view('web.all-blog'))->name('all-blog');
 // Route::get('/single-blog', fn() => view('web.single-blog'))->name('single-blog');
-Route::get('/contact', fn() => view('web.contact'))->name('contact');
+Route::get('/contact', fn() => view('web.contact-new'))->name('contact');
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/blogs',[App\Http\Controllers\BlogController::class,'index'])->name('all-blogs.index');
