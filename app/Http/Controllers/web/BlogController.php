@@ -489,6 +489,124 @@ try {
 
     return response()->json(['message' => $msg]);
 }
+    private function availableMailCount($user): int
+    {
+        $total = 0;
+        foreach (MailAvailable::where('user_id', $user->id)->get() as $m) {
+            $order = PlanOrder::find($m->order_id);
+            if (!$order) continue;
+            if (Carbon::now()->gt(Carbon::parse($order->expire_at ?? 0))) continue; // expired plan
+            $total += (int) $m->available_mail;
+        }
+        return $total;
+    }
+
+    public function sendOffer(Request $request)
+    {
+        $request->validate([
+            'blog_id' => 'required|integer',
+            'offer'   => 'required|numeric|min:1|max:1000000',
+        ]);
+
+        $user = Auth::user();
+
+        if ($this->availableMailCount($user) < 1) {
+            return response()->json(['message' => 'No valid plan or mail credits available.'], 422);
+        }
+
+        $blogId = (int) $request->blog_id;
+        $res = Http::get($this->APIBASEURL . "/api/blogs/$blogId");
+        if ($res->failed()) {
+            return response()->json(['message' => 'API Request Failed: ' . $res->status()], 502);
+        }
+
+        $blog    = $res->json();
+        $email   = trim($blog['contact_email_id'] ?? '');
+        $siteUrl = $blog['site_url'] ?? null;
+
+        // Subject and body are fixed by the backend. Only the offer comes from the user.
+        $host    = parse_url((string) $siteUrl, PHP_URL_HOST) ?: $siteUrl;
+        $offer   = number_format((float) $request->offer, 2);
+        $subject = 'Guest post offer for ' . $host;
+        $messageBody = '
+            <p>Hello,</p>
+            <p>I am interested in a guest post on your website <strong>' . e($siteUrl) . '</strong>.</p>
+            <p>My offer for the post is <strong>$' . $offer . '</strong>.</p>
+            <p>Please reply to this email if you are interested.</p>
+            <p>Regards,<br>' . e($user->name) . '<br>' . e($user->email) . '</p>
+        ';
+
+        $history = [
+            'user_id'  => $user->id,
+            'site_url' => $siteUrl,
+            'subject'  => $subject,
+            'message'  => $messageBody,
+            'file'     => null,
+        ];
+
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            UserMailHistory::create($history + [
+                'status'      => false,
+                'description' => 'Mail record not found.',
+            ]);
+            return response()->json(['message' => 'No email address available for this site.'], 422);
+        }
+
+        // Same token and BCC logic as group mail
+        $token = Str::lower(Str::random(12));
+        [$local, $domain] = explode('@', config('mail.site_inbox'));
+        $replyAddress = "{$local}+{$token}@{$domain}";
+
+        $bcc = collect([$user->email, config('mail.admin_email')])
+            ->filter()->map(fn ($e) => strtolower($e))->unique()
+            ->reject(fn ($e) => $e === strtolower($email))
+            ->values()->all();
+
+        try {
+            $sentMessage = Mail::to($email)->bcc($bcc)->send(new \App\Mail\MailWithAttachment(
+                $subject,
+                $messageBody,
+                [],
+                [['email' => $replyAddress, 'name' => config('app.name')]], // Reply-To = token address
+                $replyAddress
+            ));
+
+            $thread = UserMailHistory::create($history + [
+                'status'      => true,
+                'reply_token' => $token,
+                'blog_email'  => $email,
+                'blog_id'     => $blogId,
+            ]);
+
+            $thread->messages()->create([
+                'direction'  => 'initial',
+                'from_email' => $replyAddress,
+                'from_name'  => config('app.name'),
+                'to_emails'  => [$email],
+                'bcc_emails' => $bcc,
+                'subject'    => $subject,
+                'body_html'  => $messageBody,
+                'body_text'  => strip_tags($messageBody),
+                'message_id' => $sentMessage ? trim((string) $sentMessage->getMessageId(), '<> ') : null,
+                'status'     => 'sent',
+                'sent_at'    => now(),
+            ]);
+
+            $this->decrementMailCount();
+        } catch (\Throwable $e) {
+            UserMailHistory::create($history + [
+                'status'      => false,
+                'description' => 'Mail not send ' . Str::limit($e->getMessage(), 500),
+            ]);
+            Log::error('Offer mail failed: ' . $e->getMessage(), ['email' => $email]);
+            return response()->json(['message' => 'Mail could not be sent. Please try again.'], 422);
+        }
+
+        return response()->json([
+            'message'   => 'Offer sent successfully.',
+            'available' => $this->availableMailCount($user),
+        ]);
+    }
     // public function singleMail(Request $request)
     // {
     //     $request->validate([

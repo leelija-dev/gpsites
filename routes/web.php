@@ -106,6 +106,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/mail/{id}', [BlogController::class, 'viewMail'])->name('blog.viewMail');
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
+    Route::post('/blog/send-offer', [BlogController::class, 'sendOffer'])->name('blog.sendOffer');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
 
     Route::get('/mail-history', [MailController::class, 'mailHistory'])->name('blog.mailHistory');

@@ -243,6 +243,48 @@
 .mail-stat.after     { background: #faf5ff; border-color: #e9d5ff; }
 .mail-stat.after .num     { color: #7c3aed; }
 .mail-note { font-size: .85rem; color: #6b7280; margin-top: .75rem; }
+        /* ===== Offer modal ===== */
+        .offer-overlay{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+        .offer-overlay.open{display:flex;animation:offerFade .2s ease}
+        .offer-card{width:100%;max-width:440px;max-height:92vh;overflow-y:auto;background:#fff;border-radius:20px;box-shadow:0 30px 70px -15px rgba(15,23,42,.45);animation:offerPop .28s cubic-bezier(.2,.9,.3,1.15)}
+        @keyframes offerFade{from{opacity:0}to{opacity:1}}
+        @keyframes offerPop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+        .offer-head{position:relative;overflow:hidden;padding:26px 24px 22px;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+        .offer-head::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.12)}
+        .offer-close{position:absolute;top:12px;right:14px;z-index:1;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:22px;line-height:1;cursor:pointer;transition:background .2s}
+        .offer-close:hover{background:rgba(255,255,255,.32)}
+        .offer-icon{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+        .offer-head h3{margin:0;font-size:1.3rem;font-weight:800}
+        .offer-head p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+        .offer-site{position:relative;z-index:1;margin-top:14px;display:inline-flex;max-width:100%;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);font-size:.78rem;font-weight:600}
+        .offer-site span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .offer-body{padding:20px 24px 4px}
+        .offer-stats{display:flex;gap:10px;margin-bottom:18px}
+        .offer-stat{flex:1;padding:12px;border-radius:14px;border:1px solid #e5e7eb;text-align:center}
+        .offer-stat .num{font-size:1.6rem;font-weight:800;line-height:1.1}
+        .offer-stat .lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;margin-top:3px}
+        .offer-stat.avail{background:#f0fdf4;border-color:#bbf7d0}.offer-stat.avail .num{color:#16a34a}
+        .offer-stat.after{background:#faf5ff;border-color:#e9d5ff}.offer-stat.after .num{color:#7c3aed}
+        .offer-label{display:block;font-size:.85rem;font-weight:700;color:#374151;margin-bottom:6px}
+        .offer-field{position:relative}
+        .offer-field .cur{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.4rem;font-weight:800;color:#6b7280}
+        .offer-input{width:100%;padding:14px 16px 14px 38px;font-size:1.4rem;font-weight:800;color:#111827;background:#fff;border:2px solid #e5e7eb;border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+        .offer-input:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+        .offer-input.invalid{border-color:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12)}
+        .offer-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+        .offer-chip{padding:6px 14px;border:1px solid #ddd6fe;border-radius:999px;background:#faf5ff;color:#6d28d9;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s}
+        .offer-chip:hover{background:#7c3aed;color:#fff;border-color:#7c3aed}
+        .offer-error{min-height:20px;margin-top:10px;font-size:.82rem;font-weight:600;color:#dc2626}
+        .offer-note{margin:2px 0 0;font-size:.78rem;color:#6b7280;line-height:1.45}
+        .offer-foot{display:flex;gap:10px;padding:16px 24px 22px}
+        .offer-btn{flex:1;padding:12px 16px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid transparent}
+        .offer-btn.cancel{background:#fff;border-color:#d1d5db;color:#374151}
+        .offer-btn.cancel:hover{background:#f9fafb}
+        .offer-btn.send{flex:1.4;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 8px 20px -6px rgba(124,58,237,.6)}
+        .offer-btn.send:hover{transform:translateY(-1px);box-shadow:0 12px 24px -6px rgba(124,58,237,.7)}
+        .offer-btn.send:disabled{opacity:.75;cursor:not-allowed;transform:none}
+        .offer-btn.send.loading::before{content:"";display:inline-block;width:14px;height:14px;margin-right:8px;vertical-align:-2px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:offerSpin .7s linear infinite}
+        @keyframes offerSpin{to{transform:rotate(360deg)}}
     </style>
 
     <!-- Main content -->
@@ -495,12 +537,20 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
 
                                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm"
                                             onclick="event.stopPropagation();">
-                                            <button
+                                            {{-- <button
                                                 class="rowMailBtn px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
                                                 data-available-mail="{{ $total_mail_available ?? 0 }}"
                                                 data-total-mail="{{ $total_mail ?? 0 }}"
                                                 data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
                                                 Send Mail
+                                            </button> --}}
+                                            <button
+                                                class="rowMailBtn px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
+                                                data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                                data-total-mail="{{ $total_mail ?? 0 }}"
+                                                data-site-name="{{ $blog['website_name'] ?? '' }}"
+                                                data-site-url="{{ $blog['site_url'] ?? '' }}">
+                                                Send Offer
                                             </button>
                                         </td>
                                     </tr>
@@ -676,7 +726,146 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
         </div>
 
     </div>
+        <!-- Offer Modal -->
+    <div id="offerModal" class="offer-overlay" aria-hidden="true">
+        <div class="offer-card" role="dialog" aria-modal="true" aria-labelledby="offerTitle">
 
+            <div class="offer-head">
+                <button type="button" class="offer-close" id="offerCloseBtn" aria-label="Close">&times;</button>
+                <div class="offer-icon">
+                    <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 id="offerTitle">Send Your Offer</h3>
+                <p>Tell the site owner how much you would pay for a guest post.</p>
+                <div class="offer-site">
+                    <span id="offerSiteName"></span>
+                    <span style="opacity:.6">&bull;</span>
+                    <span id="offerSiteUrl"></span>
+                </div>
+            </div>
+
+            <div class="offer-body">
+                <div class="offer-stats">
+                    <div class="offer-stat avail"><div class="num" id="offerAvailable">0</div><div class="lbl">Available mails</div></div>
+                    <div class="offer-stat after"><div class="num" id="offerAfter">0</div><div class="lbl">After sending</div></div>
+                </div>
+
+                <label class="offer-label" for="offerAmount">Your offer</label>
+                <div class="offer-field">
+                    <span class="cur">$</span>
+                    <input type="number" id="offerAmount" class="offer-input" min="1" step="0.01"
+                        placeholder="0.00" autocomplete="off">
+                </div>
+
+                <div class="offer-chips">
+                    <button type="button" class="offer-chip" data-amount="50">$50</button>
+                    <button type="button" class="offer-chip" data-amount="100">$100</button>
+                    <button type="button" class="offer-chip" data-amount="200">$200</button>
+                    <button type="button" class="offer-chip" data-amount="500">$500</button>
+                </div>
+
+                <div class="offer-error" id="offerError"></div>
+                <p class="offer-note">1 mail credit will be used. Replies from the site owner will appear in your conversation page.</p>
+            </div>
+
+            <div class="offer-foot">
+                <button type="button" class="offer-btn cancel" id="offerCancelBtn">Cancel</button>
+                <button type="button" class="offer-btn send" id="offerSendBtn">Send Offer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let offerBlogId = null;
+
+        function setAvailableMail(n) {
+            n = Number(n) || 0;
+            $('#openMailModalBtn, .rowMailBtn').attr('data-available-mail', n).data('available-mail', n);
+            $('#offerAvailable').text(n);
+            $('#offerAfter').text(Math.max(n - 1, 0));
+        }
+
+        function openOfferModal(blogId, siteName, siteUrl, available) {
+            offerBlogId = blogId;
+            $('#offerSiteName').text(siteName || 'Website');
+            $('#offerSiteUrl').text(siteUrl || '');
+            $('#offerAmount').val('').removeClass('invalid');
+            $('#offerError').text('');
+            $('#offerSendBtn').prop('disabled', false).removeClass('loading').text('Send Offer');
+            setAvailableMail(available);
+            $('#offerModal').addClass('open').attr('aria-hidden', 'false');
+            setTimeout(() => $('#offerAmount').trigger('focus'), 150);
+        }
+
+        function closeOfferModal() {
+            $('#offerModal').removeClass('open').attr('aria-hidden', 'true');
+        }
+
+        function submitOffer() {
+            const amount = parseFloat($('#offerAmount').val());
+            const $err = $('#offerError');
+            const $btn = $('#offerSendBtn');
+
+            if (!amount || amount < 1) {
+                $('#offerAmount').addClass('invalid').trigger('focus');
+                $err.text('Please enter a valid offer amount (minimum $1).');
+                return;
+            }
+
+            $('#offerAmount').removeClass('invalid');
+            $err.text('');
+            $btn.prop('disabled', true).addClass('loading').text('Sending...');
+
+            $.ajax({
+                url: "{{ route('blog.sendOffer') }}",
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    blog_id: offerBlogId,
+                    offer: amount
+                },
+                success: function (res) {
+                    setAvailableMail(res.available);
+                    closeOfferModal();
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: res.message || 'Offer sent successfully.',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                },
+                error: function (xhr) {
+                    let msg = 'Something went wrong. Please try again.';
+                    if (xhr.responseJSON) {
+                        msg = (xhr.responseJSON.errors && xhr.responseJSON.errors.offer && xhr.responseJSON.errors.offer[0])
+                            || xhr.responseJSON.message || msg;
+                    }
+                    $err.text(msg);
+                    $btn.prop('disabled', false).removeClass('loading').text('Send Offer');
+                }
+            });
+        }
+
+        $(function () {
+            $('#offerSendBtn').on('click', submitOffer);
+            $('#offerCancelBtn, #offerCloseBtn').on('click', closeOfferModal);
+            $('#offerModal').on('click', function (e) { if (e.target === this) closeOfferModal(); });
+            $('.offer-chip').on('click', function () {
+                $('#offerAmount').val($(this).data('amount')).removeClass('invalid');
+                $('#offerError').text('');
+            });
+            $('#offerAmount').on('keydown', function (e) { if (e.key === 'Enter') submitOffer(); });
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Escape' && $('#offerModal').hasClass('open')) closeOfferModal();
+            });
+        });
+    </script>
     <script>
         // Storage key for selected blogs
         const SELECTED_BLOGS_STORAGE_KEY = 'selectedBlogs';
@@ -1139,44 +1328,66 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             });
 
             // Individual row Send Mail button
-            $('.rowMailBtn').click(function(event) {
-                let availableMail = $(this).data('available-mail');
-                let total_mail = $(this).data('total-mail');
-                let url = $(this).data('url');
+            // $('.rowMailBtn').click(function(event) {
+            //     let availableMail = $(this).data('available-mail');
+            //     let total_mail = $(this).data('total-mail');
+            //     let url = $(this).data('url');
 
-                if (availableMail > total_mail) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Mail Available Issue!',
-                        text: 'Please check available mail and total mail',
-                        confirmButtonText: 'Buy Now',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "/";
-                        }
-                    });
-                    return;
-                }
+            //     if (availableMail > total_mail) {
+            //         Swal.fire({
+            //             icon: 'warning',
+            //             title: 'Mail Available Issue!',
+            //             text: 'Please check available mail and total mail',
+            //             confirmButtonText: 'Buy Now',
+            //         }).then((result) => {
+            //             if (result.isConfirmed) {
+            //                 window.location.href = "/";
+            //             }
+            //         });
+            //         return;
+            //     }
 
-                if (availableMail <= 0 && availableMail <= total_mail) {
-                    event.preventDefault();
+            //     if (availableMail <= 0 && availableMail <= total_mail) {
+            //         event.preventDefault();
+            //         Swal.fire({
+            //             icon: 'warning',
+            //             title: 'No Mail Available!',
+            //             text: 'Please purchase a package to send emails.',
+            //             confirmButtonText: 'Buy Now',
+            //         }).then((result) => {
+            //             if (result.isConfirmed) {
+            //                 window.location.href = "/";
+            //             }
+            //         });
+            //     } else {
+            //         // window.location.href = url;
+            //         const blogId = String($(this).closest('tr').data('blog-id'));
+            //         confirmAndSendMail([blogId], availableMail);
+            //     }
+            // });
+                        // Row "Send Offer" button: opens the offer modal
+            $('.rowMailBtn').click(function () {
+                const available = Number($(this).attr('data-available-mail')) || 0;
+
+                if (available <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'No Mail Available!',
                         text: 'Please purchase a package to send emails.',
                         confirmButtonText: 'Buy Now',
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "/";
-                        }
+                        if (result.isConfirmed) window.location.href = "/";
                     });
-                } else {
-                    // window.location.href = url;
-                    const blogId = String($(this).closest('tr').data('blog-id'));
-                    confirmAndSendMail([blogId], availableMail);
+                    return;
                 }
-            });
 
+                openOfferModal(
+                    String($(this).closest('tr').data('blog-id')),
+                    $(this).attr('data-site-name'),
+                    $(this).attr('data-site-url'),
+                    available
+                );
+            });
             // File attachment handling
             $('#attachments').on('change', function() {
                 let files = Array.from(this.files);
