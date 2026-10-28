@@ -31,8 +31,8 @@ class ForwardBlogReplies extends Command
             $client->connect();
             $inbox = $client->getFolder('INBOX');
 
-            // since() = last 3 days. Duplicates are prevented by the unique message_id.
-            $messages = $inbox->query()->since(now()->subDays(3))->get();
+            // since() = last 30 days. Duplicates are prevented by the unique message_id.
+            $messages = $inbox->query()->since(now()->subDays(30))->get();
         } catch (\Throwable $e) {
             // e.g. a one-off Gmail "NO System Error": just try again next run
             $this->error('IMAP error: ' . $e->getMessage());
@@ -44,8 +44,18 @@ class ForwardBlogReplies extends Command
 
         foreach ($messages as $message) {
             $from = $message->getFrom()[0] ?? null;
+            $toEmails = $this->emails($message->getTo());
+
+            // If getTo() returns empty, parse raw header for display
+            if (empty($toEmails)) {
+                $rawTo = $message->getHeader()->get('to');
+                if ($rawTo) {
+                    $toEmails = $this->parseRawToHeader($rawTo);
+                }
+            }
+
             $this->line('MAIL from=' . ($from->mail ?? '?')
-                . ' | to=' . implode(',', $this->emails($message->getTo()))
+                . ' | to=' . implode(',', $toEmails)
                 . ' | subject=' . $message->getSubject());
 
             try {
@@ -54,7 +64,7 @@ class ForwardBlogReplies extends Command
                 $this->error('  -> ERROR: ' . $e->getMessage());
                 Log::error('Reply relay failed: ' . $e->getMessage(), [
                     'from' => $from->mail ?? null,
-                    'to' => $this->emails($message->getTo()),
+                    'to' => $toEmails,
                     'subject' => $message->getSubject(),
                 ]);
             }
@@ -72,41 +82,113 @@ class ForwardBlogReplies extends Command
         return $out;
     }
 
+    private function parseRawToHeader($header): array
+    {
+        $emails = [];
+        // Parse raw header like "Lakshman Pal <lakshman.leelija+token@gmail.com>, Admin <admin@gmail.com>"
+        if (preg_match_all('/<([^>]+)>/', $header, $matches)) {
+            foreach ($matches[1] as $email) {
+                $emails[] = strtolower(trim($email));
+            }
+        } elseif (preg_match_all('/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/', $header, $matches)) {
+            foreach ($matches[1] as $email) {
+                $emails[] = strtolower(trim($email));
+            }
+        }
+        return $emails;
+    }
+
     private function process($message, string $siteInbox, string $adminMail): void
     {
         $from = $message->getFrom()[0] ?? null;
         if (!$from) { $this->line('  -> skip: no sender'); return; }
         $fromEmail = strtolower($from->mail);
 
-        // loop guards
-        if ($fromEmail === $siteInbox || $fromEmail === $adminMail
+        // // loop guards
+        // if ($fromEmail === $siteInbox || $fromEmail === $adminMail
+        //     || str_contains($fromEmail, 'mailer-daemon') || str_contains($fromEmail, 'no-reply')) {
+        //     $this->line("  -> skip: own/system sender ($fromEmail)");
+        //     return;
+        // }
+                // loop guards: skip our own relayed mails (marked by header) and system senders
+        $rawHeaders = (string) ($message->getHeader()->raw ?? '');
+        if (stripos($rawHeaders, 'X-Blogpub-Relay:') !== false
             || str_contains($fromEmail, 'mailer-daemon') || str_contains($fromEmail, 'no-reply')) {
-            $this->line("  -> skip: own/system sender ($fromEmail)");
+            $this->line("  -> skip: our own relayed mail or system sender ($fromEmail)");
             return;
         }
-
         $toList = $this->emails($message->getTo());
         $ccList = $this->emails($message->getCc());
 
-        // thread token from the To or CC address: inbox+token@domain
+        // If getTo() returns empty, parse raw header
+        if (empty($toList)) {
+            $rawTo = $message->getHeader()->get('to');
+            if ($rawTo) {
+                $toList = $this->parseRawToHeader($rawTo);
+            }
+        }
+
+        // Method 1: thread token from the To or CC address: inbox+token@domain
         $token = null;
         $allRecipients = array_merge($toList, $ccList);
         foreach ($allRecipients as $t) {
             if (preg_match('/\+([a-z0-9]{12})@/', $t, $m)) { $token = $m[1]; break; }
         }
+
+        // Method 2: If no token in To/CC, use In-Reply-To message ID threading
+        // $history = null;
+        // if (!$token) {
+        //     $inReplyTo = trim((string) $message->getInReplyTo(), '<> ');
+        //     if ($inReplyTo) {
+        //         $previousMessage = MailMessage::where('message_id', $inReplyTo)->first();
+        //         if ($previousMessage) {
+        //             $history = UserMailHistory::find($previousMessage->user_mail_history_id);
+        //             if ($history) {
+        //                 $token = $history->reply_token;
+        //                 $this->line('  -> found token via In-Reply-To message ID');
+        //             }
+        //         }
+        //     }
+        // }
+                // Method 2: no token in To/CC, so use In-Reply-To / References message IDs
+        $history = null;
         if (!$token) {
-            $this->line('  -> skip: no +token in To/CC (addresses: ' . implode(',', $allRecipients) . ')');
+            $ids = [];
+            $raw = trim((string) $message->getInReplyTo()) . ' ' . trim((string) $message->getReferences());
+            foreach (preg_split('/[\s,]+/', $raw) as $id) {
+                $id = trim($id, '<> ');
+                if ($id !== '') $ids[] = $id;
+            }
+
+            if ($ids) {
+                $previous = MailMessage::whereIn('message_id', array_unique($ids))->latest('id')->first();
+                $history  = $previous ? UserMailHistory::find($previous->user_mail_history_id) : null;
+                if ($history) {
+                    $token = $history->reply_token;
+                    $this->line('  -> found token via References/In-Reply-To');
+                }
+            }
+        }
+        if (!$token) {
+            $this->line('  -> skip: no +token in To/CC and no matching message ID (addresses: ' . implode(',', $allRecipients) . ')');
             return;
         }
 
-        $history = UserMailHistory::where('reply_token', $token)->first();
+        // If history not found via message ID, find it via token
+        if (!$history) {
+            $history = UserMailHistory::where('reply_token', $token)->first();
+        }
+
         $user    = $history ? User::find($history->user_id) : null;
         if (!$history || !$user) {
             $this->line("  -> skip: no thread/user for token $token");
             Log::warning('No thread/user found for reply token', ['token' => $token, 'from' => $fromEmail]);
             return;
         }
-
+        if ($fromEmail === $adminMail && $fromEmail !== strtolower($user->email)) {
+            $this->line('  -> skip: admin reply (admin is only cc)');
+            return;
+        }
         $messageId = trim((string) $message->getMessageId(), '<> ');
         if ($messageId === '') {
             $messageId = 'gen-' . md5($fromEmail . $message->getDate() . $message->getSubject());
@@ -115,6 +197,13 @@ class ForwardBlogReplies extends Command
         // skip only if already forwarded (failed ones are retried)
         $record = MailMessage::where('message_id', $messageId)->first();
         if ($record && $record->status === 'forwarded') { $this->line('  -> already forwarded'); return; }
+
+        // Get the previous message's message_id for threading
+        $previousMessageId = null;
+        $previousMessage = $history->messages()->where('status', 'forwarded')->latest()->first();
+        if ($previousMessage && $previousMessage->message_id) {
+            $previousMessageId = $previousMessage->message_id;
+        }
 
         // direction: who wrote it, who gets it
         $isUser    = $fromEmail === strtolower($user->email);
@@ -159,9 +248,27 @@ class ForwardBlogReplies extends Command
                 'body'     => $bodyHtml,
             ])->render();
 
-            Mail::html($html, function ($m) use ($to, $subject, $cc, $replyTo) {
-                $m->to($to)->subject($subject)->replyTo($replyTo, config('app.name'));
+            // Mail::html($html, function ($m) use ($to, $subject, $cc, $replyTo, $previousMessageId) {
+            //     $m->to($to)->subject($subject)->from($replyTo, config('app.name'))->replyTo($replyTo, config('app.name'));
+            //     if ($cc) $m->cc($cc);
+            //     // Set In-Reply-To for message threading
+            //     if ($previousMessageId) {
+            //         $m->getHeaders()->addTextHeader('In-Reply-To', "<{$previousMessageId}>");
+            //     }
+            // });
+                        $refs = $history->messages()->whereNotNull('message_id')->pluck('message_id')
+                ->map(fn ($i) => "<$i>")->implode(' ');
+
+            Mail::html($html, function ($m) use ($to, $subject, $cc, $replyTo, $previousMessageId, $refs) {
+                $m->to($to)->subject($subject)->from($replyTo, config('app.name'))->replyTo($replyTo, config('app.name'));
+                $m->getHeaders()->addTextHeader('X-Blogpub-Relay', '1');
                 if ($cc) $m->cc($cc);
+                if ($previousMessageId) {
+                    $m->getHeaders()->addTextHeader('In-Reply-To', "<{$previousMessageId}>");
+                }
+                if ($refs) {
+                    $m->getHeaders()->addTextHeader('References', $refs);
+                }
             });
 
             $record->update([

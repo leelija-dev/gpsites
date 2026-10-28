@@ -37,11 +37,27 @@
                         <div class="flex items-center justify-between">
                             <p class="text-sm font-medium text-gray-500">Site URL</p>
                             @if($mail->status == true)
-                                <span class="px-3 rounded-full text-white bg-green-600 text-sm flex items-center"
-                                 style="height: 20px; line-height: 20px;">Sent</span>
+                                <div class="flex flex-col items-start gap-1">
+                                    <span class="px-3 rounded-full text-white bg-green-600 text-sm flex items-center"
+                                        style="height: 20px; line-height: 20px;">
+                                        Sent
+                                    </span>
+
+                                    <span class="text-xs text-gray-500">
+                                        {{ $mail->created_at->format('d-m-Y, h:i A') }}
+                                    </span>
+                                </div>
                             @else
-                                 <span class="px-3 rounded-full text-white bg-yellow-400 text-sm flex items-center"
-                                 style="height: 20px; line-height: 20px;">Failed</span>
+                                 <div class="flex flex-col items-start gap-1">
+                                    <span class="px-3 rounded-full text-white bg-yellow-400 text-sm flex items-center"
+                                        style="height: 20px; line-height: 20px;">
+                                        Failed
+                                    </span>
+
+                                    <span class="text-xs text-gray-500">
+                                        {{ $mail->created_at->format('d-m-Y, h:i A') }}
+                                    </span>
+                                </div>
                             @endif
                         </div>
                         <p class="text-base text-gray-900 font-semibold truncate">{{ $mail->site_url }}</p>
@@ -57,11 +73,60 @@
                     
                     <!-- Message -->
                     <div class="mb-6">
-                        <p class="text-sm font-medium text-gray-500 mb-2">Message</p>
-                        <div class="prose max-w-none p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            {!! $mail->message !!}
-                        </div>
+    <p class="text-sm font-medium text-gray-500 mb-2">Conversation</p>
+
+    <div id="chatBox"
+         class="rounded-lg border border-gray-200 p-4 space-y-3 overflow-y-auto"
+         style="background:#efeae2; ">
+
+        @php $lastDate = null; @endphp
+
+        @forelse($messages as $message)
+            @php
+                $time   = $message->sent_at ?? $message->created_at;
+                $isMine = in_array($message->direction, ['initial', 'user_reply']);
+                $day    = $time->format('Y-m-d');
+            @endphp
+
+            {{-- date label when the day changes --}}
+            @if($lastDate !== $day)
+                <div class="flex justify-center">
+                    <span class="text-xs text-gray-600 px-3 py-1 rounded-lg shadow-sm"
+                          style="background:#fff;">
+                        {{ $time->isToday() ? 'Today' : ($time->isYesterday() ? 'Yesterday' : $time->format('d M Y')) }}
+                    </span>
+                </div>
+                @php $lastDate = $day; @endphp
+            @endif
+
+            <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
+                <div class="px-3 py-2 shadow-sm text-sm text-gray-800"
+                     style="max-width:80%;
+                            background: {{ $isMine ? '#D3C8E8' : '#ffffff' }};
+                            border-radius: {{ $isMine ? '12px 0 12px 12px' : '0 12px 12px 12px' }};">
+
+                    <p class="text-xs font-semibold mb-1"
+                       style="color: {{ $isMine ? '#15803d' : '#2563eb' }};">
+                        {{ $isMine ? 'You' : ($message->from_name ?: $message->from_email) }}
+                    </p>
+
+                    <div class="break-words">{!! $message->body_html !!}</div>
+
+                    <div class="text-right mt-1" style="font-size:11px; color:#6a717c;">
+                        {{ $time->format('h:i A') }}
+                        @if($message->status === 'failed')
+                            <span style="color:#dc2626;">· failed</span>
+                        @endif
                     </div>
+                </div>
+            </div>
+        @empty
+            <p class="text-sm text-gray-500 text-center">No messages yet.</p>
+        @endforelse
+    </div>
+</div>
+
+
 
                     <!-- Files -->
                     @if($mail->file)
@@ -88,9 +153,10 @@
                         </div>
                     @endif
                     <!-- Timestamp -->
-                    <div class="flex justify-end">
-                        {{-- <p class="text-sm font-medium text-gray-500">Date & Time</p> --}}
-                        <p class="text-base text-gray-500 text-sm">{{ $mail->created_at->format('d-m-Y, h:i a') }}</p>
+                    <div class="flex justify-center text-center">
+                        <p class="text-sm text-gray-400 not-copy">
+                            If your latest message doesn’t appear yet, please wait a moment. It will show up shortly.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -116,4 +182,11 @@
             });
         });
     </script>
+    <script>
+    // open the chat at the newest message, like WhatsApp
+    (function () {
+        var box = document.getElementById('chatBox');
+        if (box) box.scrollTop = box.scrollHeight;
+    })();
+</script>
 @endsection

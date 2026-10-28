@@ -432,7 +432,9 @@ try {
         $subject,
         $messageBody,
         [],
-        [['email' => $replyAddress, 'name' => config('app.name')]]
+        // [],
+        [['email' => $replyAddress, 'name' => config('app.name')]],
+        $replyAddress // Send FROM token address
     ));
 
     $thread = UserMailHistory::create($history + [
@@ -444,12 +446,13 @@ try {
 
     $thread->messages()->create([
         'direction'  => 'initial',
-        'from_email' => config('mail.from.address'),
-        'from_name'  => $user->name,
+        'from_email' => $replyAddress, // Store the token address
+        'from_name'  => config('app.name'),
         'to_emails'  => [$email],
         'bcc_emails' => $bcc,
         'subject'    => $subject,
         'body_html'  => $messageBody,
+        'body_text'  => strip_tags($messageBody),
         'message_id' => $sentMessage ? trim((string) $sentMessage->getMessageId(), '<> ') : null,
         'status'     => 'sent',
         'sent_at'    => now(),

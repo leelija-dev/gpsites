@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserMailHistory;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\MailMessage;
 class MailController extends Controller
 {
 public function mailHistory(Request $request)
@@ -21,6 +21,13 @@ public function mailHistory(Request $request)
 public function viewMail($id){
     $id=decrypt($id);
     $mail=UserMailHistory::find($id);
-    return view('web.user.view-mail',compact('mail'));
+    $allMessage = MailMessage::where('user_mail_history_id', $id)->get();
+    
+    if(empty($allMessage)){
+        $messages = $mail;
+    }else{
+        $messages = $allMessage;
+    }
+    return view('web.user.view-mail',compact('mail','messages'));
 }
 }

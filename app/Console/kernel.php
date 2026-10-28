@@ -28,7 +28,8 @@ class Kernel extends ConsoleKernel
     //$schedule->command('mail:reset-available')->everyMinute();
 
     // Process email replies every 5 minutes
-    $schedule->command('mail:forward-replies')->everyFiveMinutes();
+    // $schedule->command('mail:forward-replies')->everyFiveMinutes();
+    $schedule->command('mail:forward-replies')->everyMinute()->withoutOverlapping();
     }
 
     protected function commands()
