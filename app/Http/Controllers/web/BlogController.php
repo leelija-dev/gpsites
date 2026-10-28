@@ -644,16 +644,58 @@ class BlogController extends Controller
             'traffic_min' => 0,//$request->get('traffic_min'),
             'traffic_max' => $request->get('traffic_max'),
             'page' => $request->get('page', 1),
-            // 'per_page' => 20,
+            'per_page' => 5,
         ]);
         // print_r($response);die;
 
+        // if ($response->failed()) {
+        //     return back()->with('error', 'API Failed: ' . $response->status());
+        // }
+
+        // $apiBlogs = $response->json();
+        // // Setup pagination from API response
+        // $pagination = new LengthAwarePaginator(
+        //     $apiBlogs['data'],
+        //     $apiBlogs['total'] ?? count($apiBlogs['data']),
+        //     $apiBlogs['per_page'],
+        //     $apiBlogs['current_page'],
+        //     ['path' => url()->current(), 'query' => $request->query()]
+        // );
+        // // print_r($pagination);die;
+        // return view('web.niche_blog', compact(
+        //     'pagination',
+        //     'total_mail_available',
+        //     'total_mail',
+        //     'isValidPlan',
+        //     'niches'
+        // ));
+
         if ($response->failed()) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'API failed: ' . $response->status()], 502);
+            }
             return back()->with('error', 'API Failed: ' . $response->status());
         }
 
         $apiBlogs = $response->json();
-        // Setup pagination from API response
+
+        // JSON response for the homepage search (only the fields the table needs)
+        if ($request->expectsJson()) {
+            $rows = collect($apiBlogs['data'] ?? [])->map(fn ($b) => [
+                'domain'  => $b['site_url'] ?? $b['website_name'] ?? '',
+                'niche'   => $b['website_niche'] ?? '',
+                'da'      => $b['moz_da'] ?? null,
+                'dr'      => $b['ahrefs_dr'] ?? null,
+                'traffic' => $b['ahrefs_traffic'] ?? null,
+            ])->values();
+
+            return response()->json([
+                'data'  => $rows,
+                'total' => $apiBlogs['total'] ?? $rows->count(),
+            ]);
+        }
+
+        // Existing HTML flow (unchanged)
         $pagination = new LengthAwarePaginator(
             $apiBlogs['data'],
             $apiBlogs['total'] ?? count($apiBlogs['data']),
@@ -661,7 +703,7 @@ class BlogController extends Controller
             $apiBlogs['current_page'],
             ['path' => url()->current(), 'query' => $request->query()]
         );
-        // print_r($pagination);die;
+
         return view('web.niche_blog', compact(
             'pagination',
             'total_mail_available',

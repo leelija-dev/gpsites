@@ -1,5 +1,4 @@
-
-    @extends('layouts.web.main-layout')
+@extends('layouts.web.main-layout')
 
 @section('title', 'Link Building Marketplace & Outreach Automation Tool | GPSites')
 @section('description', 'Find relevant guest posting sites, connect with publishers, and manage your outreach in one place. GPSites — the link building marketplace and outreach automation tool.')
@@ -7,6 +6,14 @@
 @section('indexing', 'yes')
 
 @section('content')
+<style>
+    .gp-blur {
+    filter: blur(6px);
+    user-select: none;
+    pointer-events: none;
+    display: inline-block;
+}
+</style>
 
     <main class="gp-page gp-home">
         <section class="gp-section gp-hero">
@@ -17,7 +24,7 @@
                         <p>Find relevant guest posting sites, connect with publishers,<br> and manage your outreach in
                             one place.</p>
                         <div class="gp-actions"><a class="gp-button " href="https://gpsites.io/login">Start Free
-                                Trial</a><a class="gp-button gp-outline" href="home.html#pricing">Compare
+                                Trial</a><a class="gp-button gp-outline" href="#pricing">Compare
                                 Plans</a><small class="gp-trial-note">7 days free · 3 email credits · No credit card
                                 required</small></div>
                     </div>
@@ -65,36 +72,64 @@
                 </div>
             </div>
         </section>
-        <section class="gp-section ">
+
+        {{-- ===================== PUBLISHER DISCOVERY (live search) ===================== --}}
+        <section class="gp-section" id="publisher-discovery">
             <div class="gp-container"><span class="gp-eyebrow">Publisher discovery</span>
                 <h2>Find guest posting sites that fit your campaign</h2>
                 <p>Search our database of publisher websites using niche and SEO metrics to find the best
                     opportunities<br>for your outreach campaign.</p>
-                <form class="gp-publisher-search" action="https://gpsites.io/login" method="get">
-                    <div class="gp-placement"><label><input type="radio" name="placement" value="guest-post" checked>
-                            Guest posts</label><label><input type="radio" name="placement" value="link-insertion"> Link
-                            insertions</label><label><input type="radio" name="placement" value="press-release"> Press
-                            releases</label></div>
-                    <div class="gp-filters"><label>Niche<select name="niche">
-                                <option value="Technology">Technology</option>
-                                <option value="Health & Wellness">Health & Wellness</option>
-                                <option value="Business">Business</option>
-                            </select></label><label>Domain Authority<select name="da">
+
+                <form id="gp-search-form" class="gp-publisher-search" action="{{ route('find.niches') }}"
+                    method="GET">
+                    <div class="gp-placement">
+                        <label><input type="radio" name="placement" value="guest-post" checked> Guest posts</label>
+                        <label><input type="radio" name="placement" value="link-insertion"> Link insertions</label>
+                        <label><input type="radio" name="placement" value="press-release"> Press releases</label>
+                    </div>
+
+                    <div class="gp-filters">
+                        <label>Niche
+                            <select name="niche">
+                                <option value="">Any niche</option>
+                                @foreach ($niches_data as $n)
+                                    @if (!empty(trim($n['niche_name'] ?? '')))
+                                        <option value="{{ $n['niche_name'] }}">{{ $n['niche_name'] }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </label>
+                        <label>Domain Authority
+                            <select name="da">
+                                <option value="0">Any</option>
                                 <option value="30">Min 30</option>
                                 <option value="50">Min 50</option>
                                 <option value="70">Min 70</option>
-                            </select></label><label>Domain Rating<select name="dr">
+                            </select>
+                        </label>
+                        <label>Domain Rating
+                            <select name="dr">
+                                <option value="0">Any</option>
                                 <option value="30">Min 30</option>
                                 <option value="50">Min 50</option>
                                 <option value="70">Min 70</option>
-                            </select></label><label>Traffic<select name="traffic">
-                                <option value="">Any</option>
-                                <option value="10000">10000</option>
-                                <option value="100000">100000</option>
-                            </select></label><button class="gp-button">Find Matching Sites</button></div>
+                            </select>
+                        </label>
+                        <label>Traffic
+                            <select name="traffic">
+                                <option value="0">Any</option>
+                                <option value="10000">10,000+</option>
+                                <option value="100000">100,000+</option>
+                            </select>
+                        </label>
+                        <button type="submit" class="gp-button" id="gp-search-btn">Find Matching Sites</button>
+                    </div>
                 </form>
+
                 <div class="gp-table-panel">
-                    <div class="gp-between"><b>Example results</b><small>3 results shown (illustrative data)</small>
+                    <div class="gp-between">
+                        <b>Results</b>
+                        <small id="gp-result-count">Choose your filters and search</small>
                     </div>
                     <div class="gp-scroll">
                         <table>
@@ -105,37 +140,12 @@
                                     <th>DA</th>
                                     <th>DR</th>
                                     <th>Traffic</th>
-                                    <th>Placement type</th>
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="gp-results-body">
                                 <tr>
-                                    <td class="gp-purple">technology.example</td>
-                                    <td>Technology</td>
-                                    <td>67</td>
-                                    <td>62</td>
-                                    <td>125K</td>
-                                    <td><span class="gp-pill">Guest post</span></td>
-                                    <td><a class="gp-link" href="https://gpsites.io/login">View details →</a></td>
-                                </tr>
-                                <tr>
-                                    <td class="gp-purple">wellness.example</td>
-                                    <td>Health & Wellness</td>
-                                    <td>54</td>
-                                    <td>48</td>
-                                    <td>89K</td>
-                                    <td><span class="gp-pill">Link insertion</span></td>
-                                    <td><a class="gp-link" href="https://gpsites.io/login">View details →</a></td>
-                                </tr>
-                                <tr>
-                                    <td class="gp-purple">business.example</td>
-                                    <td>Business</td>
-                                    <td>61</td>
-                                    <td>55</td>
-                                    <td>112K</td>
-                                    <td><span class="gp-pill">Guest post</span></td>
-                                    <td><a class="gp-link" href="https://gpsites.io/login">View details →</a></td>
+                                    <td colspan="6">No search yet.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -143,6 +153,8 @@
                 </div>
             </div>
         </section>
+        {{-- ===================== END PUBLISHER DISCOVERY ===================== --}}
+
         <section class="gp-section " id="how-it-works">
             <div class="gp-container"><span class="gp-eyebrow">How it works</span>
                 <h2>From publisher discovery to your next conversation</h2>
@@ -268,7 +280,7 @@
                     <div><span class="gp-eyebrow">Pricing flexibility</span>
                         <h2>Your offer. Or a negotiated price.</h2>
                         <p>Send custom offers on every plan. Agency members can also view negotiated publisher prices
-                            and place direct orders.</p><a class="gp-button gp-white" href="home.html#pricing">Explore
+                            and place direct orders.</p><a class="gp-button gp-white" href="#pricing">Explore
                             Agency</a>
                     </div>
                     <div class="gp-offers">
@@ -490,6 +502,123 @@
 
                 window.scrollTo({ top: offset, behavior: 'smooth' });
             });
+        });
+    });
+
+    // Publisher search -> find.niches route, results rendered in the table
+    document.addEventListener('DOMContentLoaded', function () {
+        const form  = document.getElementById('gp-search-form');
+        const body  = document.getElementById('gp-results-body');
+        const count = document.getElementById('gp-result-count');
+        const btn   = document.getElementById('gp-search-btn');
+        if (!form || !body) return;
+
+        function buildRow(cells) {
+            const tr = document.createElement('tr');
+            cells.forEach(function (text) {
+                const td = document.createElement('td');
+                td.textContent = (text === null || text === undefined || text === '') ? '' : text;
+                tr.appendChild(td);
+            });
+            return tr;
+        }
+
+        function messageRow(text) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 6;
+            td.textContent = text;
+            tr.appendChild(td);
+            return tr;
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Map this form's fields to the parameter names the find.niches route expects
+            const params = new URLSearchParams({
+                niches:      form.niche.value,
+                da_min:      form.da.value,
+                da_max:      100,
+                dr_min:      form.dr.value,
+                dr_max:      100,
+                traffic_min: form.traffic.value,
+                traffic_max: 999999
+            });
+
+            btn.disabled = true;
+            btn.textContent = 'Searching...';
+            body.replaceChildren(messageRow('Searching...'));
+            count.textContent = '';
+
+            try {
+                const res = await fetch(form.action + '?' + params.toString(), {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                const json  = await res.json();
+                const sites = Array.isArray(json) ? json : (json.data || []);
+
+                body.replaceChildren();
+
+                if (!sites.length) {
+                    body.appendChild(messageRow('No sites found for these filters.'));
+                    count.textContent = '0 results';
+                    return;
+                }
+
+                // sites.forEach(function (s) {
+                //     const tr = buildRow([
+                //         s.domain || s.url,
+                //         s.niche || s.niche_name,
+                //         s.da,
+                //         s.dr,
+                //         s.traffic,
+                //         ''
+                //     ]);
+                //     tr.children[0].className = 'gp-purple';
+
+                //     const a = document.createElement('a');
+                //     a.className = 'gp-link';
+                //     a.href = 'https://gpsites.io/login';
+                //     a.textContent = 'View details →';
+                //     tr.lastChild.appendChild(a);
+
+                //     body.appendChild(tr);
+                // });
+
+                sites.forEach(function (s) {
+    const tr = buildRow([s.domain || s.url, s.niche || s.niche_name, s.da, s.dr, '', '']);
+    tr.children[0].className = 'gp-purple';
+
+    // Traffic: blurred placeholder (not real data)
+    const blur = document.createElement('span');
+    blur.className = 'gp-blur';
+    blur.textContent = '00,000';
+    blur.title = 'Log in to view traffic';
+    tr.children[4].appendChild(blur);
+
+    const a = document.createElement('a');
+    a.className = 'gp-link';
+    a.href = 'https://gpsites.io/login';
+    a.textContent = 'View details →';
+    tr.lastChild.appendChild(a);
+
+    body.appendChild(tr);
+});
+
+                count.textContent = sites.length + (sites.length === 1 ? ' result' : ' results');
+            } catch (err) {
+                console.error(err);
+                body.replaceChildren(messageRow('Something went wrong. Please try again.'));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Find Matching Sites';
+            }
         });
     });
 </script>
