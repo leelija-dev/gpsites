@@ -23,6 +23,7 @@ class UserMailHistory extends Model
         'reply_token', 
         'blog_email',
          'blog_id',
+         'mail_type'
         
     ];
     public function messages()

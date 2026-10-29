@@ -9,6 +9,7 @@ use App\Filament\Resources\Users\Schemas\UsersForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -36,6 +37,17 @@ class UsersResource extends Resource
     {
         return 5;  // Position of the group in the sidebar
     }
+    public static function getNavigationItems(): array
+{
+    return array_map(
+        fn (NavigationItem $item) => $item->isActiveWhen(
+            fn (): bool => request()->routeIs(static::getRouteBaseName() . '.*')
+                || request()->routeIs('filament.*.pages.client-mail-history')
+                || request()->routeIs('filament.*.pages.client-mail-conversation')
+        ),
+        parent::getNavigationItems()
+    );
+}
     public static function form(Schema $schema): Schema
     {
         return UsersForm::configure($schema);

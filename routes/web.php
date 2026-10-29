@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
+use App\Http\Controllers\web\BlogOrderController;
 // ... existing routes ...
 
 Route::post('/start-trial', [HomeController::class, 'startTrial'])->name('start.trial');
@@ -108,7 +108,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sendMail', [BlogController::class, 'sendMail'])->name('blog.sendMail');
     Route::post('/blog/send-offer', [BlogController::class, 'sendOffer'])->name('blog.sendOffer');
     Route::post('/singleMail', [BlogController::class, 'singleMail'])->name('blog.singleMail');
-
+    Route::post('/blog/place-order', [BlogController::class, 'placeOrder'])->name('blog.placeOrder');
     Route::get('/mail-history', [MailController::class, 'mailHistory'])->name('blog.mailHistory');
     Route::get('/viewMail/{id}', [MailController::class, 'viewMail'])->name('blog.view-mail');
 
@@ -153,6 +153,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/trial/start', [HomeController::class, 'startTrial'])->name('trial.start');
     // Complete Trial (commit trial to DB)
     Route::post('/trial/complete', [HomeController::class, 'completeTrial'])->name('trial.complete');
+});
+Route::middleware('auth')->group(function () {
+    Route::get('/post-orders', [BlogOrderController::class, 'index'])->name('orders.index');
+    Route::get('/post-orders/{id}', [BlogOrderController::class, 'show'])->name('orders.show');
+    Route::get('/campaign', [BlogOrderController::class, 'campaign'])->name('campaign.index');
+    Route::get('/offer', [BlogOrderController::class, 'offer'])->name('offer.index');
+    Route::get('/campaign/conversation/{id}', [BlogOrderController::class, 'viewCampaign'])->name('view.campaign.conversation');
+    Route::get('/offer/conversation/{id}', [BlogOrderController::class, 'viewOffer'])->name('view.offer.conversation');
+    Route::get('/order/conversation/{id}', [BlogOrderController::class, 'viewOrder'])->name('view.order.conversation');
 });
 
 // In routes/web.php, ensure this route is outside auth middleware

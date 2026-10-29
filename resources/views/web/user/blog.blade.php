@@ -4,6 +4,13 @@
     use Illuminate\Support\Facades\Auth;
     $loggedUserId = Auth::id();
     // or Auth::user()->id
+        $priceLabels = [
+        'general_guest_post_price'       => 'General Guest Post',
+        'general_link_insertion_price'   => 'General Link Insertion',
+        'sensitive_guest_post_price'     => 'Sensitive Guest Post',
+        'sensitive_link_insertion_price' => 'Sensitive Link Insertion',
+    ];
+    $fmtPrice = fn ($v) => '$' . rtrim(rtrim(number_format((float) $v, 2, '.', ','), '0'), '.');
 @endphp
 
 @section('content')
@@ -285,6 +292,18 @@
         .offer-btn.send:disabled{opacity:.75;cursor:not-allowed;transform:none}
         .offer-btn.send.loading::before{content:"";display:inline-block;width:14px;height:14px;margin-right:8px;vertical-align:-2px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:offerSpin .7s linear infinite}
         @keyframes offerSpin{to{transform:rotate(360deg)}}
+                /* ===== Order modal (reuses .offer-* styles) ===== */
+        .order-card{max-width:640px}
+        .order-domain{position:relative;z-index:1;margin-top:14px;font-size:1.15rem;font-weight:800;word-break:break-all}
+        .order-url{position:relative;z-index:1;display:inline-block;margin-top:2px;font-size:.8rem;color:rgba(255,255,255,.85);text-decoration:underline !important;word-break:break-all}
+        .order-select{width:100%;padding:12px 14px;font-size:1rem;font-weight:600;color:#111827;background:#fff;border:2px solid #e5e7eb;border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+        .order-select:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+        .order-select.invalid{border-color:#ef4444}
+        .order-total{display:flex;align-items:center;justify-content:space-between;margin:14px 0 4px;padding:12px 16px;border-radius:14px;background:#faf5ff;border:1px solid #e9d5ff}
+        .order-total .lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6b7280}
+        .order-total .amt{font-size:1.5rem;font-weight:800;color:#7c3aed}
+        .offer-overlay .note-editor{margin-top:2px}
+        .note-modal,.note-modal-backdrop,.note-dialog,.note-popover{z-index:10100 !important}
     </style>
 
     <!-- Main content -->
@@ -457,12 +476,20 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                                 <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Site/blog</th>
                                 <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Metrics</th>
                                 <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Traffic</th>
-                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Mail</th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Offer</th>
+                                <th class="px-6 py-4 text-start text-xs font-semibold uppercase tracking">Price</th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking">Order</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @if ($pagination->isNotEmpty())
                                 @foreach ($pagination as $blog)
+                                @php
+                                    $priceOptions = collect($priceLabels)
+                                        ->map(fn ($label, $key) => ['key' => $key, 'label' => $label, 'price' => (float) ($blog[$key] ?? 0)])
+                                        ->filter(fn ($o) => $o['price'] > 0)
+                                        ->values()->all();
+                                @endphp
                                     <!-- Main row -->
                                     <tr class="main-row hover:bg-gray-50 cursor-pointer transition"
                                         data-target="#expandRow{{ $blog['blog_id'] }}"
@@ -553,6 +580,31 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                                                 Send Offer
                                             </button>
                                         </td>
+                                        <td class="px-4 py-4 text-sm" style="min-width:230px">
+    <div class="space-y-1">
+        @foreach ($priceLabels as $key => $label)
+            @php $v = (float) ($blog[$key] ?? 0); @endphp
+            <div class="flex items-center justify-between gap-4 text-xs">
+                <span class="text-gray-600">{{ $label }}</span>
+                <strong class="{{ $v > 0 ? 'text-gray-900' : 'text-gray-400' }}">{{ $v > 0 ? $fmtPrice($v) : 'N/A' }}</strong>
+            </div>
+        @endforeach
+    </div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-center text-sm" onclick="event.stopPropagation();">
+    @if (count($priceOptions))
+        <button type="button"
+            class="orderBtn px-3 py-1 text-white text-sm font-medium rounded transition"
+            style="background:linear-gradient(135deg,#2563eb,#7c3aed)"
+            data-site-name="{{ $blog['website_name'] ?? '' }}"
+            data-site-url="{{ $blog['site_url'] ?? '' }}"
+            data-prices="{{ json_encode($priceOptions) }}">
+            Order
+        </button>
+    @else
+        <span class="text-xs text-gray-400">N/A</span>
+    @endif
+</td>
                                     </tr>
 
                                     <!-- Expandable row (hidden by default) -->
@@ -777,7 +829,212 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             </div>
         </div>
     </div>
+        <!-- Order Modal -->
+    <div id="orderModal" class="offer-overlay" aria-hidden="true">
+        <div class="offer-card order-card" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
 
+            <div class="offer-head">
+                <button type="button" class="offer-close" id="orderCloseBtn" aria-label="Close">&times;</button>
+                <div class="offer-icon">
+                    <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <h3 id="orderTitle">Place an Order</h3>
+                <p>Choose a service and add your link or article.</p>
+                <div class="order-domain" id="orderDomain"></div>
+                <a class="order-url" id="orderUrl" href="#" target="_blank" rel="nofollow noopener"></a>
+            </div>
+
+            <div class="offer-body">
+                <label class="offer-label" for="orderType">Service</label>
+                <select id="orderType" class="order-select"></select>
+
+                <div class="order-total">
+                    <span class="lbl">Order price</span>
+                    <span class="amt" id="orderPriceText">$0</span>
+                </div>
+
+                <label class="offer-label" for="orderContent" style="margin-top:14px">Your link or article</label>
+                <textarea id="orderContent"></textarea>
+
+                <div class="offer-error" id="orderError"></div>
+                <p class="offer-note">The site owner will receive this order by email. Replies appear in your conversation page.
+                    Available mails: <strong id="orderAvailable">0</strong></p>
+            </div>
+
+            <div class="offer-foot">
+                <button type="button" class="offer-btn cancel" id="orderCancelBtn">Cancel</button>
+                <button type="button" class="offer-btn send" id="orderSendBtn">Place Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orderBlogId = null;
+        let orderPrices = [];
+        let orderEditorReady = false;
+
+        function fmtMoney(n) {
+            n = Number(n) || 0;
+            return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+        }
+
+        function getOrderContent() {
+            if (orderEditorReady) {
+                return $('#orderContent').summernote('isEmpty') ? '' : $('#orderContent').summernote('code');
+            }
+            return $('#orderContent').val().trim();
+        }
+
+        function openOrderModal(blogId, siteName, siteUrl, prices, available) {
+            orderBlogId = blogId;
+            orderPrices = prices || [];
+
+            let host = siteUrl;
+            try { host = new URL(siteUrl).hostname.replace(/^www\./, ''); } catch (e) {}
+            $('#orderDomain').text(host || siteName || 'Website');
+            $('#orderUrl').text(siteUrl || '').attr('href', siteUrl || '#');
+
+            const $sel = $('#orderType').removeClass('invalid').empty()
+                .append('<option value="">Select a service</option>');
+            orderPrices.forEach(p => {
+                $sel.append($('<option>').val(p.key).text(p.label + ' - ' + fmtMoney(p.price)));
+            });
+            $('#orderPriceText').text('$0');
+            $('#orderAvailable').text(available);
+            $('#orderError').text('');
+            $('#orderSendBtn').prop('disabled', false).removeClass('loading').text('Place Order');
+
+            $('#orderContent').val('');
+            $('#orderModal').addClass('open').attr('aria-hidden', 'false');
+
+            if ($.fn.summernote) {
+                $('#orderContent').summernote({
+                    placeholder: 'Paste your link or write your article here...',
+                    height: 200,
+                    dialogsInBody: true,
+                    disableResizeEditor: true,
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline']],
+                        ['para', ['ul', 'ol']],
+                        ['insert', ['link']],
+                        ['view', ['codeview']]
+                    ]
+                });
+                orderEditorReady = true;
+            } else {
+                // fallback: plain textarea
+                $('#orderContent').show().css({ width: '100%', height: '180px', border: '2px solid #e5e7eb', borderRadius: '14px', padding: '10px' });
+            }
+        }
+
+        function closeOrderModal() {
+            if (orderEditorReady) {
+                try { $('#orderContent').summernote('destroy'); } catch (e) {}
+                orderEditorReady = false;
+            }
+            $('#orderContent').val('');
+            $('#orderModal').removeClass('open').attr('aria-hidden', 'true');
+        }
+
+        function submitOrder() {
+            const type = $('#orderType').val();
+            const content = getOrderContent();
+            const $err = $('#orderError');
+            const $btn = $('#orderSendBtn');
+
+            $('#orderType').removeClass('invalid');
+            $err.text('');
+
+            if (!type) {
+                $('#orderType').addClass('invalid');
+                $err.text('Please select a service.');
+                return;
+            }
+            if (!content || content === '<p><br></p>') {
+                $err.text('Please add your link or article.');
+                return;
+            }
+
+            $btn.prop('disabled', true).addClass('loading').text('Placing order...');
+
+            $.ajax({
+                url: "{{ route('blog.placeOrder') }}",
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    blog_id: orderBlogId,
+                    price_type: type,
+                    content: content
+                },
+                success: function (res) {
+                    if (typeof setAvailableMail === 'function') setAvailableMail(res.available);
+                    closeOrderModal();
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: res.message || 'Order placed successfully.',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                },
+                error: function (xhr) {
+                    let msg = 'Something went wrong. Please try again.';
+                    if (xhr.responseJSON) {
+                        const e = xhr.responseJSON.errors;
+                        msg = (e && Object.values(e)[0] && Object.values(e)[0][0]) || xhr.responseJSON.message || msg;
+                    }
+                    $err.text(msg);
+                    $btn.prop('disabled', false).removeClass('loading').text('Place Order');
+                }
+            });
+        }
+
+        $(function () {
+            $('.orderBtn').on('click', function () {
+                const available = Number($('#openMailModalBtn').attr('data-available-mail')) || 0;
+
+                if (available <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Mail Available!',
+                        text: 'Please purchase a package to place orders.',
+                        confirmButtonText: 'Buy Now'
+                    }).then(r => { if (r.isConfirmed) window.location.href = '/'; });
+                    return;
+                }
+
+                let prices = [];
+                try { prices = JSON.parse($(this).attr('data-prices')); } catch (e) {}
+                openOrderModal(
+                    String($(this).closest('tr').data('blog-id')),
+                    $(this).attr('data-site-name'),
+                    $(this).attr('data-site-url'),
+                    prices,
+                    available
+                );
+            });
+
+            $('#orderType').on('change', function () {
+                const p = orderPrices.find(x => x.key === this.value);
+                $('#orderPriceText').text(p ? fmtMoney(p.price) : '$0');
+                $(this).removeClass('invalid');
+            });
+
+            $('#orderSendBtn').on('click', submitOrder);
+            $('#orderCancelBtn, #orderCloseBtn').on('click', closeOrderModal);
+            $('#orderModal').on('mousedown', function (e) { if (e.target === this) closeOrderModal(); });
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Escape' && $('#orderModal').hasClass('open') && !$('.note-modal.open, .note-modal:visible').length) {
+                    closeOrderModal();
+                }
+            });
+        });
+    </script>
     <script>
         let offerBlogId = null;
 

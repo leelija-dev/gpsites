@@ -20,8 +20,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use App\Models\MailMessage;
 use Illuminate\Support\Str;
+use App\Models\BlogOrderMail;
+use Illuminate\Validation\Rule;
 class BlogController extends Controller
 {
+    private const PRICE_LABELS = [
+        'general_guest_post_price'       => 'General Guest Post',
+        'general_link_insertion_price'   => 'General Link Insertion',
+        'sensitive_guest_post_price'     => 'Sensitive Guest Post',
+        'sensitive_link_insertion_price' => 'Sensitive Link Insertion',
+    ];
     protected $APIBASEURL;
     public function __construct()
     {
@@ -336,11 +344,47 @@ Log::info('Blogs loaded', [
 ]);
     $subject = 'User interested in your blog';
     $messageBody = '
-        <p>Hello,</p>
-        <p>I am interested in a guest post / collaboration opportunity on your website.</p>
-        <p>Please reply to this email if you are interested.</p>
-        <p>Regards,<br>' . e($user->name) . '<br>' . e($user->email) . '</p>
-    ';
+<div style="background:#f3f4f6;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+
+    <!-- Header -->
+    <tr>
+      <td style="background:#7c3aed;background-image:linear-gradient(135deg,#2563eb,#7c3aed);padding:28px 32px;color:#ffffff;">
+        <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;opacity:.85;">Collaboration Request</div>
+        <div style="font-size:22px;font-weight:bold;margin-top:6px;">Guest Post / Collaboration Opportunity</div>
+      </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+      <td style="padding:28px 32px;color:#374151;font-size:15px;line-height:1.6;">
+        <p style="margin:0 0 16px;">Hello,</p>
+        <p style="margin:0 0 20px;">
+          I am interested in a guest post / collaboration opportunity on your website,
+          and I would love to know if you are open to working together.
+        </p>
+
+        <!-- Reply card -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;margin:0 0 24px;">
+          <tr>
+            <td style="padding:16px 18px;color:#4c1d95;font-size:15px;">
+              If you are interested, simply <strong>reply to this email</strong> and we can discuss the details.
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0 0 24px;">Thank you for your time.</p>
+
+        <!-- Signature -->
+        <p style="margin:0;padding-top:16px;border-top:1px solid #e5e7eb;">
+          Regards,<br>
+          <strong style="color:#111827;">' . e($user->name) . '</strong><br>
+        </p>
+      </td>
+    </tr>
+
+  </table>
+</div>';
 
     $sent = 0;
     $noEmail = 0;
@@ -365,6 +409,7 @@ Log::info('Blogs loaded', [
             'user_id'  => $user_id,
             'site_url' => $siteUrl,
             'subject'  => $subject,
+            'mail_type' =>'campaign',
             'message'  => $messageBody,
             'file'     => null,
         ];
@@ -528,17 +573,60 @@ try {
         $host    = parse_url((string) $siteUrl, PHP_URL_HOST) ?: $siteUrl;
         $offer   = number_format((float) $request->offer, 2);
         $subject = 'Guest post offer for ' . $host;
+        // $messageBody = '
+        //     <p>Hello,</p>
+        //     <p>I am interested in a guest post on your website <strong>' . e($siteUrl) . '</strong>.</p>
+        //     <p>My offer for the post is <strong>$' . $offer . '</strong>.</p>
+        //     <p>Please reply to this email if you are interested.</p>
+        //     <p>Regards,<br>' . e($user->name) . '<br>' . e($user->email) . '</p>
+        // ';
         $messageBody = '
-            <p>Hello,</p>
-            <p>I am interested in a guest post on your website <strong>' . e($siteUrl) . '</strong>.</p>
-            <p>My offer for the post is <strong>$' . $offer . '</strong>.</p>
-            <p>Please reply to this email if you are interested.</p>
-            <p>Regards,<br>' . e($user->name) . '<br>' . e($user->email) . '</p>
-        ';
+<div style="background:#f3f4f6;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+
+    <!-- Header -->
+    <tr>
+      <td style="background:#7c3aed;background-image:linear-gradient(135deg,#2563eb,#7c3aed);padding:28px 32px;color:#ffffff;">
+        <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;opacity:.85;">Guest Post Offer</div>
+        <div style="font-size:22px;font-weight:bold;margin-top:6px;">Offer for ' . e($siteUrl) . '</div>
+      </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+      <td style="padding:28px 32px;color:#374151;font-size:15px;line-height:1.6;">
+        <p style="margin:0 0 16px;">Hello,</p>
+        <p style="margin:0 0 20px;">
+          I am interested in a guest post on your website
+          <a href="' . e($siteUrl) . '" style="color:#2563eb;font-weight:bold;text-decoration:none;">' . e($siteUrl) . '</a>.
+        </p>
+
+        <!-- Offer card -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;margin:0 0 24px;">
+          <tr>
+            <td style="padding:16px 18px;color:#6b7280;font-size:13px;">My offer for the post is</td>
+            <td style="padding:16px 18px;text-align:right;font-weight:bold;font-size:24px;color:#7c3aed;">$' . e($offer) . '</td>
+          </tr>
+        </table>
+
+        <p style="margin:0 0 24px;">Please reply to this email if you are interested.</p>
+
+        <!-- Signature -->
+        <p style="margin:0;padding-top:16px;border-top:1px solid #e5e7eb;">
+          Regards,<br>
+          <strong style="color:#111827;">' . e($user->name) . '</strong><br>
+          
+        </p>
+      </td>
+    </tr>
+
+  </table>
+</div>';
 
         $history = [
             'user_id'  => $user->id,
             'site_url' => $siteUrl,
+            'mail_type' => 'offer',
             'subject'  => $subject,
             'message'  => $messageBody,
             'file'     => null,
@@ -604,6 +692,233 @@ try {
 
         return response()->json([
             'message'   => 'Offer sent successfully.',
+            'available' => $this->availableMailCount($user),
+        ]);
+    }
+        // Allow only simple formatting. Strips scripts, styles and all attributes except safe link hrefs.
+    private function cleanOrderHtml(string $html): string
+    {
+        $html = trim(strip_tags($html, '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><h4><blockquote>'));
+        if ($html === '') return '';
+
+        // plain text (no tags left): keep line breaks
+        if ($html === strip_tags($html)) {
+            return nl2br(e($html));
+        }
+
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="utf-8" ?><div>' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+              $xpath = new \DOMXPath($dom);
+        foreach ($xpath->query('//*') as $el) {
+            if (!($el instanceof \DOMElement)) {
+                continue;
+            }
+
+            foreach (iterator_to_array($el->attributes) as $attr) {
+                $safeHref = $el->tagName === 'a'
+                    && $attr->name === 'href'
+                    && preg_match('#^(https?://|mailto:)#i', trim($attr->value));
+
+                if (!$safeHref) {
+                    $el->removeAttribute($attr->name);
+                }
+            }
+
+            if ($el->tagName === 'a') {
+                $el->setAttribute('target', '_blank');
+                $el->setAttribute('rel', 'nofollow noopener');
+            }
+        }
+        $out = '';
+        foreach ($dom->documentElement->childNodes as $child) {
+            $out .= $dom->saveHTML($child);
+        }
+        return trim($out);
+    }
+
+    // Sends one tracked mail (same logic as group mail) and stores the thread. Throws on failure.
+    private function sendTrackedMail($user, int $blogId, string $email, ?string $siteUrl, string $subject, string $body): UserMailHistory
+    {
+        $token = Str::lower(Str::random(12));
+        [$local, $domain] = explode('@', config('mail.site_inbox'));
+        $replyAddress = "{$local}+{$token}@{$domain}";
+
+        // Same as group mail: user and admin get a BCC copy
+        $bcc = collect([$user->email, config('mail.admin_email')])
+            ->filter()->map(fn ($e) => strtolower($e))->unique()
+            ->reject(fn ($e) => $e === strtolower($email))
+            ->values()->all();
+
+        $sentMessage = Mail::to($email)->bcc($bcc)->send(new \App\Mail\MailWithAttachment(
+            $subject,
+            $body,
+            [],
+            [['email' => $replyAddress, 'name' => config('app.name')]], // Reply-To = token address
+            $replyAddress
+        ));
+
+        $thread = UserMailHistory::create([
+            'user_id'     => $user->id,
+            'site_url'    => $siteUrl,
+            'subject'     => $subject,
+            'message'     => $body,
+            'mail_type'   => 'order',
+            'file'        => null,
+            'status'      => true,
+            'reply_token' => $token,
+            'blog_email'  => $email,
+            'blog_id'     => $blogId,
+        ]);
+
+        $thread->messages()->create([
+            'direction'  => 'initial',
+            'from_email' => $replyAddress,
+            'from_name'  => config('app.name'),
+            'to_emails'  => [$email],
+            'bcc_emails' => $bcc,
+            'subject'    => $subject,
+            'body_html'  => $body,
+            'body_text'  => strip_tags($body),
+            'message_id' => $sentMessage ? trim((string) $sentMessage->getMessageId(), '<> ') : null,
+            'status'     => 'sent',
+            'sent_at'    => now(),
+        ]);
+
+        return $thread;
+    }
+
+    public function placeOrder(Request $request)
+    {
+        $request->validate([
+            'blog_id'    => 'required|integer',
+            'price_type' => ['required', Rule::in(array_keys(self::PRICE_LABELS))],
+            'content'    => 'required|string|max:30000',
+        ]);
+
+        $user = Auth::user();
+
+        if ($this->availableMailCount($user) < 1) {
+            return response()->json(['message' => 'No valid plan or mail credits available.'], 422);
+        }
+
+        $blogId = (int) $request->blog_id;
+        $res = Http::get($this->APIBASEURL . "/api/blogs/$blogId");
+        if ($res->failed()) {
+            return response()->json(['message' => 'API Request Failed: ' . $res->status()], 502);
+        }
+
+        $blog    = $res->json();
+        $email   = trim($blog['contact_email_id'] ?? '');
+        $siteUrl = $blog['site_url'] ?? null;
+
+        // The price comes from the backend/API, never from the browser
+        $type  = $request->price_type;
+        $price = (float) ($blog[$type] ?? 0);
+        if ($price <= 0) {
+            return response()->json(['message' => 'This service is not available for this site.'], 422);
+        }
+
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['message' => 'No email address available for this site.'], 422);
+        }
+
+        $content = $this->cleanOrderHtml((string) $request->content);
+        if (trim(strip_tags($content)) === '') {
+            return response()->json(['message' => 'Please add your link or article.'], 422);
+        }
+
+        $label     = self::PRICE_LABELS[$type];
+        $priceText = '$' . rtrim(rtrim(number_format($price, 2), '0'), '.');
+        $host      = parse_url((string) $siteUrl, PHP_URL_HOST) ?: $siteUrl;
+
+        // 1) STORE the order first, so nothing is lost if the mail fails
+        $order = BlogOrderMail::create([
+            'user_id'      => $user->id,
+            'blog_id'      => $blogId,
+            'website_name' => $blog['website_name'] ?? null,
+            'site_url'     => $siteUrl,
+            'blog_email'   => $email,
+            'price_type'   => $type,
+            'price_label'  => $label,
+            'price'        => $price,
+            'content'      => $content,
+            'status'       => 'pending',
+        ]);
+
+        $subject = "Order request: {$label} on {$host}";
+        $allowedTags = '<p><br><b><strong><i><em><u><ul><ol><li><a>';
+$safeContent = strip_tags($content, $allowedTags);
+
+$body = '
+<div style="background:#f3f4f6;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+
+    <!-- Header -->
+    <tr>
+      <td style="background:#7c3aed;background-image:linear-gradient(135deg,#2563eb,#7c3aed);padding:28px 32px;color:#ffffff;">
+        <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;opacity:.85;">New Order Request</div>
+        <div style="font-size:22px;font-weight:bold;margin-top:6px;">Order for ' . e($siteUrl) . '</div>
+      </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+      <td style="padding:28px 32px;color:#374151;font-size:15px;line-height:1.6;">
+        <p style="margin:0 0 16px;">Hello,</p>
+        <p style="margin:0 0 20px;">
+          I would like to place an order on your website
+          <a href="' . e($siteUrl) . '" style="color:#2563eb;font-weight:bold;text-decoration:none;">' . e($siteUrl) . '</a>.
+        </p>
+
+        <!-- Order summary -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;margin:0 0 24px;">
+          <tr>
+            <td style="padding:14px 18px;color:#6b7280;font-size:13px;">Service</td>
+            <td style="padding:14px 18px;text-align:right;font-weight:bold;color:#111827;">' . e($label) . '</td>
+          </tr>
+          <tr>
+            <td style="padding:14px 18px;border-top:1px solid #e9d5ff;color:#6b7280;font-size:13px;">Price</td>
+            <td style="padding:14px 18px;border-top:1px solid #e9d5ff;text-align:right;font-weight:bold;font-size:18px;color:#7c3aed;">' . e($priceText) . '</td>
+          </tr>
+        </table>
+
+        <!-- Buyer details -->
+        <p style="margin:0 0 8px;font-weight:bold;color:#111827;">Details from the buyer</p>
+        <div style="background:#f9fafb;border-left:4px solid #7c3aed;border-radius:6px;padding:14px 16px;margin:0 0 24px;word-break:break-word;">
+          ' . $safeContent . '
+        </div>
+
+        <p style="margin:0 0 24px;">Please reply to this email to confirm the order.</p>
+
+        <!-- Signature -->
+        <p style="margin:0;padding-top:16px;border-top:1px solid #e5e7eb;">
+          Regards,<br>
+          <strong style="color:#111827;">' . e($user->name) . '</strong><br>
+         
+        </p>
+      </td>
+    </tr>
+
+  </table>
+</div>';
+
+        // 2) SEND the mail (tracked, same as group mail)
+        try {
+            $thread = $this->sendTrackedMail($user, $blogId, $email, $siteUrl, $subject, $body);
+            $order->update(['status' => 'mailed', 'user_mail_history_id' => $thread->id]);
+            $this->decrementMailCount(); // remove this line if orders should not use a mail credit
+        } catch (\Throwable $e) {
+            $order->update(['status' => 'failed', 'error' => Str::limit($e->getMessage(), 1000)]);
+            Log::error('Order mail failed: ' . $e->getMessage(), ['order_id' => $order->id]);
+            return response()->json(['message' => 'Order saved but the mail could not be sent. Please try again.'], 422);
+        }
+
+        return response()->json([
+            'message'   => 'Order placed successfully.',
+            'order_id'  => $order->id,
             'available' => $this->availableMailCount($user),
         ]);
     }

@@ -139,20 +139,57 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
                   <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('blog.mailHistory','blog.view-mail') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                   </svg>
-                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Mail History</span>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">All Mail History</span>
                </a>
             </li>
-
+              <li>
+               <a href="{{ route('campaign.index') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                              {{ request()->routeIs('campaign.index','view.campaign.conversation') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('campaign.index','view.campaign.conversation') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                           d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Campaign</span>
+               </a>
+            </li>
+             <li>
+               <a href="{{ route('offer.index') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                              {{ request()->routeIs('offer.index','view.offer.conversation') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('offer.index','view.offer.conversation') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                           d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">Offer</span>
+               </a>
+            </li>
+            <li>
+               <a href="{{ route('orders.index') }}"
+                  class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
+                              {{ request()->routeIs('orders.index','orders.show','view.order.conversation') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('orders.index', 'orders.show','view.order.conversation') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                           d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">My Orders</span>
+               </a>
+            </li>
             @auth
             @if(Auth::user()->hasVerifiedEmail())
             <li>
                <a href="{{ route('my-orders') }}"
                   class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group
                                       {{ request()->routeIs('my-orders','view-my-order') ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
-                  <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('my-orders','view-my-order') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                   <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('my-orders','view-my-order') ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-600' }}"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                           d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
-                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">My Orders</span>
+                  <span class="sidebar-text whitespace-nowrap hide-when-collapsed">My Plan Orders</span>
                </a>
             </li>
 
