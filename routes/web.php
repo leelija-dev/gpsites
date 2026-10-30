@@ -32,7 +32,7 @@ Route::post('/start-trial', [HomeController::class, 'startTrial'])->name('start.
 
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
-
+Route::get('/random-blogs', [BlogController::class, 'randomBlogs'])->name('random.blogs'); 
 Route::get('/about', fn() => view('web.about-new'))->name('about');
 // Route::get('/blogs', fn() => view('web.all-blog'))->name('all-blog');
 // Route::get('/single-blog', fn() => view('web.single-blog'))->name('single-blog');

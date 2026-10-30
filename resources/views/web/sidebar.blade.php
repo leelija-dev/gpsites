@@ -172,20 +172,27 @@ $loggedUserId = Auth::id(); // or Auth::user()->id
       </nav>
 
       <!-- Footer Links -->
-      <div class="border-t border-gray-200 px-4 py-5 space-y-1">
-         <a href="/logout" class="inline-flex w-full justify-center items-center gap-2 px-5 py-2 border border-red-500 hover:bg-red-500 hover:text-white text-red-500 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-300">
-            <span class="sidebar-text hide-when-collapsed">Logout</span>
-            <svg xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5 flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
-            </svg>
-         </a>
+    <div class="border-t border-gray-200 px-4 py-5 space-y-1">
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
 
-      </div>
+        <button type="submit"
+            class="inline-flex w-full justify-center items-center gap-2 px-5 py-2 border border-red-500 hover:bg-red-500 hover:text-white text-red-500 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-300">
+
+            <span class="sidebar-text hide-when-collapsed">Logout</span>
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5 flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+            </svg>
+        </button>
+    </form>
+</div>
    </div>
 </aside>
 

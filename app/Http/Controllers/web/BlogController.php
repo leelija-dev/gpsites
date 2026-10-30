@@ -712,4 +712,39 @@ class BlogController extends Controller
             'niches'
         ));
     }
+    public function randomBlogs()
+{
+    $base  = $this->APIBASEURL . '/api/blogs';
+    $first = Http::get($base, ['page' => 1]);
+
+    if ($first->failed()) {
+        return response()->json(['message' => 'API failed'], 502);
+    }
+
+    $j        = $first->json();
+    $perPage  = max(1, (int) ($j['per_page'] ?? 10));
+    $lastPage = max(1, (int) ceil(($j['total'] ?? 1) / $perPage));
+
+    $picked = [];
+    for ($i = 0; $i < 6 && count($picked) < 2; $i++) {
+        $page = random_int(1, $lastPage);
+        $res  = $page === 1 ? $j : (Http::get($base, ['page' => $page])->json() ?? []);
+        $data = $res['data'] ?? [];
+        if (!$data) continue;
+
+        $b = $data[array_rand($data)];
+        $picked[$b['blog_id']] = $b;          // keyed by id so both blogs are different
+    }
+
+    $rows = collect($picked)->map(fn ($b) => [
+        'blog_id'                        => $b['blog_id'] ?? null,
+        'domain'                         => $b['site_url'] ?? $b['website_name'] ?? '',
+        'general_guest_post_price'       => $b['general_guest_post_price'] ?? 0,
+        'general_link_insertion_price'   => $b['general_link_insertion_price'] ?? 0,
+        'sensitive_guest_post_price'     => $b['sensitive_guest_post_price'] ?? 0,
+        'sensitive_link_insertion_price' => $b['sensitive_link_insertion_price'] ?? 0,
+    ])->values();
+
+    return response()->json(['data' => $rows]);
+}
 }

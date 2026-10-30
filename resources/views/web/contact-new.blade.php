@@ -35,6 +35,7 @@
         position: relative;
         z-index: 50; 
     }
+    
 </style>
 @endpush
 
@@ -50,9 +51,9 @@
                         <h1>Contact <span>GPSites</span></h1>
                         <p>Have a question about GPSites, need help with a campaign, or want to discuss a publisher partnership? We’re here to help you find the next step.</p>
                         <p>GPSites is a link building marketplace and outreach automation platform. Leelija is our parent company.</p>
-                        <div class="gp-actions"><a class="gp-button " href="#gp-inquiry">Send an Inquiry</a><a class="gp-button gp-outline" href="mailto:info@leelija.com">Email Our Team</a></div>
+                        <div class="gp-actions"><a class="gp-button " href="#contact-us">Send an Inquiry</a><a class="gp-button gp-outline" href="mailto:info@leelija.com">Email Our Team</a></div>
                     </div>
-                    <div><img class="gp-art" src="{{ asset('gpsites/images/contact-hero.webp') }}" alt="" width="320" height="198" loading="lazy"></div>
+                    <div><img class="gp-art" src="{{ asset('/images/contact-hero.png') }}" alt="" width="320" height="198" loading="lazy"></div>
                 </div>
             </div>
         </section>
@@ -200,7 +201,7 @@
             <div class="gp-container">
                 <h2>Tell us what you need from GPSites</h2>
                 <p>Comparing plans, following up on an order or exploring a partnership? Share the details with our team.</p>
-                <div class="gp-actions"><a class="gp-button gp-white" href="#gp-inquiry">Send an Inquiry</a></div>
+                <div class="gp-actions"><a class="gp-button gp-white" href="#contact-us">Send an Inquiry</a></div>
             </div>
         </section>
         <section class="gp-section ">

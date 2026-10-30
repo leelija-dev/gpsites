@@ -38,8 +38,7 @@ class BlogController extends Controller
     $blogCategory = BlogCategory::where('status', true)
         ->get();
 
-    return view(
-        'web.blogs.all-blog-new',
+    return view('web.blogs.all-blog-new',
         compact('blogs', 'latestBlog', 'blogCategory')
     );
 }

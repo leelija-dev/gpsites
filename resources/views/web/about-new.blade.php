@@ -53,7 +53,7 @@
                         <p>GPSites is a link building marketplace and outreach automation platform that helps SEO agencies and businesses find relevant publishers, send offers and manage orders. Leelija is our parent company.</p>
                         <div class="gp-actions"><a class="gp-button " href="{{ $homeUrl ?? url('/') }}">Explore GPSites</a><a class="gp-button gp-outline" href="{{ $contactUrl ?? url('/contact') }}">Contact Our Team</a></div>
                     </div>
-                    <div><img class="gp-art" src="{{ asset('gpsites/images/about-hero.webp') }}" alt="" width="393" height="231" loading="lazy"></div>
+                    <div><img class="gp-art" src="{{ asset('/images/about/about-hero.png') }}" alt="" width="393" height="231" loading="lazy"></div>
                 </div>
             </div>
         </section>
@@ -193,7 +193,7 @@
                                 <p>Manage offers, orders and automatic follow-ups.</p>
                             </div>
                         </article>
-                    </div><img class="gp-art" src="{{ asset('gpsites/images/about-tools.webp') }}" alt="" width="197" height="170" loading="lazy">
+                    </div><img class="gp-art" src="{{ asset('/images/about/about-tools.png') }}" alt="" width="197" height="170" loading="lazy">
                 </div><a class="gp-link" href="{{ $homeUrl ?? url('/') }}">Explore the GPSites platform →</a>
             </div>
         </section>
@@ -257,7 +257,7 @@
                     <div>
                         <h2 class="gp-underline">The people behind the platform</h2>
                         <p>Our work combines publisher outreach with the technology that helps you manage campaigns. Behind the listings are conversations with owners, contact updates and price negotiations.</p><a class="gp-button " href="{{ $contactUrl ?? url('/contact') }}">Speak with the GPSites team</a>
-                    </div><img class="gp-art" src="{{ asset('gpsites/images/about-team.webp') }}" alt="" width="322" height="116" loading="lazy">
+                    </div><img class="gp-art" src="{{ asset('/images/about/about-team.png') }}" alt="" width="322" height="116" loading="lazy">
                 </div>
             </div>
         </section>

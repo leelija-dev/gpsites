@@ -77,24 +77,27 @@
         position: relative;
         z-index: 50; 
     }
+    .gp-pills a.gp-button { text-decoration: none; display: inline-flex; align-items: center; }
+.gp-post .gp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+.gp-post .gp-tags a { font-size: .75rem; padding: 3px 10px; border-radius: 999px; background: #f1f5f9; color: #475569; text-decoration: none; }
+.gp-post .gp-tags a:hover { background: #4a36db; color: #fff; }
+.gp-post .gp-thumb { width: 100%; aspect-ratio: 534 / 308; object-fit: cover; border-radius: 12px; }
+.gp-pagination { margin-top: 32px; display: flex; justify-content: center; }
 </style>
 @endpush
 
 @section('content')
 
 {{-- WRAPPED THE ENTIRE CONTENT IN THE ISOLATION DIV --}}
+@php
+    $isCategory = request()->routeIs('blog.category') && isset($category);
+    $cats = (isset($blogCategory) && $blogCategory->count())
+        ? $blogCategory
+        : $blogs->map(fn ($b) => $b->blogCategory)->filter()->unique('id')->values();
+@endphp
 <div class="gp-isolated-page">
     
-    @include('web.partials.assets')
-
-    @php
-    $articles = $articles ?? [
-    ['title' => 'What Is an SEO Title? A Simple Guide for Beginners', 'summary' => 'Start with an introduction to SEO titles and how they fit into your page’s search appearance.', 'image' => 'gpsites/images/title.webp', 'date' => 'Oct 02, 2026', 'datetime' => '2026-10-02', 'slug' => 'what-is-an-seo-title', 'cta' => 'Read the SEO title guide', 'author' => 'Safikul Islam', 'category' => 'SEO', 'url' => '/blog/what-is-an-seo-title'],
-    ['title' => 'How to Find Competitors’ Keywords: A Practical SEO Guide', 'summary' => 'Explore competitor keyword research as a starting point for finding search terms relevant to your business.', 'image' => 'gpsites/images/keywords.webp', 'date' => 'Sep 16, 2026', 'datetime' => '2026-09-16', 'slug' => 'how-to-find-competitors-keywords', 'cta' => 'Explore keyword research', 'author' => 'Safikul Islam', 'category' => 'SEO', 'url' => '/blog/how-to-find-competitors-keywords'],
-    ['title' => 'Types of Link Building in SEO: A Complete Guide for 2026', 'summary' => 'Explore guest posting, digital PR, broken link building and other approaches before choosing a method for your campaign.', 'image' => 'gpsites/images/links.webp', 'date' => 'Aug 20, 2026', 'datetime' => '2026-08-20', 'slug' => 'types-of-link-building-in-seo', 'cta' => 'Explore types of link building', 'author' => 'Safikul Islam', 'category' => 'SEO', 'url' => '/blog/types-of-link-building-in-seo'],
-    ];
-    $articles = collect($articles)->all();
-    @endphp
+    {{-- @include('web.partials.assets') --}}
 
     <div class="gp-page gp-blogs">
         <section class="gp-section gp-hero">
@@ -107,33 +110,67 @@
                         <p>Whether you manage client campaigns, market your own business or are learning the basics, start with the question you need to answer.</p>
                         <div class="gp-actions"></div>
                     </div>
-                    <div><img class="gp-art" src="{{ asset('gpsites/images/blogs-hero.webp') }}" alt="" width="371" height="249" loading="lazy"></div>
+                    <div><img class="gp-art" src="{{ asset('/images/blog/blog-hero.png') }}" alt="" width="371" height="249" loading="lazy"></div>
                 </div>
-                <form class="gp-blog-search" data-blog-search role="search">
-                    <div class="gp-search-line"><label>Search the blog<div class="gp-search-input"><input type="search" name="q" placeholder="Search by topic or keyword"><button class="gp-button">Search</button></div></label><label>Browse topics<select name="category">
-                                <option value="all">All articles</option>
-                                <option value="SEO">SEO</option>
-                            </select></label></div>
-                    <div class="gp-pills"><button type="button" data-category="all" class="gp-button active" aria-pressed="true">All articles</button><button type="button" data-category="SEO" class="gp-button gp-outline" aria-pressed="false">SEO</button></div>
-                </form>
+                <form class="gp-blog-search" data-blog-search role="search"
+      action="{{ url('/blogs') }}" method="GET"
+      data-base-url="{{ url('/blogs') }}"
+      data-server-category="{{ $isCategory ? $category->slug : '' }}">
+    <div class="gp-search-line">
+        <label>Search the blog
+            <div class="gp-search-input">
+                <input type="search" name="search" value="{{ request('search') }}" placeholder="Search by blog title" >
+                <button class="gp-button" type="submit">Search</button>
+            </div>
+        </label>
+        <label>Browse topics
+            <select name="category">
+                <option value="all">All articles</option>
+                @foreach($cats as $cat)
+                    <option value="{{ $cat->slug }}">{{ $cat->name }}</option>
+                @endforeach
+            </select>
+        </label>
+    </div>
+    <div class="gp-pills">
+        <button type="button" data-category="all" class="gp-button active" aria-pressed="true">All articles</button>
+        @foreach($cats as $cat)
+            <button type="button" data-category="{{ $cat->slug }}" class="gp-button gp-outline" aria-pressed="false">{{ $cat->name }}</button>
+        @endforeach
+    </div>
+</form>
             </div>
         </section>
         <section class="gp-section ">
             <div class="gp-container">
                 <h2 class="gp-underline">Explore the latest SEO guides</h2>
                 <div class="gp-between">
-                    <p>Compare link building approaches, find ideas for keyword research or get familiar with SEO titles.<br>Choose a guide that fits the work in front of you.</p><small data-blog-count aria-live="polite">{{ count($articles) }} {{ count($articles) === 1 ? 'article' : 'articles' }}</small>
+                    <p>Compare link building approaches, find ideas for keyword research or get familiar with SEO titles.<br>Choose a guide that fits the work in front of you.</p><small data-blog-count aria-live="polite">{{ count($blogs) }} {{ count($blogs) === 1 ? 'article' : 'articles' }}</small>
                 </div>
-                <div class="gp-grid gp-cols-3">@forelse($articles as $article)
-                    <article class="gp-post" data-post data-category="{{ $article['category'] ?? 'SEO' }}"><img class="gp-art" src="{{ asset($article['image']) }}" alt="" width="534" height="308" loading="lazy"><span class="gp-pill">{{ $article['category'] ?? 'SEO' }}</span>
-                        <h2><a href="{{ url($article['url']) }}">{{ $article['title'] }}</a></h2>
-                        <p>{{ $article['summary'] }}</p>
-                        <div class="gp-meta">{{ $article['author'] }} · <time datetime="{{ $article['datetime'] }}">{{ $article['date'] }}</time></div><a class="gp-link" href="{{ url($article['url']) }}">{{ $article['cta'] ?? 'Read guide' }} →</a>
-                    </article>
-                    @empty
-                    <p>No articles are available yet.</p>
-                    @endforelse
-                </div>
+                <div class="gp-grid gp-cols-3">
+    @forelse($blogs as $blog)
+        <article class="gp-post" data-post
+                 data-category="{{ $blog->blogCategory->slug ?? '' }}"
+                 data-search="{{ \Illuminate\Support\Str::lower(strip_tags($blog->title.' '.$blog->excerpt.' '.$blog->tags.' '.($blog->blogCategory->name ?? ''))) }}">
+            <a href="{{ url('blog/' . $blog->slug) }}">
+                <img class="gp-art gp-thumb"
+                     src="{{ $blog->feature_image ? asset('blog_images/' . $blog->feature_image) : asset('/images/blog/blog-hero.png') }}"
+                     alt="{{ $blog->feature_image_alt ?: $blog->title }}" width="534" height="308" loading="lazy">
+            </a>
+            <span class="gp-pill">{{ $blog->blogCategory->name ?? 'General' }}</span>
+            <h2><a href="{{ url('blog/' . $blog->slug) }}">{{ $blog->title }}</a></h2>
+            <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $blog->excerpt), 160) }}</p>
+            <div class="gp-meta">{{ $blog->admin->name ?? 'GPSites' }} · {{ optional($blog->created_at)->format('M d, Y') }}</div>
+            <a class="gp-link" href="{{ url('blog/' . $blog->slug) }}">Read more →</a>
+        </article>
+    @empty
+        <p>No articles are available yet.</p>
+    @endforelse
+</div>
+<div data-blog-empty hidden>
+    <p>No articles match your search. Try a broader keyword or view all articles.</p>
+    <button class="gp-button" data-blog-reset type="button">View all articles</button>
+</div>
                 <div data-blog-empty hidden>
                     <p>No articles match your search. Try a broader keyword or view all articles.</p><button class="gp-button" data-blog-reset type="button">View all articles</button>
                 </div>
@@ -141,7 +178,7 @@
         </section>
         <section class="gp-section gp-tint">
             <div class="gp-container">
-                <div class="gp-blog-about"><img class="gp-art" src="{{ asset('gpsites/images/blog-about.webp') }}" alt="" width="299" height="163" loading="lazy">
+                <div class="gp-blog-about"><img class="gp-art" src="{{ asset('/images/blog/blog-about.png') }}" alt="" width="299" height="163" loading="lazy">
                     <div>
                         <h2 class="gp-underline">About the GPSites blog</h2>
                         <p>This blog is part of GPSites, a link building marketplace and outreach automation platform. Leelija is our parent company. Our articles offer a starting point for understanding SEO topics before you put them into practice.</p><a class="gp-link" href="{{ $aboutUrl ?? url('/about') }}">Learn more about GPSites →</a>
@@ -157,10 +194,96 @@
                         <p>Use GPSites to discover publishers, filter sites by niche, authority metrics and traffic, and manage your outreach offers.</p>
                         <p>Start with the audience you want to reach, then review the publishers that fit your campaign.</p>
                         <div class="gp-actions"><a class="gp-button gp-white" href="{{ $homeUrl ?? url('/') }}">Explore GPSites</a><a class="gp-button gp-outline" href="{{ $contactUrl ?? url('/contact') }}">Ask our team a question</a></div>
-                    </div><img class="gp-art" src="{{ asset('gpsites/images/blog-cta.webp') }}" alt="" width="193" height="141" loading="lazy">
+                    </div><img class="gp-art" src="{{ asset('/images/blog/blog-cta.png') }}" alt="" width="193" height="141" loading="lazy">
                 </div>
             </div>
         </section>
     </div>
 </div>
+
+<script>
+(function () {
+    var form = document.querySelector('[data-blog-search]');
+    if (!form) return;
+
+    var input   = form.querySelector('input[name="search"]');
+    var select  = form.querySelector('select[name="category"]');
+    var pills   = [].slice.call(form.querySelectorAll('[data-category]'));
+    var posts   = [].slice.call(document.querySelectorAll('[data-post]'));
+    var countEl = document.querySelector('[data-blog-count]');
+    var emptyEl = document.querySelector('[data-blog-empty]');
+    var resetBt = document.querySelector('[data-blog-reset]');
+
+    var baseUrl   = form.getAttribute('data-base-url');
+    var serverCat = form.getAttribute('data-server-category') || '';
+    var known     = [].map.call(select.options, function (o) { return o.value; });
+
+    var params = new URLSearchParams(window.location.search);
+    var state = {
+        q: (params.get('search') || '').trim(),
+        cat: params.get('category') || serverCat || 'all'
+    };
+    if (known.indexOf(state.cat) === -1) state.cat = 'all';
+
+    function apply() {
+        var q = state.q.trim().toLowerCase(), shown = 0;
+
+        posts.forEach(function (p) {
+            var okCat = state.cat === 'all' || p.getAttribute('data-category') === state.cat;
+            var okQ   = !q || p.getAttribute('data-search').indexOf(q) > -1;
+            p.hidden = !(okCat && okQ);
+            if (!p.hidden) shown++;
+        });
+
+        if (countEl) countEl.textContent = shown + (shown === 1 ? ' article' : ' articles');
+        if (emptyEl) emptyEl.hidden = shown !== 0;
+
+        select.value = state.cat;
+        pills.forEach(function (b) {
+            var on = b.getAttribute('data-category') === state.cat;
+            b.classList.toggle('active', on);
+            b.classList.toggle('gp-outline', !on);
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+
+        var next = new URLSearchParams();
+        if (q) next.set('search', state.q.trim());
+        if (state.cat !== 'all' && state.cat !== serverCat) next.set('category', state.cat);
+        var qs = next.toString();
+        history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : ''));
+    }
+
+    function setCategory(slug) {
+        // On /blogs/category/{slug} only that category is loaded, so go back to /blogs
+        if (serverCat && slug !== serverCat) {
+            var qs = new URLSearchParams();
+            if (slug !== 'all') qs.set('category', slug);
+            if (state.q.trim()) qs.set('search', state.q.trim());
+            window.location.href = baseUrl + (qs.toString() ? '?' + qs.toString() : '');
+            return;
+        }
+        state.cat = slug;
+        apply();
+    }
+
+    pills.forEach(function (b) {
+        b.addEventListener('click', function () { setCategory(b.getAttribute('data-category')); });
+    });
+    select.addEventListener('change', function () { setCategory(select.value); });
+
+    // keep the raw value (including spaces) while typing
+    input.addEventListener('input', function () { state.q = input.value; apply(); });
+    form.addEventListener('submit', function (e) { e.preventDefault(); state.q = input.value; apply(); });
+
+    if (resetBt) resetBt.addEventListener('click', function () {
+        if (serverCat) { window.location.href = baseUrl; return; }
+        state.q = ''; state.cat = 'all';
+        input.value = '';
+        apply();
+    });
+
+    input.value = state.q;   // set once on page load only
+    apply();
+})();
+</script>
 @endsection
