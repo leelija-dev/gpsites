@@ -78,7 +78,7 @@
     <div id="chatBox"
          class="rounded-lg border border-gray-200 p-4 space-y-3 overflow-y-auto"
          style="background:#efeae2; ">
-
+        
         @php $lastDate = null; @endphp
 
         @forelse($messages as $message)

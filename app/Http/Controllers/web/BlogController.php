@@ -49,6 +49,11 @@ class BlogController extends Controller
             'dr_max'         => $request->input('dr_max'),
             'traffic_min'    => $request->input('traffic_min'),
         ], fn ($v) => $v !== null && $v !== '');
+        $openBlogId = $request->input('open_blog');
+if ($openBlogId) {
+    // coming from the home page: load the page that contains this blog
+    $params = ['page' => $request->get('page') ?: $this->findBlogPage($openBlogId)];
+}
         $response = Http::get($APPURL, $params);
         
 
@@ -126,14 +131,46 @@ class BlogController extends Controller
             $blogs['per_page'],        // per page
             $blogs['current_page'],    // current page
             // ['path' => url()->current()]
-            ['path' => url()->current(), 'query' => $request->query()]
+            // ['path' => url()->current(), 'query' => $request->query()]
+             ['path' => url()->current(), 'query' => $request->except('open_blog')]
         );
         // dd($pagination);
         $nichesResponse = Http::get($this->APIBASEURL . '/api/niches');
         $niches_data = $nichesResponse->successful() ? ($nichesResponse->json() ?? []) : [];
         return view('web.user.blog', compact('pagination', 'total_mail_available', 'isValidPlan', 'total_mail','niches_data'));
     }
+private function findBlogPage($blogId): int
+{
+    return Cache::remember('blog_page_' . $blogId, now()->addMinutes(10), function () use ($blogId) {
+        $base  = $this->APIBASEURL . '/api/blogs';
+        $first = Http::get($base, ['page' => 1]);
+        if ($first->failed()) return 1;
 
+        $j        = $first->json();
+        $perPage  = max(1, (int) ($j['per_page'] ?? 10));
+        $lastPage = max(1, (int) ceil(($j['total'] ?? 1) / $perPage));
+
+        $has = fn ($res) => collect($res['data'] ?? [])
+            ->contains(fn ($b) => (string) ($b['blog_id'] ?? '') === (string) $blogId);
+
+        if ($has($j) || $lastPage < 2) return 1;
+
+        // check the remaining pages in parallel, 10 at a time
+        foreach (array_chunk(range(2, $lastPage), 10) as $chunk) {
+            $responses = Http::pool(fn ($pool) => array_map(
+                fn ($p) => $pool->as((string) $p)->get($base, ['page' => $p]),
+                $chunk
+            ));
+            foreach ($chunk as $p) {
+                $r = $responses[(string) $p] ?? null;
+                if ($r instanceof \Illuminate\Http\Client\Response && $r->successful() && $has($r->json())) {
+                    return $p;
+                }
+            }
+        }
+        return 1;
+    });
+}
     public function viewMail($id)
     {
         $id = decrypt($id);
@@ -1304,6 +1341,7 @@ $body = '
         // JSON response for the homepage search (only the fields the table needs)
         if ($request->expectsJson()) {
             $rows = collect($apiBlogs['data'] ?? [])->map(fn ($b) => [
+                'blog_id' => $b['blog_id'] ?? null, 
                 'domain'  => $b['site_url'] ?? $b['website_name'] ?? '',
                 'niche'   => $b['website_niche'] ?? '',
                 'da'      => $b['moz_da'] ?? null,
@@ -1342,5 +1380,42 @@ $body = '
         ->findOrFail($id);
 
     return view('mail.conversation', compact('thread'));
+}
+ public function randomBlogs()
+{
+    $base  = $this->APIBASEURL . '/api/blogs';
+    $first = Http::get($base, ['page' => 1]);
+
+    if ($first->failed()) {
+        return response()->json(['message' => 'API failed'], 502);
+    }
+
+    $j        = $first->json();
+    $perPage  = max(1, (int) ($j['per_page'] ?? 10));
+    $lastPage = max(1, (int) ceil(($j['total'] ?? 1) / $perPage));
+
+    $picked = [];
+    for ($i = 0; $i < 6 && count($picked) < 2; $i++) {
+        $page = random_int(1, $lastPage);
+        $res  = $page === 1 ? $j : (Http::get($base, ['page' => $page])->json() ?? []);
+        $data = $res['data'] ?? [];
+        if (!$data) continue;
+
+        $b = $data[array_rand($data)];
+        // $picked[$b['blog_id']] = $b;          // keyed by id so both blogs are different
+        $picked[$b['blog_id']] = $b + ['_page' => $page];   // keep the page it was found on
+    }
+
+    $rows = collect($picked)->map(fn ($b) => [
+        'blog_id'                        => $b['blog_id'] ?? null,
+        'page'                           => $b['_page'] ?? 1,
+        'domain'                         => $b['site_url'] ?? $b['website_name'] ?? '',
+        'general_guest_post_price'       => $b['general_guest_post_price'] ?? 0,
+        'general_link_insertion_price'   => $b['general_link_insertion_price'] ?? 0,
+        'sensitive_guest_post_price'     => $b['sensitive_guest_post_price'] ?? 0,
+        'sensitive_link_insertion_price' => $b['sensitive_link_insertion_price'] ?? 0,
+    ])->values();
+
+    return response()->json(['data' => $rows]);
 }
 }

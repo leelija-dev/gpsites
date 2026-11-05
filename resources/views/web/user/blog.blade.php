@@ -642,7 +642,8 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 @if (isset($pagination))
                     <div id="pagina-wrapper" class="mt-6 flex justify-center">
                         {{-- {{ $pagination->links('pagination::bootstrap-5') }} --}}
-                        {{ $pagination->appends(request()->query())->links('pagination::bootstrap-5') }}
+                        {{-- {{ $pagination->appends(request()->query())->links('pagination::bootstrap-5') }} --}}
+                        {{ $pagination->appends(request()->except('open_blog'))->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             @else
@@ -1691,6 +1692,50 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             });
 
             // Toggle expandable row on main row click
+            // Auto-open the blog row coming from the home page (?open_blog=BLOG_ID)
+// var openId = new URLSearchParams(window.location.search).get('open_blog');
+// if (openId) {
+//     var rowEl  = document.getElementById('expandRow' + openId);
+//     var $main  = $('.main-row[data-blog-id="' + openId + '"]');
+//     if (rowEl && $main.length) {
+//         $(rowEl).slideDown();
+//         $main.addClass('selected-row');
+//         $('html, body').animate({ scrollTop: $main.offset().top - 120 }, 400);
+//     }
+// }
+// Auto-open from the home page:
+// ?open_blog=ID  [&action=offer&amount=250 | &action=order&service=general_guest_post_price]
+var qs     = new URLSearchParams(window.location.search);
+var openId = qs.get('open_blog');
+if (openId) {
+    var rowEl = document.getElementById('expandRow' + openId);
+    var $main = $('.main-row[data-blog-id="' + openId + '"]');
+    if (rowEl && $main.length) {
+        $(rowEl).slideDown();
+        $main.addClass('selected-row');
+        $('html, body').animate({ scrollTop: $main.offset().top - 120 }, 400);
+
+        var action = qs.get('action');
+        if (action === 'offer') {
+            $main.find('.rowMailBtn').first().trigger('click');        // opens the offer modal
+            var amount = parseFloat(qs.get('amount'));
+            if (amount > 0 && $('#offerModal').hasClass('open')) {
+                $('#offerAmount').val(amount).removeClass('invalid');
+            }
+        } else if (action === 'order') {
+            $main.find('.orderBtn').first().trigger('click');          // opens the order modal
+            var service = qs.get('service');
+            if ($('#orderModal').hasClass('open') && service &&
+                $('#orderType option[value="' + service + '"]').length) {
+                $('#orderType').val(service).trigger('change');        // selects service + shows price
+            }
+        }
+
+        // so a refresh doesn't re-open the modal
+        qs.delete('action'); qs.delete('amount'); qs.delete('service');
+        history.replaceState(null, '', window.location.pathname + (qs.toString() ? '?' + qs.toString() : ''));
+    }
+}
             $('.main-row').click(function() {
                 var targetId = $(this).data('target');
                 var $targetRow = $(targetId);

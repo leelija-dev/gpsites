@@ -455,15 +455,15 @@
     </div>
     <p>Our negotiated prices <span class="gp-offer-url" id="gp-direct-site">Loading site…</span></p>
 
-    <label class="gp-field">Price type
+    <label class="gp-field">Service type
         <select id="gp-price-type">
-            <option value="">Select price type</option>
+            <option value="">Select Service type</option>
         </select>
     </label>
 
     <label class="gp-field">Publisher price (USD)
         <span class="gp-money">
-            <input id="gp-direct-price" readonly placeholder="Auto-filled">
+            <input id="gp-direct-price" readonly placeholder="">
         </span>
     </label>
 
@@ -925,7 +925,7 @@ function messageRow(title, hint, type) {
         const offerBtn    = document.getElementById('gp-offer-btn');
         const directSite  = document.getElementById('gp-direct-site');
         const directBtn   = document.getElementById('gp-direct-btn');
-        const priceSelect = document.getElementById('gp-price-type');
+        const priceSelect = document.getElementById('gp-price-type'); 
         const priceInput  = document.getElementById('gp-direct-price');
         if (!offerSite || !directSite) return;
 
@@ -936,7 +936,11 @@ function messageRow(title, hint, type) {
             ['sensitive_link_insertion_price', 'Sensitive link insertion']
         ];
 
-        const blogLink = id => id ? BLOG_URL + '?open_blog=' + encodeURIComponent(id) : BLOG_URL;
+        // const blogLink = id => id ? BLOG_URL + '?open_blog=' + encodeURIComponent(id) : BLOG_URL;
+        let offerBlogId = null, directBlogId = null;
+        const blogLink = (id, extra) => id
+            ? BLOG_URL + '?open_blog=' + encodeURIComponent(id) + (extra || '')
+            : BLOG_URL;
 
         fetch(RANDOM_BLOGS_URL, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
             .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
@@ -947,27 +951,50 @@ function messageRow(title, hint, type) {
 
                 if (a) {                                   // Custom offer -> random blog
                     offerSite.textContent = a.domain;
+                    offerBlogId = a.blog_id;  
                     offerBtn.href = blogLink(a.blog_id);
                 }
 
                 if (b) {                                   // Direct order -> another random blog
                     directSite.textContent = b.domain;
+                    directBlogId = b.blog_id;
                     directBtn.href = blogLink(b.blog_id);
 
                     PRICE_TYPES.forEach(function (t) {
                         const price = Number(b[t[0]] || 0);
+                        if (price <= 0) return;  
                         const opt = document.createElement('option');
                         opt.value = price;
+                        opt.dataset.key = t[0]; 
                         opt.textContent = t[1] + ' — $' + price.toLocaleString();
                         priceSelect.appendChild(opt);
                     });
+                    if (priceSelect.options.length <= 1) {      // only the placeholder is left
+                        priceSelect.options[0].textContent = 'No prices available';
+                        priceSelect.disabled = true;
+                    }
                 }
             })
             .catch(function (err) {
                 console.error(err);
                 offerSite.textContent = directSite.textContent = 'Could not load a site';
             });
+            // Custom offer: open the dashboard row + offer modal with the typed amount
+offerBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    const amount = parseFloat(document.getElementById('gp-offer-amount').value);
+    let extra = '&action=offer';
+    if (amount > 0) extra += '&amount=' + encodeURIComponent(amount);
+    window.location.href = blogLink(offerBlogId, extra);
+});
 
+// Direct order: open the dashboard row + order modal with the chosen service
+directBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    const opt = priceSelect.options[priceSelect.selectedIndex];
+    const key = opt && opt.dataset.key;
+    window.location.href = blogLink(directBlogId, key ? '&action=order&service=' + encodeURIComponent(key) : '');
+});
         // Auto-fill the price input when a price type is selected (user cannot type)
         priceSelect.addEventListener('change', function () {
             // priceInput.value = this.value === '' ? '' : '$' + Number(this.value).toLocaleString();
