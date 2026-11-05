@@ -42,8 +42,10 @@ class ContactController extends Controller
                   }
 
                   }
-              
-  return redirect()->route('contact')->with('success','Message sent successfully');
+              $target = $request->input('source') === 'home'
+    ? route('home') . '#gp-inquiry'        // submitted from the home page
+    : route('contact'); 
+  return redirect($target)->with('success','Message sent successfully');
   } 
   return back()->with('error', 'Something went wrong, please try again.');
 }

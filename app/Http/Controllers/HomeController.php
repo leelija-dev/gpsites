@@ -59,7 +59,7 @@ class HomeController extends Controller
             ->first();
 
         $faqs = HomeFaqs::index();
-        return view('web.home', compact('plans', 'niches_data', 'faqs', 'trialPlan'));
+        return view('web.home-new', compact('plans', 'niches_data', 'faqs', 'trialPlan'));
     }
 
     public function startTrial(Request $request)
