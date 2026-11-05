@@ -1,0 +1,92 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, bcmath, ctype, json, tokenizer, pdo, pdo_mysql, pdo_sqlite
+          coverage: none
+
+      - name: Copy .env file
+        run: |
+          echo "APP_ENV=production" >> .env
+          echo "APP_DEBUG=false" >> .env
+          echo "APP_URL=${{ secrets.APP_URL }}" >> .env
+          echo "DB_CONNECTION=${{ secrets.DB_CONNECTION }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "MAIL_MAILER=${{ secrets.MAIL_MAILER }}" >> .env
+          echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env
+          echo "MAIL_PORT=${{ secrets.MAIL_PORT }}" >> .env
+          echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> .env
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+          echo "MAIL_FROM_ADDRESS=${{ secrets.MAIL_FROM_ADDRESS }}" >> .env
+          echo "MAIL_FROM_NAME=${{ secrets.MAIL_FROM_NAME }}" >> .env
+          echo "MAIL_ADMIN_EMAIL=${{ secrets.MAIL_ADMIN_EMAIL }}" >> .env
+          echo "MAIL_SITE_INBOX=${{ secrets.MAIL_SITE_INBOX }}" >> .env
+          echo "IMAP_HOST=${{ secrets.IMAP_HOST }}" >> .env
+          echo "IMAP_PORT=${{ secrets.IMAP_PORT }}" >> .env
+          echo "IMAP_ENCRYPTION=${{ secrets.IMAP_ENCRYPTION }}" >> .env
+          echo "IMAP_USERNAME=${{ secrets.IMAP_USERNAME }}" >> .env
+          echo "IMAP_PASSWORD=${{ secrets.IMAP_PASSWORD }}" >> .env
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Clear config cache
+        run: php artisan config:clear
+
+      - name: Clear route cache
+        run: php artisan route:clear
+
+      - name: Clear view cache
+        run: php artisan view:clear
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Clear and cache config
+        run: php artisan config:cache
+
+      - name: Cache routes
+        run: php artisan route:cache
+
+      - name: Optimize
+        run: php artisan optimize
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v4
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+          SOURCE: "."
+          EXCLUDE: "/.git/, /.github/, /node_modules/, /vendor/"
+          SCRIPT_AFTER: |
+            cd ${{ secrets.REMOTE_TARGET }}
+            php artisan config:clear
+            php artisan cache:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan optimize
