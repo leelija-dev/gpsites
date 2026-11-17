@@ -22,7 +22,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="msapplication-TileColor" content="#da532c"> --}}
 
-    <title>@yield('title') - {{ config('app.name') }}</title>
+    <title>@yield('title') </title>
     <meta name="description" content="@yield('description')">
     <meta name="keywords" content="@yield('keywords')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
