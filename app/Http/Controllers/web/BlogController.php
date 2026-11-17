@@ -1293,7 +1293,7 @@ $body = '
         // }
 
         // Build API Request
-        $APIURL  = $this->APIBASEURL .'/api/blogs';
+        $APIURL  = $this->APIBASEURL .'/api/blogs/search';
         $response = Http::get($APIURL, [
             'niche' => implode(',', $niches),
             'da_max' => $request->get('da_max'),
