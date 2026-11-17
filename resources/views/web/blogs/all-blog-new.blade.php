@@ -1,11 +1,11 @@
 @extends('layouts.web.main-layout')
 
-@section('title', 'Blogs')
+@section('title', 'Link Building Blog & Practical SEO Guides | GPSites')
 {{-- @section('description', 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.') --}}
 @section(
     'description',
     request()->routeIs('all-blogs.index')
-        ? 'Explore the latest insights, stories, and expert tips on business growth, automation, outreach, SEO, and digital marketing with GPSites.'
+        ? 'Explore the GPSites blog for practical SEO guides on link building, competitor keyword research and SEO titles. Find a useful starting point for your next step.'
         : (request()->routeIs('blog.category')
             ? ($category->description ?? '')
             : '')

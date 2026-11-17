@@ -1,7 +1,7 @@
 @extends('layouts.web.main-layout')
 
-@section('title', 'Link Building Marketplace & Outreach Automation Tool | GPSites')
-@section('description', 'Find relevant guest posting sites, connect with publishers, and manage your outreach in one place. GPSites — the link building marketplace and outreach automation tool.')
+@section('title', 'Link Building Marketplace & Outreach Tool | GPSites')
+@section('description', 'Find guest posting sites, filter by niche, DA, DR and traffic, and manage outreach with GPSites. Agency plans include access to negotiated publisher prices.')
 @section('keywords', 'link building marketplace, guest posting sites, publisher outreach, outreach automation, backlink marketplace, GPSites')
 @section('indexing', 'yes')
 
