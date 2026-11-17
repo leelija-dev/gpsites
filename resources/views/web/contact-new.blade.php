@@ -3,7 +3,7 @@
 @section('title', 'Contact GPSites | Sales, Support and Publisher Inquiries')
 @section('description', 'Contact GPSites for help with plans, outreach campaigns, orders or publisher partnerships. Email our team, call us or send an inquiry through the contact form.')
 @section('keywords', 'contact gpsites, gpsites contact number, gpsites email')
-@section('indexing', 'no')
+@section('indexing', 'yes')
 
 @push('styles')
 <style>

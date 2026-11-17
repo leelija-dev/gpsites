@@ -3,7 +3,7 @@
 @section('title', 'About GPSites | Link Building Marketplace by Leelija')
 @section('description', 'Meet GPSites, a link building marketplace and outreach automation platform backed by parent company Leelija. Learn about our mission and publisher network.')
 @section('keywords', 'about gpsites')
-@section('indexing', 'no')
+@section('indexing', 'yes')
 
 {{-- 1. ADD ISOLATION CSS DIRECTLY TO THE PAGE --}}
 @push('styles')

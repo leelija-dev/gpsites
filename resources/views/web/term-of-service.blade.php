@@ -4,7 +4,7 @@
 @section('description', ' GPsites Terms of Service explain the acceptable website use, user rights, their
     responsibilities, and more. Go through these carefully before using our services.')
 @section('keywords', 'GPsites Terms of Service')
-@section('indexing', 'no')
+@section('indexing', 'yes')
 
 @section('content')
 

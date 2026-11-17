@@ -13,7 +13,7 @@
 @section('keywords',
     'Link Building Outreach Automation​, Outreach Automation, Link Building Outreach Tool, outreach
     automation tool​, automated outreach system​, backlink marketplace, backlinks websites, outreach automation tool')
-@section('indexing', 'no')
+@section('indexing', 'yes')
 
 @php
     $blogSchema = [

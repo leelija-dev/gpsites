@@ -4,7 +4,7 @@
 @section('description', ' GPsites Privacy Policy outlines how we protect our users’ data privacy, the type of
     information we collect, how we retain, use, share, or reveal your data, and more.')
 @section('keywords', 'GPsites privacy policy')
-@section('indexing', 'no')
+@section('indexing', 'yes')
 
 @section('content')
 
