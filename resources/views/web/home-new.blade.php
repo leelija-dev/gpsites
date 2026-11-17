@@ -245,18 +245,18 @@
                                 <option value="70">Min 70</option>
                             </select>
                         </label>
-                        <label>Traffic
-                            <select name="traffic">
-                                <option value="0">Any</option>
-                                <option value="10000">1000+</option>
-                                <option value="10000">2000+</option>
-                                <option value="10000">3000+</option>
-                                <option value="10000">4000+</option>
-                                <option value="10000">5000+</option>
-                                <option value="10000">10,000+</option>
-                                <option value="100000">15,000+</option>
-                            </select>
-                        </label>
+                            <label>Traffic
+                                <select name="traffic">
+                                    <option value="0">Any</option>
+                                    <option value="1000">1,000+</option>
+                                    <option value="2000">2,000+</option>
+                                    <option value="3000">3,000+</option>
+                                    <option value="4000">4,000+</option>
+                                    <option value="5000">5,000+</option>
+                                    <option value="10000">10,000+</option>
+                                    <option value="15000">15,000+</option>
+                                </select>
+                            </label>
                         <button type="submit" class="gp-button" id="gp-search-btn">Find Matching Sites</button>
                     </div>
                 </form>

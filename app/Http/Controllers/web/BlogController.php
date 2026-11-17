@@ -1242,14 +1242,25 @@ $body = '
     public function findNiches(Request $request)
     {
         // Selected Niches
-        $niches = $request->niches;
+       // Selected Niches
+$rawNiches = $request->get('niches', $request->get('niche', ''));
 
+if (is_array($rawNiches)) {
+    $niches = $rawNiches;
+} else {
+    $decoded = json_decode($rawNiches, true);
 
-        if (is_string($niches)) {
-            $decoded = json_decode($niches, true);
-            $niches = json_last_error() === JSON_ERROR_NONE ? $decoded : explode(',', $niches);
-        }
-        $niches = array_map('trim', (array)$niches);
+    if (is_array($decoded)) {
+        $niches = $decoded;
+    } else {
+        $niches = explode(',', $rawNiches);
+    }
+}
+
+$niches = array_values(array_filter(
+    array_map('trim', $niches),
+    fn ($value) => $value !== ''
+));
 
         // Store temporary in session
         session(['selected_niches' => $niches]);
@@ -1294,16 +1305,17 @@ $body = '
 
         // Build API Request
         $APIURL  = $this->APIBASEURL .'/api/blogs/search';
+        
         $response = Http::get($APIURL, [
-            'niche' => implode(',', $niches),
-            'da_max' => $request->get('da_max'),
-            'da_min' => $request->get('da_min'),
-            'dr_max' => $request->get('dr_max'),
-            'dr_min' => $request->get('dr_min'),
-            'traffic_min' => $request->get('traffic_min', 0),//$request->get('traffic_min'),
-            'traffic_max' => $request->get('traffic_max'),
-            'page' => $request->get('page', 1),
-            'per_page' => 5,
+            'niche'       => implode(',', $niches),
+            'da_min'      => $request->get('da_min', 0),
+            'da_max'      => $request->get('da_max', 100),
+            'dr_min'      => $request->get('dr_min', 0),
+            'dr_max'      => $request->get('dr_max', 100),
+            'traffic_min' => $request->get('traffic_min', 0),
+            'traffic_max' => $request->get('traffic_max', 999999),
+            'page'        => $request->get('page', 1),
+            'per_page'    => $request->get('per_page', 5),
         ]);
         // print_r($response);die;
 
