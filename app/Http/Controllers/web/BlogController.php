@@ -50,10 +50,10 @@ class BlogController extends Controller
             'traffic_min'    => $request->input('traffic_min'),
         ], fn ($v) => $v !== null && $v !== '');
         $openBlogId = $request->input('open_blog');
-if ($openBlogId) {
-    // coming from the home page: load the page that contains this blog
-    $params = ['page' => $request->get('page') ?: $this->findBlogPage($openBlogId)];
-}
+// if ($openBlogId) {
+//     // coming from the home page: load the page that contains this blog
+//     $params = ['page' => $request->get('page') ?: $this->findBlogPage($openBlogId)];
+// }
         $response = Http::get($APPURL, $params);
         
 
@@ -112,6 +112,16 @@ if ($openBlogId) {
         }
 
         $blogs = $response->json();
+        if ($openBlogId) {
+    $one = Http::timeout(10)->get($this->APIBASEURL . '/api/blogs/' . $openBlogId);
+    if ($one->successful()) {
+        $blogs['data'] = array_values(array_filter(
+            $blogs['data'],
+            fn ($b) => (string) $b['blog_id'] !== (string) $openBlogId
+        ));
+        array_unshift($blogs['data'], $one->json());   // clicked blog shows first
+    }
+}
         //$page = LengthAwarePaginator::resolveCurrentPage(); // current page number
         // $perPage = 10; // Show 10 blogs per page
         //$offset = ($page - 1) * $perPage;
