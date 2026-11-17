@@ -1309,11 +1309,8 @@ $niches = array_values(array_filter(
         $response = Http::get($APIURL, [
             'niche'       => implode(',', $niches),
             'da_min'      => $request->get('da_min', 0),
-            'da_max'      => $request->get('da_max', 100),
             'dr_min'      => $request->get('dr_min', 0),
-            'dr_max'      => $request->get('dr_max', 100),
             'traffic_min' => $request->get('traffic_min', 0),
-            'traffic_max' => $request->get('traffic_max', 999999),
             'page'        => $request->get('page', 1),
             'per_page'    => $request->get('per_page', 5),
         ]);
