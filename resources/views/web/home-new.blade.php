@@ -224,24 +224,37 @@
                         <label>Domain Authority
                             <select name="da">
                                 <option value="0">Any</option>
+                                <option value="10">Min 10</option>
+                                <option value="20">Min 20</option>
                                 <option value="30">Min 30</option>
+                                <option value="40">Min 40</option>
                                 <option value="50">Min 50</option>
+                                <option value="60">Min 60</option>
                                 <option value="70">Min 70</option>
                             </select>
                         </label>
                         <label>Domain Rating
                             <select name="dr">
                                 <option value="0">Any</option>
+                               <option value="10">Min 10</option>
+                                <option value="20">Min 20</option>
                                 <option value="30">Min 30</option>
+                                <option value="40">Min 40</option>
                                 <option value="50">Min 50</option>
+                                <option value="60">Min 60</option>
                                 <option value="70">Min 70</option>
                             </select>
                         </label>
                         <label>Traffic
                             <select name="traffic">
                                 <option value="0">Any</option>
+                                <option value="10000">1000+</option>
+                                <option value="10000">2000+</option>
+                                <option value="10000">3000+</option>
+                                <option value="10000">4000+</option>
+                                <option value="10000">5000+</option>
                                 <option value="10000">10,000+</option>
-                                <option value="100000">100,000+</option>
+                                <option value="100000">15,000+</option>
                             </select>
                         </label>
                         <button type="submit" class="gp-button" id="gp-search-btn">Find Matching Sites</button>
