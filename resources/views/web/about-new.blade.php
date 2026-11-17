@@ -1,7 +1,7 @@
 @extends('layouts.web.main-layout')
 
-@section('title', 'About')
-@section('description', 'GPsites: one-stop link-building outreach automation tool and best backlinks marketplace helps you in extensive targeted outreach for quality link placements.')
+@section('title', 'About GPSites | Link Building Marketplace by Leelija')
+@section('description', 'Meet GPSites, a link building marketplace and outreach automation platform backed by parent company Leelija. Learn about our mission and publisher network.')
 @section('keywords', 'about gpsites')
 @section('indexing', 'no')
 
