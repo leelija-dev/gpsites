@@ -815,7 +815,7 @@ function messageRow(title, hint, type) {
                 dr_max:      100,
                 traffic_min: form.traffic.value,
                 traffic_max: 999999,
-                per_page:    firstLoad ? 5 : 1000
+                per_page:    firstLoad ? 5 : 5
             });
             firstLoad = false;
             btn.disabled = true;
