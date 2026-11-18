@@ -51,9 +51,9 @@
                         <h1>Contact <span>GPSites</span></h1>
                         <p>Have a question about GPSites, need help with a campaign, or want to discuss a publisher partnership? We’re here to help you find the next step.</p>
                         <p>GPSites is a link building marketplace and outreach automation platform. Leelija is our parent company.</p>
-                        <div class="gp-actions"><a class="gp-button " href="#contact-us">Send an Inquiry</a><a class="gp-button gp-outline" href="mailto:info@leelija.com">Email Our Team</a></div>
+                        <div class="gp-actions"><a class="gp-button " href="#contact-us">Send an Inquiry</a><a class="gp-button gp-outline" href="mailto:{{ config('gpsites.contact_email') }}">Email Our Team</a></div>
                     </div>
-                    <div><img class="gp-art" src="{{ asset('/images/contact-hero.png') }}" alt="" width="320" height="198" loading="lazy"></div>
+                    <div><img class="gp-art" src="{{ asset('/images/contact-hero.webp') }}" alt="Contact the GPSites team" width="1280" height="792" loading="eager" fetchpriority="high" decoding="async"></div>
                 </div>
             </div>
         </section>
@@ -68,7 +68,7 @@
                                 </svg></span>
                             <div>
                                 <h3>Email our team</h3>
-                                <p><a class="gp-link" href="mailto:info@leelija.com">info@leelija.com</a><small>Include “GPSites” in your subject line.</small></p>
+                                <p><a class="gp-link" href="mailto:{{ config('gpsites.contact_email') }}">{{ config('gpsites.contact_email') }}</a><small>Include “GPSites” in your subject line.</small></p>
                             </div>
                         </article>
                         <article class="gp-card gp-detail"><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -172,7 +172,7 @@
                 <div class="gp-faq ">
                     <details open>
                         <summary>How do I contact GPSites support?</summary>
-                        <div>Email info@leelija.com or select a support topic in the form. Include your account email and a clear description of the issue.</div>
+                        <div>Email {{ config('gpsites.contact_email') }} or select a support topic in the form. Include your account email and a clear description of the issue.</div>
                     </details>
                     <details>
                         <summary>Can you help me choose a plan for my agency?</summary>

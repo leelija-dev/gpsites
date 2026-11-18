@@ -57,9 +57,9 @@
 
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center lg:hidden">
-                    <button id="mobile-menu-button"
+                    <button id="mobile-menu-button" type="button" aria-label="Open menu" aria-controls="mobile-sidebar" aria-expanded="false"
                         class="p-2 rounded-md text-gray-700 hover:text-secondary hover:bg-gray-100">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -94,8 +94,8 @@
                         <img class="w-[150px]" src="{{ asset('images/site-img/logo.png') }}" alt="{{ config('app.name') }}">
                     </a>
             </div>
-            <button onclick="closeSidebar()" class="p-2 rounded-md hover:bg-gray-100 text-gray-600">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button type="button" onclick="closeSidebar()" aria-label="Close menu" class="p-2 rounded-md hover:bg-gray-100 text-gray-600">
+                <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>

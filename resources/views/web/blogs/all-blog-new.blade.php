@@ -110,7 +110,7 @@
                         <p>Whether you manage client campaigns, market your own business or are learning the basics, start with the question you need to answer.</p>
                         <div class="gp-actions"></div>
                     </div>
-                    <div><img class="gp-art" src="{{ asset('/images/blog/blog-hero.png') }}" alt="" width="371" height="249" loading="lazy"></div>
+                    <div><img class="gp-art" src="{{ asset('/images/blog/blog-hero.webp') }}" alt="GPSites link building and SEO guides" width="1484" height="996" loading="eager" fetchpriority="high" decoding="async"></div>
                 </div>
                 <form class="gp-blog-search" data-blog-search role="search"
       action="{{ url('/blogs') }}" method="GET"
@@ -178,7 +178,7 @@
         </section>
         <section class="gp-section gp-tint">
             <div class="gp-container">
-                <div class="gp-blog-about"><img class="gp-art" src="{{ asset('/images/blog/blog-about.png') }}" alt="" width="299" height="163" loading="lazy">
+                <div class="gp-blog-about"><img class="gp-art" src="{{ asset('/images/blog/blog-about.webp') }}" alt="About the GPSites blog" width="1196" height="652" loading="lazy" decoding="async">
                     <div>
                         <h2 class="gp-underline">About the GPSites blog</h2>
                         <p>This blog is part of GPSites, a link building marketplace and outreach automation platform. Leelija is our parent company. Our articles offer a starting point for understanding SEO topics before you put them into practice.</p><a class="gp-link" href="{{ $aboutUrl ?? url('/about') }}">Learn more about GPSites →</a>
@@ -194,7 +194,7 @@
                         <p>Use GPSites to discover publishers, filter sites by niche, authority metrics and traffic, and manage your outreach offers.</p>
                         <p>Start with the audience you want to reach, then review the publishers that fit your campaign.</p>
                         <div class="gp-actions"><a class="gp-button gp-white" href="{{ $homeUrl ?? url('/') }}">Explore GPSites</a><a class="gp-button gp-outline" href="{{ $contactUrl ?? url('/contact') }}">Ask our team a question</a></div>
-                    </div><img class="gp-art" src="{{ asset('/images/blog/blog-cta.png') }}" alt="" width="193" height="141" loading="lazy">
+                    </div><img class="gp-art" src="{{ asset('/images/blog/blog-cta.webp') }}" alt="Plan publisher outreach with GPSites" width="1200" height="900" loading="lazy" decoding="async">
                 </div>
             </div>
         </section>

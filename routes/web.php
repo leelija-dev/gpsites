@@ -31,6 +31,7 @@ use App\Http\Controllers\web\BlogOrderController;
 Route::post('/start-trial', [HomeController::class, 'startTrial'])->name('start.trial');
 
 Route::get('/',[HomeController::class,'index'])->name('home');
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/find-niches', [BlogController::class, 'findNiches'])->name('find.niches');
 Route::get('/random-blogs', [BlogController::class, 'randomBlogs'])->name('random.blogs'); 
 Route::get('/about', fn() => view('web.about-new'))->name('about');

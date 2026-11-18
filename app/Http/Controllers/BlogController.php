@@ -43,15 +43,17 @@ class BlogController extends Controller
     );
 }
 public function singleBlog($slug){
-    $blog = Blogs::where('slug', $slug)->with('admin','blogCategory','faq')->first();
+    // Unknown slugs return a real 404 instead of a server error.
+    $blog = Blogs::where('slug', $slug)->with('admin','blogCategory','faq')->firstOrFail();
     $latestBlogs = Blogs::where('status', true)->with('admin','faq')->latest()->limit(5)->get();
     $categories = BlogCategory::where('status', true)->get();
     return view('web.blogs.single-blog',compact('blog','latestBlogs','categories'));
 }
 
 public function category($slug){
+    // Unknown categories return a 404 (previously an empty 200 page).
+    $category = BlogCategory::where('slug', $slug)->firstOrFail();
     try{
-    $category = BlogCategory::where('slug', $slug)->first();
     $blogs = Blogs::where('category', $category->id)->where('status', true)->with('admin','blogCategory','faq')->orderBy('id', 'DESC')->get();
      $latestBlog = Blogs::where('status', true)
         ->with('blogCategory','faq')

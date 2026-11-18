@@ -1,9 +1,22 @@
 User-agent: *
 Allow: /
-# Disallow sensitive or private areas (uncomment and adjust paths as needed)
-# Disallow: /admin/
-# Disallow: /private/
-# Disallow: /cart/
-# Disallow: /checkout/
-# Specify sitemap location
+
+# Account, checkout and app pages: no search value
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /checkout
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /my-orders
+Disallow: /billing
+Disallow: /mail-history
+Disallow: /mail/
+Disallow: /viewMail/
+# The logged-in publisher finder (/blog). Blog posts live at /blog/{slug} and stay crawlable.
+Disallow: /blog$
+Disallow: /blog?
+
 Sitemap: https://gpsites.io/sitemap.xml

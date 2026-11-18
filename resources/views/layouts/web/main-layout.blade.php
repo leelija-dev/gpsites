@@ -22,36 +22,52 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="msapplication-TileColor" content="#da532c"> --}}
 
-    <title>@yield('title') </title>
-    <meta name="description" content="@yield('description')">
-    <meta name="keywords" content="@yield('keywords')">
+    @php
+        // Inline @section values arrive HTML-escaped; decode once so {{ }} does not double-escape "&".
+        $seoTitle = html_entity_decode(trim($__env->yieldContent('title')), ENT_QUOTES | ENT_HTML5) ?: config('gpsites.brand');
+        $seoDescription = html_entity_decode(trim($__env->yieldContent('description')), ENT_QUOTES | ENT_HTML5) ?: config('gpsites.tagline');
+        $seoImage = trim($__env->yieldContent('og_image')) ?: config('gpsites.og_image');
+        $seoImage = \Illuminate\Support\Str::startsWith($seoImage, ['http://', 'https://']) ? $seoImage : url($seoImage);
+        $seoType = trim($__env->yieldContent('og_type')) ?: 'website';
+    @endphp
+    <title>{{ $seoTitle }}</title>
+    <meta name="description" content="{{ $seoDescription }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="canonical" href="{{ url()->current() }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <!-- intl-tel-input – the best free phone input library -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
-     <link rel="stylesheet" href="{{ asset('css/gpsites/gpsites.css') }}">
-    <script defer src="../public/gpsites/gpsites.js"></script>
+    <meta name="theme-color" content="#5428ff">
+
+    <!-- Open Graph / social share -->
+    <meta property="og:site_name" content="{{ config('gpsites.brand') }}">
+    <meta property="og:type" content="{{ $seoType }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ $seoImage }}">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <meta name="twitter:image" content="{{ $seoImage }}">
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    {{-- Page-specific head tags (preloads, structured data, page CSS) --}}
+    @stack('head')
+
+    <link rel="stylesheet" href="{{ asset('css/gpsites/gpsites.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-
-
-    <link rel="stylesheet" href="{{asset('web/css/staging.css')}}">
-    <link rel="stylesheet" href="{{asset('web/css/animation.css')}}">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-    <link rel="stylesheet" href="{{asset('css/floating-label/floating-label.css')}}">
-
-
-
-    <!-- build css -->
-    <!-- <link rel="stylesheet" href="{{asset('build/assets/css/main.css')}}">
-    <link rel="stylesheet" href="{{asset('build/assets/css/main2.css')}}"> -->
-
-
+    {{-- Non-critical CSS: loaded without blocking the first paint --}}
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ asset('css/floating-label/floating-label.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <link rel="stylesheet" href="{{ asset('css/floating-label/floating-label.css') }}">
+    </noscript>
 </head>
 
 <body class=" ">
@@ -69,64 +85,9 @@
 
             <x-web.footer />
 
-    </div>
-
-
-
     @yield('scripts')
 
-
-
-    <!-- gsap animation script  -->
-    <!-- <script src="{{asset('web/js/gsap/gsap.min.js')}}"></script> -->
-    <!-- <script src="{{asset('web/js/gsap/ScrollTrigger.min.js')}}"></script> -->
-    <!-- <script src="{{asset('web/js/gsap/Draggable.min.js')}}"></script> -->
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-    <!-- gsap smooth scrolling  -->
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // If current page is NOT checkout → enable ScrollSmoother
-            if (!window.location.pathname.includes('/checkout')) {
-
-                let smoother = ScrollSmoother.create({
-                    wrapper: '#smooth-wrapper',
-                    content: '#smooth-content',
-                    smooth: 1,
-                });
-
-                // If dynamic content reloads
-                // window.addEventListener('content-updated', () => smoother.refresh());
-            }
-
-            // Else: Do nothing → smooth scroll disabled on checkout
-        });
-    </script> -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- gsap smooth scrolling  -->
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // If current page is NOT checkout → enable ScrollSmoother
-            if (!window.location.pathname.includes('/checkout')) {
-                // Your GSAP code here
-            }
-        });
-    </script> -->
-
+    {{-- SweetAlert2 is loaded once, inside the footer component. GSAP was removed: no page used it. --}}
 
     <!-- Contact Form Validation Script -->
     <script>
