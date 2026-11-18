@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-# Disallow sensitive or private areas (uncomment and adjust paths as needed)
-# Disallow: /admin/
-# Disallow: /private/
-# Disallow: /cart/
-# Disallow: /checkout/
-# Specify sitemap location
-Sitemap: https://gpsites.io/sitemap.xml
