@@ -1,6 +1,9 @@
 User-agent: *
-Disallow: /
-
-# Block all web crawlers from the entire site
-User-agent: *
-Disallow: /
+Allow: /
+# Disallow sensitive or private areas (uncomment and adjust paths as needed)
+# Disallow: /admin/
+# Disallow: /private/
+# Disallow: /cart/
+# Disallow: /checkout/
+# Specify sitemap location
+Sitemap: https://gpsites.io/sitemap.xml
