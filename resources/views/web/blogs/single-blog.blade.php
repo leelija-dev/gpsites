@@ -1,7 +1,10 @@
 @extends('layouts.web.main-layout')
 @section('title', $blog->meta_title ?? '')
 @section('description', $blog->meta_description ?? '')
-@section('keywords', $blog->keywords ?? '')
+@section('og_type', 'article')
+@if ($blog->feature_image)
+@section('og_image', asset('blog_images/' . $blog->feature_image))
+@endif
 
 @php
     $blogSchema = [
@@ -9,29 +12,29 @@
         '@graph' => [
             [
                 '@type' => 'WebPage',
-                '@id' => config('app.url') . '/blog/' . $blog->slug . '/#webpage',
-                'url' => config('app.url') . '/blog/' . $blog->slug . '/',
+                '@id' => route('blog.show', $blog->slug) . '#webpage',
+                'url' => route('blog.show', $blog->slug),
                 'name' => $blog->meta_title ?? '',
-                'isPartOf' => ['@id' => config('app.url') . '/blog/#website'],
-                'primaryImageOfPage' => ['@id' => config('app.url') . '/blog/' . $blog->slug . '/#primaryimage'],
-                'image' => ['@id' => config('app.url') . '/blog/' . $blog->slug . '/#primaryimage'],
+                'isPartOf' => ['@id' => url('/') . '#website'],
+                'primaryImageOfPage' => ['@id' => route('blog.show', $blog->slug) . '#primaryimage'],
+                'image' => ['@id' => route('blog.show', $blog->slug) . '#primaryimage'],
                 'thumbnailUrl' => config('app.url') . '/blog_images/' . $blog->feature_image ?? '',
                 'datePublished' => $blog->created_at ? date('c', strtotime($blog->created_at)) : date('c'),
                 'dateModified' => $blog->updated_at ? date('c', strtotime($blog->updated_at)) : date('c'),
                 'description' => $blog->meta_description ?? ($blog->excerpt ?? strip_tags($blog->content ?? '')),
-                'breadcrumb' => ['@id' => config('app.url') . '/blog/' . $blog->slug . '/#breadcrumb'],
+                'breadcrumb' => ['@id' => route('blog.show', $blog->slug) . '#breadcrumb'],
                 'inLanguage' => 'en-US',
                 'potentialAction' => [
                     [
                         '@type' => 'ReadAction',
-                        'target' => [config('app.url') . '/blog/' . $blog->slug . '/'],
+                        'target' => [route('blog.show', $blog->slug)],
                     ],
                 ],
             ],
             [
                 '@type' => 'ImageObject',
                 'inLanguage' => 'en-US',
-                '@id' => config('app.url') . '/blog/' . $blog->slug . '/#primaryimage',
+                '@id' => route('blog.show', $blog->slug) . '#primaryimage',
                 'url' => config('app.url') . '/blog_images/' . $blog->feature_image ?? '',
                 'contentUrl' => config('app.url') . '/blog_images/' . $blog->feature_image ?? '',
                 'width' => 1200,
@@ -39,34 +42,46 @@
             ],
             [
                 '@type' => 'BreadcrumbList',
-                '@id' => config('app.url') . '/blog/' . $blog->slug . '/#breadcrumb',
+                '@id' => route('blog.show', $blog->slug) . '#breadcrumb',
                 'itemListElement' => [
                     [
                         '@type' => 'ListItem',
                         'position' => 1,
                         'name' => 'Home',
-                        'item' => config('app.url') . '/blog/',
+                        'item' => url('/'),
                     ],
                     [
                         '@type' => 'ListItem',
                         'position' => 2,
-                        'name' => $blog->meta_title ?? ($blog->title ?? ''),
+                        'name' => 'Blog',
+                        'item' => route('all-blogs.index'),
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 3,
+                        'name' => $blog->blogCategory->name ?? 'SEO',
+                        'item' => $blog->blogCategory ? route('blog.category', $blog->blogCategory->slug) : route('all-blogs.index'),
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 4,
+                        'name' => $blog->title ?? ($blog->meta_title ?? ''),
                     ],
                 ],
             ],
             [
                 '@type' => 'WebSite',
-                '@id' => config('app.url') . '/blog/#website',
-                'url' => config('app.url') . '/blog/',
+                '@id' => url('/') . '#website',
+                'url' => url('/'),
                 'name' => 'GPSites',
-                'description' => 'Explore stories · filter by topic · search anything',
-                'publisher' => ['@id' => config('app.url') . '/blog/#organization'],
+                'description' => config('gpsites.tagline'),
+                'publisher' => ['@id' => url('/') . '#organization'],
                 'potentialAction' => [
                     [
                         '@type' => 'SearchAction',
                         'target' => [
                             '@type' => 'EntryPoint',
-                            'urlTemplate' => config('app.url') . '/blog?search={search_term_string}',
+                            'urlTemplate' => route('all-blogs.index') . '?search={search_term_string}',
                         ],
                         'query-input' => [
                             '@type' => 'PropertyValueSpecification',
@@ -79,24 +94,24 @@
             ],
             [
                 '@type' => 'Organization',
-                '@id' => config('app.url') . '/blog/#organization',
+                '@id' => url('/') . '#organization',
                 'name' => 'GPSites',
-                'url' => config('app.url') . '/blog/',
+                'url' => url('/'),
                 'logo' => [
                     '@type' => 'ImageObject',
                     'inLanguage' => 'en-US',
-                    '@id' => config('app.url') . '/blog/#/schema/logo/image/',
+                    '@id' => url('/') . '#logo',
                     'url' => config('app.url') . '/images/site-img/logo.png',
                     'contentUrl' => config('app.url') . '/images/site-img/logo.png',
-                    'width' => 281,
-                    'height' => 109,
+                    'width' => 340,
+                    'height' => 96,
                     'caption' => 'GPSites',
                 ],
-                'image' => ['@id' => config('app.url') . '/blog/#/schema/logo/image/'],
+                'image' => ['@id' => url('/') . '#logo'],
             ],
             [
                 '@type' => 'Person',
-                '@id' => config('app.url') . '/blog/#/schema/person/author_' . ($blog->created_by ?? 0),
+                '@id' => url('/') . '#author-' . ($blog->created_by ?? 0),
                 'name' => $blog->admin->name ?? 'Author',
                 'image' => [
                     '@type' => 'ImageObject',
@@ -107,31 +122,23 @@
                     'caption' => $blog->admin->name ?? 'Author',
                 ],
                 'description' => $blog->admin->description ?? '',
-                'url' => config('app.url') . '/blog/author/' . ($blog->admin->name ?? 'author') . '/',
             ],
             [
                 '@type' => 'Article',
-                '@id' => config('app.url') . '/blog/' . $blog->slug . '/#article',
-                'isPartOf' => ['@id' => config('app.url') . '/blog/' . $blog->slug . '/'],
-                'author' => ['@id' => config('app.url') . '/blog/#/schema/person/author_' . ($blog->created_by ?? 0)],
+                '@id' => route('blog.show', $blog->slug) . '#article',
+                'isPartOf' => ['@id' => route('blog.show', $blog->slug) . '#webpage'],
+                'author' => ['@id' => url('/') . '#author-' . ($blog->created_by ?? 0)],
                 'headline' => $blog->meta_title ?? ($blog->title ?? ''),
                 'datePublished' => $blog->created_at ? date('c', strtotime($blog->created_at)) : date('c'),
                 'dateModified' => $blog->updated_at ? date('c', strtotime($blog->updated_at)) : date('c'),
-                'mainEntityOfPage' => ['@id' => config('app.url') . '/blog/' . $blog->slug . '/'],
+                'mainEntityOfPage' => ['@id' => route('blog.show', $blog->slug) . '#webpage'],
                 'wordCount' => str_word_count(strip_tags($blog->content ?? '')),
                 'commentCount' => 0,
-                'publisher' => ['@id' => config('app.url') . '/blog/#organization'],
-                'image' => ['@id' => config('app.url') . '/blog_images/' . $blog->feature_image . '#primaryimage'],
+                'publisher' => ['@id' => url('/') . '#organization'],
+                'image' => ['@id' => route('blog.show', $blog->slug) . '#primaryimage'],
                 'thumbnailUrl' => config('app.url') . '/blog_images/' . $blog->feature_image ?? '',
                 'articleSection' => [$blog->blogCategory->name ?? ''],
                 'inLanguage' => 'en-US',
-                'potentialAction' => [
-                    [
-                        '@type' => 'CommentAction',
-                        'name' => 'Comment',
-                        'target' => [config('app.url') . '/blog/' . $blog->slug . '/#respond'],
-                    ],
-                ],
             ],
         ],
     ];
@@ -877,9 +884,9 @@
             <!-- Breadcrumb -->
             <nav class="flex items-center gap-2 text-sm text-slate-400 pb-6 flex-wrap border-b border-slate-100/40 mb-8"
                 aria-label="Breadcrumb">
-                <a href="javascript:void(0)" onclick="goToBlogIndex()"
+                <a href="{{ route('all-blogs.index') }}"
                     class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer"><i
-                        class="fas fa-home"></i> Blog</a>
+                        class="fas fa-home" aria-hidden="true"></i> Blog</a>
                 <span class="text-slate-300 text-xs"><i class="fas fa-chevron-right"></i></span>
                 <a href="{{ url('/blogs/category',$blog->blogCategory->slug) }}"
                     class="text-[#6C3CE1] font-medium hover:text-[#4A1A8A] hover:underline transition-all duration-200 cursor-pointer">{{ $blog->blogCategory->name ?? '' }}</a>
@@ -946,8 +953,14 @@
                             </span>
                             <span class="flex items-center gap-2 text-slate-600 text-sm">
                                 <i class="fas fa-calendar-alt text-[#6C3CE1]"></i>
-                                <span>{{ $blog->created_at->format('M d, Y') }}</span>
+                                <span><time datetime="{{ $blog->created_at->toDateString() }}">{{ $blog->created_at->format('M d, Y') }}</time></span>
                             </span>
+                            @if ($blog->updated_at && $blog->updated_at->gt($blog->created_at->copy()->addDay()))
+                            <span class="flex items-center gap-2 text-slate-600 text-sm">
+                                <i class="fas fa-rotate text-[#6C3CE1]" aria-hidden="true"></i>
+                                <span>Updated <time datetime="{{ $blog->updated_at->toDateString() }}">{{ $blog->updated_at->format('M d, Y') }}</time></span>
+                            </span>
+                            @endif
                              <a href="{{ url('/blogs/category', $blog->blogCategory->slug) }}"><span
                                 class="inline-flex items-center gap-1.5 bg-gradient-to-br from-[#6C3CE1] to-[#8B5CF6] text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide shadow-[0_2px_8px_rgba(108,60,225,0.25)] transition-transform duration-200 hover:scale-105 hover:shadow-[0_4px_16px_rgba(108,60,225,0.35)]">
                                  {{ $blog->blogCategory->name }}
@@ -960,7 +973,8 @@
                     <div
                         class="relative rounded-2xl overflow-hidden mb-10 shadow-[0_12px_40px_rgba(0,0,0,0.06)] bg-slate-100 group">
                         <img src="{{ asset('blog_images/' . $blog->feature_image) }}"
-                            alt="{{ $blog->feature_image_alt ?? '' }}" loading="lazy"
+                            alt="{{ $blog->feature_image_alt ?: $blog->title }}" width="1200" height="675"
+                            loading="eager" fetchpriority="high" decoding="async"
                             class="w-full h-auto max-h-[480px] object-cover transition-transform duration-700 group-hover:scale-105">
                         <span
                             class="absolute bottom-6 left-6 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-medium border border-white/10">

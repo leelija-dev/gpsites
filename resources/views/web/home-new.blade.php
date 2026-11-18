@@ -2,8 +2,92 @@
 
 @section('title', 'Link Building Marketplace & Outreach Tool | GPSites')
 @section('description', 'Find guest posting sites, filter by niche, DA, DR and traffic, and manage outreach with GPSites. Agency plans include access to negotiated publisher prices.')
-@section('keywords', 'link building marketplace, guest posting sites, publisher outreach, outreach automation, backlink marketplace, GPSites')
 @section('indexing', 'yes')
+
+@php
+    // Homepage FAQ: one source for the visible accordion and the FAQPage structured data.
+    $mailLimits = $plans->map(fn ($p) => $p->name . ' allows up to ' . number_format((int) $p->mail_available) . ' emails per day')->implode(', ');
+    $homeFaqs = [
+        ['q' => 'What is GPSites?', 'a' => 'GPSites is a link building marketplace and outreach automation tool for SEO agencies, marketers and businesses. It helps you find publishers, filter sites by niche and metrics, send custom offers, and manage outreach and orders. Agency members can also see negotiated prices and place direct orders.'],
+        ['q' => 'How can I find guest posting sites on GPSites?', 'a' => 'Use the site filters to select your niche, Domain Authority (DA), Domain Rating (DR) and traffic requirements. Review the matching sites and choose the publishers you want to approach. Your subscription determines how much of the site collection you can access.'],
+        ['q' => 'What is the difference between sending an offer and placing an order?', 'a' => 'An offer lets you propose your own terms to a publisher. With the Agency plan, you can also view previously negotiated prices and submit a direct order at the displayed price. You can still send a custom offer if you prefer.'],
+        ['q' => 'Which placement types are available?', 'a' => 'The network includes sites offering guest posts, link insertions and press release placements. Availability depends on the publisher. Review the site\'s requirements and confirm the terms for the placement you want.'],
+        ['q' => 'What does the outreach automation tool handle?', 'a' => 'GPSites supports bulk outreach, individual campaign emails to selected publishers, automatic follow-ups and offer or order management. You remain responsible for choosing relevant sites and preparing suitable offers and content.'],
+        ['q' => 'How does GPSites maintain its publisher network?', 'a' => 'Our team contacts site owners manually, maintains publisher contact details and negotiates placement prices. We review the site list every six months and continue developing new publisher relationships.'],
+        ['q' => 'How many emails can I send?', 'a' => ($mailLimits ? $mailLimits . '. ' : '') . 'The free 7-day trial includes 3 email credits. Choose a plan that matches your intended outreach workload.'],
+        ['q' => 'Can my team use GPSites together?', 'a' => 'Yes. Starter, Pro and Agency include unlimited team members, so colleagues can take part in your outreach work without paying per seat.'],
+        ['q' => 'Is GP Sites the same as GPSites?', 'a' => 'Yes. If you are looking for GP Sites at gpsites.io, GPSites is the brand name of this publisher marketplace and outreach platform.'],
+        ['q' => 'Does GPSites guarantee rankings or AI search visibility?', 'a' => 'No. Outreach and content placements do not guarantee rankings, indexing or inclusion in AI answers. Focus on relevant publishers and useful content. Paid placements should use rel="sponsored" or rel="nofollow" links, in line with Google\'s guidance.'],
+    ];
+
+    $homeSchema = [
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            array_filter([
+                '@type' => 'Organization',
+                '@id' => url('/') . '#organization',
+                'name' => config('gpsites.brand'),
+                'url' => url('/'),
+                'logo' => asset('images/site-img/logo.png'),
+                'description' => config('gpsites.tagline'),
+                'email' => config('gpsites.contact_email'),
+                'telephone' => config('gpsites.phones')[0] ?? null,
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'streetAddress' => config('gpsites.address.street'),
+                    'addressLocality' => config('gpsites.address.locality'),
+                    'postalCode' => config('gpsites.address.postal_code'),
+                    'addressRegion' => config('gpsites.address.region'),
+                    'addressCountry' => config('gpsites.address.country'),
+                ],
+                'parentOrganization' => ['@type' => 'Organization', 'name' => config('gpsites.parent_company')],
+                'sameAs' => array_values(array_filter(config('gpsites.social', []))) ?: null,
+            ]),
+            [
+                '@type' => 'WebSite',
+                '@id' => url('/') . '#website',
+                'url' => url('/'),
+                'name' => config('gpsites.brand'),
+                'publisher' => ['@id' => url('/') . '#organization'],
+                'inLanguage' => 'en-US',
+            ],
+            [
+                '@type' => 'SoftwareApplication',
+                '@id' => url('/') . '#software',
+                'name' => config('gpsites.brand'),
+                'url' => url('/'),
+                'applicationCategory' => 'BusinessApplication',
+                'operatingSystem' => 'Web',
+                'description' => config('gpsites.tagline'),
+                'publisher' => ['@id' => url('/') . '#organization'],
+                'offers' => $plans->map(fn ($p) => [
+                    '@type' => 'Offer',
+                    'name' => $p->name,
+                    'price' => (string) (float) $p->price,
+                    'priceCurrency' => 'USD',
+                    'url' => url('/') . '#pricing',
+                ])->values()->all(),
+            ],
+            [
+                '@type' => 'FAQPage',
+                '@id' => url('/') . '#faq',
+                'mainEntity' => array_map(fn ($f) => [
+                    '@type' => 'Question',
+                    'name' => $f['q'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']],
+                ], $homeFaqs),
+            ],
+        ],
+    ];
+@endphp
+
+@push('head')
+    {{-- Hero image is the Largest Contentful Paint element: fetch it immediately --}}
+    <link rel="preload" as="image" type="image/webp"
+        imagesrcset="{{ asset('images/home-hero-480.webp') }} 480w, {{ asset('images/home-hero.webp') }} 909w"
+        imagesizes="(max-width: 700px) 90vw, 50vw" fetchpriority="high">
+    <script type="application/ld+json">{!! json_encode($homeSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+@endpush
 
 @section('content')
 <style>
@@ -127,9 +211,11 @@
     font-size:11px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
     .gp-home .gp-trial-form{margin:0;display:inline-block}
 .gp-home .gp-trial-form .gp-button{border:0;cursor:pointer;font:inherit}
+/* FAQ questions are H3s for structure but keep the summary's look */
+.gp-home .gp-faq summary h3{display:inline;font:inherit;margin:0;letter-spacing:inherit;color:inherit}
 </style>
 
-    <main class="gp-page gp-home">
+    <div class="gp-page gp-home">
         <section class="gp-section gp-hero">
             <div class="gp-container">
                 <div class="gp-split">
@@ -149,10 +235,17 @@
                                 Plans</a><small class="gp-trial-note">7 days free · 3 email credits · No credit card
                                 required</small></div>
                     </div>
-                    <a href="#publisher-discovery">
-                    <div><img class="gp-art" src="{{asset("/images/home-hero.png")}}" alt="" width="390"
-                            height="249" loading="lazy"></div>
-                </div></a>
+                    <a href="#publisher-discovery" aria-label="Jump to publisher search">
+                        <picture>
+                            <source type="image/webp"
+                                srcset="{{ asset('images/home-hero-480.webp') }} 480w, {{ asset('images/home-hero.webp') }} 909w"
+                                sizes="(max-width: 700px) 90vw, 50vw">
+                            <img class="gp-art" src="{{ asset('images/home-hero.png') }}"
+                                alt="GPSites publisher search with niche, DA, DR and traffic filters"
+                                width="909" height="513" loading="eager" fetchpriority="high" decoding="async">
+                        </picture>
+                    </a>
+                </div>
             </div>
         </section>
         <section class="gp-section gp-tint gp-trust">
@@ -454,7 +547,7 @@
         </span>
     </label>
 
-    <a class="gp-button" id="gp-offer-btn" href="{{ route('blog.index') }}">Send offer</a>
+    <a class="gp-button" id="gp-offer-btn" rel="nofollow" href="{{ route('blog.index') }}">Send offer</a>
 </div>
 
 <div class="gp-offer">
@@ -480,7 +573,7 @@
         </span>
     </label>
 
-        <a class="gp-button" id="gp-direct-btn" href="{{ route('blog.index') }}">Place direct order</a>
+        <a class="gp-button" id="gp-direct-btn" rel="nofollow" href="{{ route('blog.index') }}">Place direct order</a>
 </div>
                     </div>          {{-- ← ADD: closes gp-offers --}}
                 </div>
@@ -605,35 +698,18 @@
                     <div><span class="gp-eyebrow">FAQ</span>
                         <h2>Questions before you get started?</h2>
                         <div class="gp-faq ">
-                            <details open>
-                                <summary>What is GPSites?</summary>
-                                <div>A link building marketplace and outreach tool for finding publishers, sending
-                                    offers and managing orders.</div>
-                            </details>
-                            <details>
-                                <summary>How do offers and direct orders differ?</summary>
-                                <div>Offers propose your terms. Agency members can place direct orders at negotiated
-                                    prices.</div>
-                            </details>
-                            <details>
-                                <summary>Which placement types are available?</summary>
-                                <div>Guest posts, link insertions and press releases, depending on the publisher.</div>
-                            </details>
-                            <details>
-                                <summary>Can my team use GPSites together?</summary>
-                                <div>Yes. Subscription plans include unlimited team members.</div>
-                            </details>
-                            <details>
-                                <summary>Does GPSites guarantee rankings?</summary>
-                                <div>No. Rankings, indexing and AI search visibility are not guaranteed. Paid placements
-                                    should use appropriate sponsored or nofollow links.</div>
-                            </details>
+                            @foreach ($homeFaqs as $i => $faq)
+                                <details {{ $i === 0 ? 'open' : '' }}>
+                                    <summary><h3>{{ $faq['q'] }}</h3></summary>
+                                    <div>{{ $faq['a'] }}</div>
+                                </details>
+                            @endforeach
                         </div>
                     </div>
                     <div class="gp-compact"><span class="gp-eyebrow">Contact</span>
                         <h2>Tell us about your outreach goals</h2>
                         <p>Have a question or want to learn more? Send us a message.</p><a class="gp-link"
-                            href="mailto:info@leelija.com">info@leelija.com</a>
+                            href="mailto:{{ config('gpsites.contact_email') }}">{{ config('gpsites.contact_email') }}</a>
                         <form id="gp-inquiry" class="gp-form" data-inquiry data-connected="false" method="post"
                             action="{{ route('contact.store') }}">
                             @if(session('success'))
@@ -706,7 +782,7 @@
                                 @enderror
                                 </label>
                             <p class="gp-form-help">Please do not include passwords, one-time codes or full payment card
-                                details.<br>Read our <a href="">Privacy Policy</a> for information about how personal
+                                details.<br>Read our <a href="{{ route('privacy-policy') }}">Privacy Policy</a> for information about how personal
                                 data is handled.</p>
                             <button class="gp-button gp-submit" type="submit">Send Inquiry →</button>
 
@@ -729,7 +805,7 @@
 </form></div>
             </div>
         </section>
-    </main>
+    </div>
 @endsection
 
 @section('scripts')
@@ -895,6 +971,7 @@ function messageRow(title, hint, type) {
 
                 const a = document.createElement('a');
                 a.className = 'gp-link';
+                a.rel = 'nofollow';
                 // a.href = 'https://gpsites.io/login';
                 // a.textContent = 'View details →';
                 a.href = s.blog_id ? BLOG_URL + '?open_blog=' + encodeURIComponent(s.blog_id) : BLOG_URL;
