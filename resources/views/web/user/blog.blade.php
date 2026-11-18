@@ -4,13 +4,13 @@
     use Illuminate\Support\Facades\Auth;
     $loggedUserId = Auth::id();
     // or Auth::user()->id
-        $priceLabels = [
-        'general_guest_post_price'       => 'General Guest Post',
-        'general_link_insertion_price'   => 'General Link Insertion',
-        'sensitive_guest_post_price'     => 'Sensitive Guest Post',
+    $priceLabels = [
+        'general_guest_post_price' => 'General Guest Post',
+        'general_link_insertion_price' => 'General Link Insertion',
+        'sensitive_guest_post_price' => 'Sensitive Guest Post',
         'sensitive_link_insertion_price' => 'Sensitive Link Insertion',
     ];
-    $fmtPrice = fn ($v) => '$' . rtrim(rtrim(number_format((float) $v, 2, '.', ','), '0'), '.');
+    $fmtPrice = fn($v) => '$' . rtrim(rtrim(number_format((float) $v, 2, '.', ','), '0'), '.');
 @endphp
 
 @section('content')
@@ -202,108 +202,579 @@
         .note-dialog {
             z-index: 10002 !important;
         }
+
         /* Range sliders */
-.range-ui { --range-color: #7c3aed; } /* change to #2563eb for your blue theme */
+        .range-ui {
+            --range-color: #7c3aed;
+        }
 
-.range-wrap { position: relative; height: 24px; }
+        /* change to #2563eb for your blue theme */
 
-.range-track {
-    position: absolute; top: 50%; left: 9px; right: 9px; height: 6px;
-    transform: translateY(-50%); background: #e5e7eb; border-radius: 9999px;
-}
-.range-fill {
-    position: absolute; top: 0; height: 100%;
-    background: var(--range-color); border-radius: 9999px;
-}
+        .range-wrap {
+            position: relative;
+            height: 24px;
+        }
 
-.range-wrap input[type=range] {
-    position: absolute; left: 0; top: 0; width: 100%; height: 24px; margin: 0;
-    background: none; pointer-events: none;
-    -webkit-appearance: none; appearance: none;
-}
-.range-wrap input[type=range]::-webkit-slider-runnable-track { background: transparent; height: 24px; }
-.range-wrap input[type=range]::-moz-range-track { background: transparent; }
+        .range-track {
+            position: absolute;
+            top: 50%;
+            left: 9px;
+            right: 9px;
+            height: 6px;
+            transform: translateY(-50%);
+            background: #e5e7eb;
+            border-radius: 9999px;
+        }
 
-.range-wrap input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; pointer-events: auto;
-    width: 18px; height: 18px; margin-top: 3px; border-radius: 50%;
-    background: #fff; border: 2px solid var(--range-color);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .15); cursor: grab;
-}
-.range-wrap input[type=range]::-moz-range-thumb {
-    pointer-events: auto; width: 14px; height: 14px; border-radius: 50%;
-    background: #fff; border: 2px solid var(--range-color);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .15); cursor: grab;
-}
-.range-wrap input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; }
+        .range-fill {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: var(--range-color);
+            border-radius: 9999px;
+        }
 
-.swal-mail-popup { border-radius: 16px !important; padding: 1.75rem !important; }
-.swal-mail-title { font-size: 1.4rem !important; font-weight: 700 !important; color: #111827 !important; }
-.mail-stats { display: flex; gap: 12px; margin: 1rem 0 0.5rem; }
-.mail-stat { flex: 1; padding: 14px 10px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; }
-.mail-stat .num { font-size: 1.9rem; font-weight: 800; line-height: 1.1; }
-.mail-stat .lbl { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #6b7280; margin-top: 4px; }
-.mail-stat.selected  { background: #eff6ff; border-color: #bfdbfe; }
-.mail-stat.selected .num  { color: #2563eb; }
-.mail-stat.available { background: #f0fdf4; border-color: #bbf7d0; }
-.mail-stat.available .num { color: #16a34a; }
-.mail-stat.after     { background: #faf5ff; border-color: #e9d5ff; }
-.mail-stat.after .num     { color: #7c3aed; }
-.mail-note { font-size: .85rem; color: #6b7280; margin-top: .75rem; }
+        .range-wrap input[type=range] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 24px;
+            margin: 0;
+            background: none;
+            pointer-events: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .range-wrap input[type=range]::-webkit-slider-runnable-track {
+            background: transparent;
+            height: 24px;
+        }
+
+        .range-wrap input[type=range]::-moz-range-track {
+            background: transparent;
+        }
+
+        .range-wrap input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            pointer-events: auto;
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--range-color);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, .15);
+            cursor: grab;
+        }
+
+        .range-wrap input[type=range]::-moz-range-thumb {
+            pointer-events: auto;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--range-color);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, .15);
+            cursor: grab;
+        }
+
+        .range-wrap input[type=range]:active::-webkit-slider-thumb {
+            cursor: grabbing;
+        }
+
+        .swal-mail-popup {
+            border-radius: 16px !important;
+            padding: 1.75rem !important;
+        }
+
+        .swal-mail-title {
+            font-size: 1.4rem !important;
+            font-weight: 700 !important;
+            color: #111827 !important;
+        }
+
+        .mail-stats {
+            display: flex;
+            gap: 12px;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .mail-stat {
+            flex: 1;
+            padding: 14px 10px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .mail-stat .num {
+            font-size: 1.9rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .mail-stat .lbl {
+            font-size: .75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .mail-stat.selected {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .mail-stat.selected .num {
+            color: #2563eb;
+        }
+
+        .mail-stat.available {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .mail-stat.available .num {
+            color: #16a34a;
+        }
+
+        .mail-stat.after {
+            background: #faf5ff;
+            border-color: #e9d5ff;
+        }
+
+        .mail-stat.after .num {
+            color: #7c3aed;
+        }
+
+        .mail-note {
+            font-size: .85rem;
+            color: #6b7280;
+            margin-top: .75rem;
+        }
+
         /* ===== Offer modal ===== */
-        .offer-overlay{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-        .offer-overlay.open{display:flex;animation:offerFade .2s ease}
-        .offer-card{width:100%;max-width:440px;max-height:92vh;overflow-y:auto;background:#fff;border-radius:20px;box-shadow:0 30px 70px -15px rgba(15,23,42,.45);animation:offerPop .28s cubic-bezier(.2,.9,.3,1.15)}
-        @keyframes offerFade{from{opacity:0}to{opacity:1}}
-        @keyframes offerPop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
-        .offer-head{position:relative;overflow:hidden;padding:26px 24px 22px;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed)}
-        .offer-head::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.12)}
-        .offer-close{position:absolute;top:12px;right:14px;z-index:1;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:22px;line-height:1;cursor:pointer;transition:background .2s}
-        .offer-close:hover{background:rgba(255,255,255,.32)}
-        .offer-icon{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-        .offer-head h3{margin:0;font-size:1.3rem;font-weight:800}
-        .offer-head p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-        .offer-site{position:relative;z-index:1;margin-top:14px;display:inline-flex;max-width:100%;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);font-size:.78rem;font-weight:600}
-        .offer-site span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .offer-body{padding:20px 24px 4px}
-        .offer-stats{display:flex;gap:10px;margin-bottom:18px}
-        .offer-stat{flex:1;padding:12px;border-radius:14px;border:1px solid #e5e7eb;text-align:center}
-        .offer-stat .num{font-size:1.6rem;font-weight:800;line-height:1.1}
-        .offer-stat .lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;margin-top:3px}
-        .offer-stat.avail{background:#f0fdf4;border-color:#bbf7d0}.offer-stat.avail .num{color:#16a34a}
-        .offer-stat.after{background:#faf5ff;border-color:#e9d5ff}.offer-stat.after .num{color:#7c3aed}
-        .offer-label{display:block;font-size:.85rem;font-weight:700;color:#374151;margin-bottom:6px}
-        .offer-field{position:relative}
-        .offer-field .cur{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.4rem;font-weight:800;color:#6b7280}
-        .offer-input{width:100%;padding:14px 16px 14px 38px;font-size:1.4rem;font-weight:800;color:#111827;background:#fff;border:2px solid #e5e7eb;border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-        .offer-input:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
-        .offer-input.invalid{border-color:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12)}
-        .offer-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-        .offer-chip{padding:6px 14px;border:1px solid #ddd6fe;border-radius:999px;background:#faf5ff;color:#6d28d9;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s}
-        .offer-chip:hover{background:#7c3aed;color:#fff;border-color:#7c3aed}
-        .offer-error{min-height:20px;margin-top:10px;font-size:.82rem;font-weight:600;color:#dc2626}
-        .offer-note{margin:2px 0 0;font-size:.78rem;color:#6b7280;line-height:1.45}
-        .offer-foot{display:flex;gap:10px;padding:16px 24px 22px}
-        .offer-btn{flex:1;padding:12px 16px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid transparent}
-        .offer-btn.cancel{background:#fff;border-color:#d1d5db;color:#374151}
-        .offer-btn.cancel:hover{background:#f9fafb}
-        .offer-btn.send{flex:1.4;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 8px 20px -6px rgba(124,58,237,.6)}
-        .offer-btn.send:hover{transform:translateY(-1px);box-shadow:0 12px 24px -6px rgba(124,58,237,.7)}
-        .offer-btn.send:disabled{opacity:.75;cursor:not-allowed;transform:none}
-        .offer-btn.send.loading::before{content:"";display:inline-block;width:14px;height:14px;margin-right:8px;vertical-align:-2px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:offerSpin .7s linear infinite}
-        @keyframes offerSpin{to{transform:rotate(360deg)}}
-                /* ===== Order modal (reuses .offer-* styles) ===== */
-        .order-card{max-width:640px}
-        .order-domain{position:relative;z-index:1;margin-top:14px;font-size:1.15rem;font-weight:800;word-break:break-all}
-        .order-url{position:relative;z-index:1;display:inline-block;margin-top:2px;font-size:.8rem;color:rgba(255,255,255,.85);text-decoration:underline !important;word-break:break-all}
-        .order-select{width:100%;padding:12px 14px;font-size:1rem;font-weight:600;color:#111827;background:#fff;border:2px solid #e5e7eb;border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-        .order-select:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
-        .order-select.invalid{border-color:#ef4444}
-        .order-total{display:flex;align-items:center;justify-content:space-between;margin:14px 0 4px;padding:12px 16px;border-radius:14px;background:#faf5ff;border:1px solid #e9d5ff}
-        .order-total .lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6b7280}
-        .order-total .amt{font-size:1.5rem;font-weight:800;color:#7c3aed}
-        .offer-overlay .note-editor{margin-top:2px}
-        .note-modal,.note-modal-backdrop,.note-dialog,.note-popover{z-index:10100 !important}
+        .offer-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10050;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(15, 23, 42, .55);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px)
+        }
+
+        .offer-overlay.open {
+            display: flex;
+            animation: offerFade .2s ease
+        }
+
+        .offer-card {
+            width: 100%;
+            max-width: 440px;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 30px 70px -15px rgba(15, 23, 42, .45);
+            animation: offerPop .28s cubic-bezier(.2, .9, .3, 1.15)
+        }
+
+        @keyframes offerFade {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes offerPop {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(.96)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .offer-head {
+            position: relative;
+            overflow: hidden;
+            padding: 26px 24px 22px;
+            color: #fff;
+            background: linear-gradient(135deg, #2563eb, #7c3aed)
+        }
+
+        .offer-head::after {
+            content: "";
+            position: absolute;
+            right: -40px;
+            top: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .12)
+        }
+
+        .offer-close {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            z-index: 1;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            color: #fff;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .offer-close:hover {
+            background: rgba(255, 255, 255, .32)
+        }
+
+        .offer-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px
+        }
+
+        .offer-head h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 800
+        }
+
+        .offer-head p {
+            margin: 4px 0 0;
+            font-size: .85rem;
+            opacity: .9
+        }
+
+        .offer-site {
+            position: relative;
+            z-index: 1;
+            margin-top: 14px;
+            display: inline-flex;
+            max-width: 100%;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .18);
+            font-size: .78rem;
+            font-weight: 600
+        }
+
+        .offer-site span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .offer-body {
+            padding: 20px 24px 4px
+        }
+
+        .offer-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px
+        }
+
+        .offer-stat {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            text-align: center
+        }
+
+        .offer-stat .num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1
+        }
+
+        .offer-stat .lbl {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #6b7280;
+            margin-top: 3px
+        }
+
+        .offer-stat.avail {
+            background: #f0fdf4;
+            border-color: #bbf7d0
+        }
+
+        .offer-stat.avail .num {
+            color: #16a34a
+        }
+
+        .offer-stat.after {
+            background: #faf5ff;
+            border-color: #e9d5ff
+        }
+
+        .offer-stat.after .num {
+            color: #7c3aed
+        }
+
+        .offer-label {
+            display: block;
+            font-size: .85rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 6px
+        }
+
+        .offer-field {
+            position: relative
+        }
+
+        .offer-field .cur {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #6b7280
+        }
+
+        .offer-input {
+            width: 100%;
+            padding: 14px 16px 14px 38px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #111827;
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s
+        }
+
+        .offer-input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, .15)
+        }
+
+        .offer-input.invalid {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, .12)
+        }
+
+        .offer-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px
+        }
+
+        .offer-chip {
+            padding: 6px 14px;
+            border: 1px solid #ddd6fe;
+            border-radius: 999px;
+            background: #faf5ff;
+            color: #6d28d9;
+            font-size: .8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .15s
+        }
+
+        .offer-chip:hover {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #7c3aed
+        }
+
+        .offer-error {
+            min-height: 20px;
+            margin-top: 10px;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #dc2626
+        }
+
+        .offer-note {
+            margin: 2px 0 0;
+            font-size: .78rem;
+            color: #6b7280;
+            line-height: 1.45
+        }
+
+        .offer-foot {
+            display: flex;
+            gap: 10px;
+            padding: 16px 24px 22px
+        }
+
+        .offer-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: .95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            border: 1px solid transparent
+        }
+
+        .offer-btn.cancel {
+            background: #fff;
+            border-color: #d1d5db;
+            color: #374151
+        }
+
+        .offer-btn.cancel:hover {
+            background: #f9fafb
+        }
+
+        .offer-btn.send {
+            flex: 1.4;
+            color: #fff;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            box-shadow: 0 8px 20px -6px rgba(124, 58, 237, .6)
+        }
+
+        .offer-btn.send:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px -6px rgba(124, 58, 237, .7)
+        }
+
+        .offer-btn.send:disabled {
+            opacity: .75;
+            cursor: not-allowed;
+            transform: none
+        }
+
+        .offer-btn.send.loading::before {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            vertical-align: -2px;
+            border: 2px solid rgba(255, 255, 255, .45);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: offerSpin .7s linear infinite
+        }
+
+        @keyframes offerSpin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ===== Order modal (reuses .offer-* styles) ===== */
+        .order-card {
+            max-width: 640px
+        }
+
+        .order-domain {
+            position: relative;
+            z-index: 1;
+            margin-top: 14px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            word-break: break-all
+        }
+
+        .order-url {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            margin-top: 2px;
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .85);
+            text-decoration: underline !important;
+            word-break: break-all
+        }
+
+        .order-select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s
+        }
+
+        .order-select:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, .15)
+        }
+
+        .order-select.invalid {
+            border-color: #ef4444
+        }
+
+        .order-total {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 14px 0 4px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: #faf5ff;
+            border: 1px solid #e9d5ff
+        }
+
+        .order-total .lbl {
+            font-size: .75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #6b7280
+        }
+
+        .order-total .amt {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #7c3aed
+        }
+
+        .offer-overlay .note-editor {
+            margin-top: 2px
+        }
+
+        .note-modal,
+        .note-modal-backdrop,
+        .note-dialog,
+        .note-popover {
+            z-index: 10100 !important
+        }
     </style>
 
     <!-- Main content -->
@@ -325,43 +796,49 @@
                         </button>
                     </div> --}}
                     @php
-    $hasAdvanced = request()->hasAny(['niche','da_min','da_max','dr_min','dr_max','traffic_min','traffic_max']);
-@endphp
+                        $hasAdvanced = request()->hasAny([
+                            'niche',
+                            'da_min',
+                            'da_max',
+                            'dr_min',
+                            'dr_max',
+                            'traffic_min',
+                            'traffic_max',
+                        ]);
+                    @endphp
 
-<!-- Search Section -->
-<div class="flex flex-col gap-2">
-    <div class="flex smxl:flex-row flex-col gap-2 items-center">
-        <div class="relative w-full">
-            <input type="text" id="searchInput" placeholder="Search"
-                class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-        </div>
-        <button id="searchBtn"
-            class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-            Search
-        </button>
-    </div>
+                    <!-- Search Section -->
+                    <div class="flex flex-col gap-2">
+                        <div class="flex smxl:flex-row flex-col gap-2 items-center">
+                            <div class="relative w-full">
+                                <input type="text" id="searchInput" placeholder="Search"
+                                    class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <button id="searchBtn"
+                                class="px-4 py-2 smxl:w-auto w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                                Search
+                            </button>
+                        </div>
 
-    <!-- Advanced toggle -->
+                        <!-- Advanced toggle -->
 
-<button type="button" id="advancedToggleBtn"
-    
-class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg-blue-600 border border-blue-700 hover:bg-blue-700 hover:shadow-lg px-4 py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 4h18M6 12h12M10 20h4" />
-    </svg>
+                        <button type="button" id="advancedToggleBtn"
+                            class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg-blue-600 border border-blue-700 hover:bg-blue-700 hover:shadow-lg px-4 py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 4h18M6 12h12M10 20h4" />
+                            </svg>
 
-    Advanced
+                            Advanced
 
-    <svg id="advancedChevron"
-        class="w-4 h-4 transition-transform duration-300 {{ $hasAdvanced ? 'rotate-180' : '' }}"
-        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M19 9l-7 7-7-7" />
-    </svg>
-</button>
+                            <svg id="advancedChevron"
+                                class="w-4 h-4 transition-transform duration-300 {{ $hasAdvanced ? 'rotate-180' : '' }}"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
 
-</div>
+                    </div>
 
                     <!-- Selection Controls -->
                     <div class="flex xxs:flex-row flex-col gap-2  xxs:items-center items-end space-x-3">
@@ -388,73 +865,81 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                     <form method="GET" action="{{ url()->current() }}" id="advancedForm" class="p-5">
                         {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"> --}}
 
+                        <!-- Niche -->
+                        <div class="range-ui grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
                             <!-- Niche -->
-                            <div class="range-ui grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-800 mb-2">Niche</label>
+                                <select name="niche"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">All niches</option>
+                                    @foreach ($niches_data ?? [] as $n)
+                                        @php
+                                            $nicheName = is_array($n) ? $n['niche_name'] ?? '' : $n->niche_name ?? '';
+                                        @endphp
+                                        @if ($nicheName !== '' && strtolower($nicheName) !== 'all')
+                                            <option value="{{ $nicheName }}"
+                                                {{ request('niche') == $nicheName ? 'selected' : '' }}>
+                                                {{ $nicheName }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
 
-                    <!-- Niche -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-800 mb-2">Niche</label>
-                        <select name="niche"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">All niches</option>
-                           @foreach ($niches_data ?? [] as $n)
-                                @php
-                                    $nicheName = is_array($n) ? ($n['niche_name'] ?? '') : ($n->niche_name ?? '');
-                                @endphp
-                                @if ($nicheName !== '' && strtolower($nicheName) !== 'all')
-                                    <option value="{{ $nicheName }}" {{ request('niche') == $nicheName ? 'selected' : '' }}>
-                                        {{ $nicheName }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
+                            <!-- DA -->
+                            <div class="range-group" data-type="dual" data-format="number">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="text-sm font-semibold text-gray-800">DA</label>
+                                    <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                                </div>
+                                <div class="range-wrap">
+                                    <div class="range-track">
+                                        <div class="range-fill"></div>
+                                    </div>
+                                    <input type="range" name="da_min" min="0" max="100" step="1"
+                                        data-default="0" value="{{ request('da_min', 0) }}">
+                                    <input type="range" name="da_max" min="0" max="100" step="1"
+                                        data-default="100" value="{{ request('da_max', 100) }}">
+                                </div>
+                            </div>
 
-                    <!-- DA -->
-                    <div class="range-group" data-type="dual" data-format="number">
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="text-sm font-semibold text-gray-800">DA</label>
-                            <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
-                        </div>
-                        <div class="range-wrap">
-                            <div class="range-track"><div class="range-fill"></div></div>
-                            <input type="range" name="da_min" min="0" max="100" step="1" data-default="0"
-                                value="{{ request('da_min', 0) }}">
-                            <input type="range" name="da_max" min="0" max="100" step="1" data-default="100"
-                                value="{{ request('da_max', 100) }}">
-                        </div>
-                    </div>
+                            <!-- DR -->
+                            <div class="range-group" data-type="dual" data-format="number">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="text-sm font-semibold text-gray-800">DR</label>
+                                    <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                                </div>
+                                <div class="range-wrap">
+                                    <div class="range-track">
+                                        <div class="range-fill"></div>
+                                    </div>
+                                    <input type="range" name="dr_min" min="0" max="100" step="1"
+                                        data-default="0" value="{{ request('dr_min', 0) }}">
+                                    <input type="range" name="dr_max" min="0" max="100" step="1"
+                                        data-default="100" value="{{ request('dr_max', 100) }}">
+                                </div>
+                            </div>
 
-                    <!-- DR -->
-                    <div class="range-group" data-type="dual" data-format="number">
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="text-sm font-semibold text-gray-800">DR</label>
-                            <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                            <!-- Traffic (single handle = minimum traffic) -->
+                            <div class="range-group" data-type="single" data-format="compact">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="text-sm font-semibold text-gray-800">Traffic</label>
+                                    <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
+                                </div>
+                                <div class="range-wrap">
+                                    <div class="range-track">
+                                        <div class="range-fill"></div>
+                                    </div>
+                                    <input type="range" name="traffic_min" min="0" max="1000000"
+                                        step="10000" data-default="0" value="{{ request('traffic_min', 0) }}">
+                                </div>
+                            </div>
                         </div>
-                        <div class="range-wrap">
-                            <div class="range-track"><div class="range-fill"></div></div>
-                            <input type="range" name="dr_min" min="0" max="100" step="1" data-default="0"
-                                value="{{ request('dr_min', 0) }}">
-                            <input type="range" name="dr_max" min="0" max="100" step="1" data-default="100"
-                                value="{{ request('dr_max', 100) }}">
-                        </div>
-                    </div>
 
-                    <!-- Traffic (single handle = minimum traffic) -->
-                    <div class="range-group" data-type="single" data-format="compact">
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="text-sm font-semibold text-gray-800">Traffic</label>
-                            <span class="range-label text-sm font-semibold" style="color:#7c3aed"></span>
-                        </div>
-                        <div class="range-wrap">
-                            <div class="range-track"><div class="range-fill"></div></div>
-                            <input type="range" name="traffic_min" min="0" max="1000000" step="10000" data-default="0"
-                                value="{{ request('traffic_min', 0) }}">
-                        </div>
-                    </div>
-                </div>
-
-                        <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 mt-5 pt-4 border-t border-gray-100">
+                        <div
+                            class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 mt-5 pt-4 border-t border-gray-100">
                             <a href="{{ url()->current() }}"
                                 class="px-4 py-2 text-center border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition">
                                 Reset
@@ -476,20 +961,27 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                                 <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Site/blog</th>
                                 <th class="px-6 py-4 text-start text-xs font-semibold  uppercase tracking">Metrics</th>
                                 <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Traffic</th>
-                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Offer</th>
                                 <th class="px-6 py-4 text-start text-xs font-semibold uppercase tracking">Price</th>
-                                <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking">Order</th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold  uppercase tracking">Action</th>
+                                
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @if ($pagination->isNotEmpty())
                                 @foreach ($pagination as $blog)
-                                @php
-                                    $priceOptions = collect($priceLabels)
-                                        ->map(fn ($label, $key) => ['key' => $key, 'label' => $label, 'price' => (float) ($blog[$key] ?? 0)])
-                                        ->filter(fn ($o) => $o['price'] > 0)
-                                        ->values()->all();
-                                @endphp
+                                    @php
+                                        $priceOptions = collect($priceLabels)
+                                            ->map(
+                                                fn($label, $key) => [
+                                                    'key' => $key,
+                                                    'label' => $label,
+                                                    'price' => (float) ($blog[$key] ?? 0),
+                                                ],
+                                            )
+                                            ->filter(fn($o) => $o['price'] > 0)
+                                            ->values()
+                                            ->all();
+                                    @endphp
                                     <!-- Main row -->
                                     <tr class="main-row hover:bg-gray-50 cursor-pointer transition"
                                         data-target="#expandRow{{ $blog['blog_id'] }}"
@@ -571,40 +1063,48 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                                                 data-url="{{ route('blog.viewMail', encrypt($blog['blog_id'])) }}">
                                                 Send Mail
                                             </button> --}}
-                                            <button
-                                                class="rowMailBtn px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
-                                                data-available-mail="{{ $total_mail_available ?? 0 }}"
-                                                data-total-mail="{{ $total_mail ?? 0 }}"
-                                                data-site-name="{{ $blog['website_name'] ?? '' }}"
-                                                data-site-url="{{ $blog['site_url'] ?? '' }}">
-                                                Send Offer
-                                            </button>
+                                            <div class="flex flex-col items-center gap-2">
+                                                <button
+                                                    class="rowMailBtn w-20 rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-700"
+                                                    data-available-mail="{{ $total_mail_available ?? 0 }}"
+                                                    data-total-mail="{{ $total_mail ?? 0 }}"
+                                                    data-site-name="{{ $blog['website_name'] ?? '' }}"
+                                                    data-site-url="{{ $blog['site_url'] ?? '' }}">
+                                                    Send Offer
+                                                </button>
+                                                @if (count($priceOptions))
+                                                    <button
+                                                        type="button"
+                                                        class="orderBtn w-20 rounded px-2 py-1 text-xs font-medium text-white transition"
+                                                        style="background:linear-gradient(135deg,#2563eb,#7c3aed)"
+                                                        data-site-name="{{ $blog['website_name'] ?? '' }}"
+                                                        data-site-url="{{ $blog['site_url'] ?? '' }}"
+                                                        data-prices="{{ json_encode($priceOptions) }}">
+                                                        Order
+                                                    </button>
+                                                @else
+                                                    <span class="text-xs text-gray-400">N/A</span>
+                                                @endif
+                                                </div>
                                         </td>
-                                        <td class="px-4 py-4 text-sm" style="min-width:230px">
-    <div class="space-y-1">
-        @foreach ($priceLabels as $key => $label)
-            @php $v = (float) ($blog[$key] ?? 0); @endphp
-            <div class="flex items-center justify-between gap-4 text-xs">
-                <span class="text-gray-600">{{ $label }}</span>
-                <strong class="{{ $v > 0 ? 'text-gray-900' : 'text-gray-400' }}">{{ $v > 0 ? $fmtPrice($v) : 'N/A' }}</strong>
-            </div>
-        @endforeach
-    </div>
-</td>
-<td class="px-6 py-4 whitespace-nowrap text-center text-sm" onclick="event.stopPropagation();">
-    @if (count($priceOptions))
-        <button type="button"
-            class="orderBtn px-3 py-1 text-white text-sm font-medium rounded transition"
-            style="background:linear-gradient(135deg,#2563eb,#7c3aed)"
-            data-site-name="{{ $blog['website_name'] ?? '' }}"
-            data-site-url="{{ $blog['site_url'] ?? '' }}"
-            data-prices="{{ json_encode($priceOptions) }}">
-            Order
-        </button>
-    @else
-        <span class="text-xs text-gray-400">N/A</span>
-    @endif
-</td>
+                                       <td class="px-3 py-3 text-xs" style="min-width:200px">
+                                            <div class="space-y-0">
+                                                @foreach ($priceLabels as $key => $label)
+                                                    @php $v = (float) ($blog[$key] ?? 0); @endphp
+
+                                                    <div class="flex items-center justify-between gap-1 text-[11px] leading-tight">
+                                                        <span class="text-gray-600">{{ $label }} : 
+                                                        <strong class="{{ $v > 0 ? 'text-gray-900' : 'text-gray-400' }} text-[11px] ml-2">
+                                                            {{ $v > 0 ? $fmtPrice($v) : 'N/A' }}
+                                                        </strong></span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </td>
+                                        {{-- <td class="px-6 py-4 whitespace-nowrap text-center text-sm"
+                                            onclick="event.stopPropagation();">
+
+                                        </td> --}}
                                     </tr>
 
                                     <!-- Expandable row (hidden by default) -->
@@ -779,14 +1279,15 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
         </div>
 
     </div>
-        <!-- Offer Modal -->
+    <!-- Offer Modal -->
     <div id="offerModal" class="offer-overlay" aria-hidden="true">
         <div class="offer-card" role="dialog" aria-modal="true" aria-labelledby="offerTitle">
 
             <div class="offer-head">
                 <button type="button" class="offer-close" id="offerCloseBtn" aria-label="Close">&times;</button>
                 <div class="offer-icon">
-                    <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+                    <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -802,8 +1303,14 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
 
             <div class="offer-body">
                 <div class="offer-stats">
-                    <div class="offer-stat avail"><div class="num" id="offerAvailable">0</div><div class="lbl">Available mails</div></div>
-                    <div class="offer-stat after"><div class="num" id="offerAfter">0</div><div class="lbl">After sending</div></div>
+                    <div class="offer-stat avail">
+                        <div class="num" id="offerAvailable">0</div>
+                        <div class="lbl">Available mails</div>
+                    </div>
+                    <div class="offer-stat after">
+                        <div class="num" id="offerAfter">0</div>
+                        <div class="lbl">After sending</div>
+                    </div>
                 </div>
 
                 <label class="offer-label" for="offerAmount">Your offer</label>
@@ -821,7 +1328,8 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 </div>
 
                 <div class="offer-error" id="offerError"></div>
-                <p class="offer-note">1 mail credit will be used. Replies from the site owner will appear in your conversation page.</p>
+                <p class="offer-note">1 mail credit will be used. Replies from the site owner will appear in your
+                    conversation page.</p>
             </div>
 
             <div class="offer-foot">
@@ -830,14 +1338,15 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             </div>
         </div>
     </div>
-        <!-- Order Modal -->
+    <!-- Order Modal -->
     <div id="orderModal" class="offer-overlay" aria-hidden="true">
         <div class="offer-card order-card" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
 
             <div class="offer-head">
                 <button type="button" class="offer-close" id="orderCloseBtn" aria-label="Close">&times;</button>
                 <div class="offer-icon">
-                    <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+                    <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -861,7 +1370,8 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 <textarea id="orderContent"></textarea>
 
                 <div class="offer-error" id="orderError"></div>
-                <p class="offer-note">The site owner will receive this order by email. Replies appear in your conversation page.
+                <p class="offer-note">The site owner will receive this order by email. Replies appear in your conversation
+                    page.
                     Available mails: <strong id="orderAvailable">0</strong></p>
             </div>
 
@@ -879,7 +1389,9 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
 
         function fmtMoney(n) {
             n = Number(n) || 0;
-            return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+            return '$' + n.toLocaleString('en-US', {
+                maximumFractionDigits: 2
+            });
         }
 
         function getOrderContent() {
@@ -894,7 +1406,9 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             orderPrices = prices || [];
 
             let host = siteUrl;
-            try { host = new URL(siteUrl).hostname.replace(/^www\./, ''); } catch (e) {}
+            try {
+                host = new URL(siteUrl).hostname.replace(/^www\./, '');
+            } catch (e) {}
             $('#orderDomain').text(host || siteName || 'Website');
             $('#orderUrl').text(siteUrl || '').attr('href', siteUrl || '#');
 
@@ -927,13 +1441,21 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 orderEditorReady = true;
             } else {
                 // fallback: plain textarea
-                $('#orderContent').show().css({ width: '100%', height: '180px', border: '2px solid #e5e7eb', borderRadius: '14px', padding: '10px' });
+                $('#orderContent').show().css({
+                    width: '100%',
+                    height: '180px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '14px',
+                    padding: '10px'
+                });
             }
         }
 
         function closeOrderModal() {
             if (orderEditorReady) {
-                try { $('#orderContent').summernote('destroy'); } catch (e) {}
+                try {
+                    $('#orderContent').summernote('destroy');
+                } catch (e) {}
                 orderEditorReady = false;
             }
             $('#orderContent').val('');
@@ -970,7 +1492,7 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                     price_type: type,
                     content: content
                 },
-                success: function (res) {
+                success: function(res) {
                     if (typeof setAvailableMail === 'function') setAvailableMail(res.available);
                     closeOrderModal();
                     Swal.fire({
@@ -983,11 +1505,12 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                         timerProgressBar: true
                     });
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     let msg = 'Something went wrong. Please try again.';
                     if (xhr.responseJSON) {
                         const e = xhr.responseJSON.errors;
-                        msg = (e && Object.values(e)[0] && Object.values(e)[0][0]) || xhr.responseJSON.message || msg;
+                        msg = (e && Object.values(e)[0] && Object.values(e)[0][0]) || xhr.responseJSON
+                            .message || msg;
                     }
                     $err.text(msg);
                     $btn.prop('disabled', false).removeClass('loading').text('Place Order');
@@ -995,8 +1518,8 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             });
         }
 
-        $(function () {
-            $('.orderBtn').on('click', function () {
+        $(function() {
+            $('.orderBtn').on('click', function() {
                 const available = Number($('#openMailModalBtn').attr('data-available-mail')) || 0;
 
                 if (available <= 0) {
@@ -1005,12 +1528,16 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                         title: 'No Mail Available!',
                         text: 'Please purchase a package to place orders.',
                         confirmButtonText: 'Buy Now'
-                    }).then(r => { if (r.isConfirmed) window.location.href = '/'; });
+                    }).then(r => {
+                        if (r.isConfirmed) window.location.href = '/';
+                    });
                     return;
                 }
 
                 let prices = [];
-                try { prices = JSON.parse($(this).attr('data-prices')); } catch (e) {}
+                try {
+                    prices = JSON.parse($(this).attr('data-prices'));
+                } catch (e) {}
                 openOrderModal(
                     String($(this).closest('tr').data('blog-id')),
                     $(this).attr('data-site-name'),
@@ -1020,7 +1547,7 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 );
             });
 
-            $('#orderType').on('change', function () {
+            $('#orderType').on('change', function() {
                 const p = orderPrices.find(x => x.key === this.value);
                 $('#orderPriceText').text(p ? fmtMoney(p.price) : '$0');
                 $(this).removeClass('invalid');
@@ -1028,9 +1555,12 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
 
             $('#orderSendBtn').on('click', submitOrder);
             $('#orderCancelBtn, #orderCloseBtn').on('click', closeOrderModal);
-            $('#orderModal').on('mousedown', function (e) { if (e.target === this) closeOrderModal(); });
-            $(document).on('keydown', function (e) {
-                if (e.key === 'Escape' && $('#orderModal').hasClass('open') && !$('.note-modal.open, .note-modal:visible').length) {
+            $('#orderModal').on('mousedown', function(e) {
+                if (e.target === this) closeOrderModal();
+            });
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $('#orderModal').hasClass('open') && !$(
+                        '.note-modal.open, .note-modal:visible').length) {
                     closeOrderModal();
                 }
             });
@@ -1085,7 +1615,7 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                     blog_id: offerBlogId,
                     offer: amount
                 },
-                success: function (res) {
+                success: function(res) {
                     setAvailableMail(res.available);
                     closeOfferModal();
                     Swal.fire({
@@ -1098,11 +1628,12 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                         timerProgressBar: true
                     });
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     let msg = 'Something went wrong. Please try again.';
                     if (xhr.responseJSON) {
-                        msg = (xhr.responseJSON.errors && xhr.responseJSON.errors.offer && xhr.responseJSON.errors.offer[0])
-                            || xhr.responseJSON.message || msg;
+                        msg = (xhr.responseJSON.errors && xhr.responseJSON.errors.offer && xhr.responseJSON
+                                .errors.offer[0]) ||
+                            xhr.responseJSON.message || msg;
                     }
                     $err.text(msg);
                     $btn.prop('disabled', false).removeClass('loading').text('Send Offer');
@@ -1110,16 +1641,20 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             });
         }
 
-        $(function () {
+        $(function() {
             $('#offerSendBtn').on('click', submitOffer);
             $('#offerCancelBtn, #offerCloseBtn').on('click', closeOfferModal);
-            $('#offerModal').on('click', function (e) { if (e.target === this) closeOfferModal(); });
-            $('.offer-chip').on('click', function () {
+            $('#offerModal').on('click', function(e) {
+                if (e.target === this) closeOfferModal();
+            });
+            $('.offer-chip').on('click', function() {
                 $('#offerAmount').val($(this).data('amount')).removeClass('invalid');
                 $('#offerError').text('');
             });
-            $('#offerAmount').on('keydown', function (e) { if (e.key === 'Enter') submitOffer(); });
-            $(document).on('keydown', function (e) {
+            $('#offerAmount').on('keydown', function(e) {
+                if (e.key === 'Enter') submitOffer();
+            });
+            $(document).on('keydown', function(e) {
                 if (e.key === 'Escape' && $('#offerModal').hasClass('open')) closeOfferModal();
             });
         });
@@ -1223,8 +1758,9 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 }
             });
         }
+
         function confirmAndSendMail(ids, availableMail) {
-            const selected  = ids.length;
+            const selected = ids.length;
             const available = Number(availableMail) || 0;
             const remaining = available - selected;
 
@@ -1246,7 +1782,10 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                 cancelButtonColor: '#6b7280',
                 reverseButtons: true,
                 focusCancel: true,
-                customClass: { popup: 'swal-mail-popup', title: 'swal-mail-title' }
+                customClass: {
+                    popup: 'swal-mail-popup',
+                    title: 'swal-mail-title'
+                }
             }).then((result) => {
                 if (!result.isConfirmed) return;
 
@@ -1266,7 +1805,7 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                         selected_ids: JSON.stringify(ids),
                         userId: "{{ $loggedUserId }}"
                     },
-                    success: function (res) {
+                    success: function(res) {
                         localStorage.removeItem(SELECTED_BLOGS_STORAGE_KEY);
                         $('.selectSiteCheckbox').prop('checked', false);
                         $('.main-row').removeClass('selected-row');
@@ -1277,16 +1816,21 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
                             title: 'Mail Sent!',
                             text: res.message || 'Your mails were sent successfully.',
                             confirmButtonColor: '#2563eb',
-                            customClass: { popup: 'swal-mail-popup' }
+                            customClass: {
+                                popup: 'swal-mail-popup'
+                            }
                         }).then(() => location.reload());
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Failed to send',
-                            text: (xhr.responseJSON && xhr.responseJSON.message) || 'Something went wrong. Please try again.',
+                            text: (xhr.responseJSON && xhr.responseJSON.message) ||
+                                'Something went wrong. Please try again.',
                             confirmButtonColor: '#dc2626',
-                            customClass: { popup: 'swal-mail-popup' }
+                            customClass: {
+                                popup: 'swal-mail-popup'
+                            }
                         });
                     }
                 });
@@ -1623,8 +2167,8 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
             //         confirmAndSendMail([blogId], availableMail);
             //     }
             // });
-                        // Row "Send Offer" button: opens the offer modal
-            $('.rowMailBtn').click(function () {
+            // Row "Send Offer" button: opens the offer modal
+            $('.rowMailBtn').click(function() {
                 const available = Number($(this).attr('data-available-mail')) || 0;
 
                 if (available <= 0) {
@@ -1693,49 +2237,54 @@ class="self-start inline-flex items-center gap-2 text-sm font-bold text-white bg
 
             // Toggle expandable row on main row click
             // Auto-open the blog row coming from the home page (?open_blog=BLOG_ID)
-// var openId = new URLSearchParams(window.location.search).get('open_blog');
-// if (openId) {
-//     var rowEl  = document.getElementById('expandRow' + openId);
-//     var $main  = $('.main-row[data-blog-id="' + openId + '"]');
-//     if (rowEl && $main.length) {
-//         $(rowEl).slideDown();
-//         $main.addClass('selected-row');
-//         $('html, body').animate({ scrollTop: $main.offset().top - 120 }, 400);
-//     }
-// }
-// Auto-open from the home page:
-// ?open_blog=ID  [&action=offer&amount=250 | &action=order&service=general_guest_post_price]
-var qs     = new URLSearchParams(window.location.search);
-var openId = qs.get('open_blog');
-if (openId) {
-    var rowEl = document.getElementById('expandRow' + openId);
-    var $main = $('.main-row[data-blog-id="' + openId + '"]');
-    if (rowEl && $main.length) {
-        $(rowEl).slideDown();
-        $main.addClass('selected-row');
-        $('html, body').animate({ scrollTop: $main.offset().top - 120 }, 400);
+            // var openId = new URLSearchParams(window.location.search).get('open_blog');
+            // if (openId) {
+            //     var rowEl  = document.getElementById('expandRow' + openId);
+            //     var $main  = $('.main-row[data-blog-id="' + openId + '"]');
+            //     if (rowEl && $main.length) {
+            //         $(rowEl).slideDown();
+            //         $main.addClass('selected-row');
+            //         $('html, body').animate({ scrollTop: $main.offset().top - 120 }, 400);
+            //     }
+            // }
+            // Auto-open from the home page:
+            // ?open_blog=ID  [&action=offer&amount=250 | &action=order&service=general_guest_post_price]
+            var qs = new URLSearchParams(window.location.search);
+            var openId = qs.get('open_blog');
+            if (openId) {
+                var rowEl = document.getElementById('expandRow' + openId);
+                var $main = $('.main-row[data-blog-id="' + openId + '"]');
+                if (rowEl && $main.length) {
+                    $(rowEl).slideDown();
+                    $main.addClass('selected-row');
+                    $('html, body').animate({
+                        scrollTop: $main.offset().top - 120
+                    }, 400);
 
-        var action = qs.get('action');
-        if (action === 'offer') {
-            $main.find('.rowMailBtn').first().trigger('click');        // opens the offer modal
-            var amount = parseFloat(qs.get('amount'));
-            if (amount > 0 && $('#offerModal').hasClass('open')) {
-                $('#offerAmount').val(amount).removeClass('invalid');
-            }
-        } else if (action === 'order') {
-            $main.find('.orderBtn').first().trigger('click');          // opens the order modal
-            var service = qs.get('service');
-            if ($('#orderModal').hasClass('open') && service &&
-                $('#orderType option[value="' + service + '"]').length) {
-                $('#orderType').val(service).trigger('change');        // selects service + shows price
-            }
-        }
+                    var action = qs.get('action');
+                    if (action === 'offer') {
+                        $main.find('.rowMailBtn').first().trigger('click'); // opens the offer modal
+                        var amount = parseFloat(qs.get('amount'));
+                        if (amount > 0 && $('#offerModal').hasClass('open')) {
+                            $('#offerAmount').val(amount).removeClass('invalid');
+                        }
+                    } else if (action === 'order') {
+                        $main.find('.orderBtn').first().trigger('click'); // opens the order modal
+                        var service = qs.get('service');
+                        if ($('#orderModal').hasClass('open') && service &&
+                            $('#orderType option[value="' + service + '"]').length) {
+                            $('#orderType').val(service).trigger('change'); // selects service + shows price
+                        }
+                    }
 
-        // so a refresh doesn't re-open the modal
-        qs.delete('action'); qs.delete('amount'); qs.delete('service');
-        history.replaceState(null, '', window.location.pathname + (qs.toString() ? '?' + qs.toString() : ''));
-    }
-}
+                    // so a refresh doesn't re-open the modal
+                    qs.delete('action');
+                    qs.delete('amount');
+                    qs.delete('service');
+                    history.replaceState(null, '', window.location.pathname + (qs.toString() ? '?' + qs.toString() :
+                        ''));
+                }
+            }
             $('.main-row').click(function() {
                 var targetId = $(this).data('target');
                 var $targetRow = $(targetId);
@@ -1838,61 +2387,68 @@ if (openId) {
                 restoreCheckboxStates();
             });
             // Advanced panel toggle
-$('#advancedToggleBtn').on('click', function () {
-    $('#advancedPanel').slideToggle(250);
-    $('#advancedChevron').toggleClass('rotate-180');
-});
+            $('#advancedToggleBtn').on('click', function() {
+                $('#advancedPanel').slideToggle(250);
+                $('#advancedChevron').toggleClass('rotate-180');
+            });
 
-// ---- Range sliders ----
-function formatRange(n, type) {
-    n = Number(n);
-    if (type !== 'compact') return n;
-    if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 ? 1 : 0) + 'M';
-    if (n >= 1000) return (n / 1000) + 'k';
-    return n;
-}
-
-$('.range-group').each(function () {
-    const $g = $(this);
-    const dual = $g.data('type') === 'dual';
-    const fmt = $g.data('format');
-    const $inputs = $g.find('input[type=range]');
-    const $min = $inputs.first();
-    const $max = dual ? $inputs.last() : null;
-    const $fill = $g.find('.range-fill');
-    const $label = $g.find('.range-label');
-
-    function update(e) {
-        const lo = +$min.attr('min'), hi = +$min.attr('max');
-
-        if (dual) {
-            // prevent handles crossing
-            if (+$min.val() > +$max.val()) {
-                if (e && e.target === $min[0]) $min.val($max.val());
-                else $max.val($min.val());
+            // ---- Range sliders ----
+            function formatRange(n, type) {
+                n = Number(n);
+                if (type !== 'compact') return n;
+                if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 ? 1 : 0) + 'M';
+                if (n >= 1000) return (n / 1000) + 'k';
+                return n;
             }
-            const a = (($min.val() - lo) / (hi - lo)) * 100;
-            const b = (($max.val() - lo) / (hi - lo)) * 100;
-            $fill.css({ left: a + '%', width: (b - a) + '%' });
-            $label.text(formatRange($min.val(), fmt) + ' – ' + formatRange($max.val(), fmt));
-        } else {
-            const p = (($min.val() - lo) / (hi - lo)) * 100;
-            $fill.css({ left: '0%', width: p + '%' });
-            $label.text(formatRange($min.val(), fmt) + (+$min.val() > 0 ? '+' : ''));
-        }
-    }
 
-    $inputs.on('input', update);
-    update();
-});
+            $('.range-group').each(function() {
+                const $g = $(this);
+                const dual = $g.data('type') === 'dual';
+                const fmt = $g.data('format');
+                const $inputs = $g.find('input[type=range]');
+                const $min = $inputs.first();
+                const $max = dual ? $inputs.last() : null;
+                const $fill = $g.find('.range-fill');
+                const $label = $g.find('.range-label');
 
-// Don't submit empty / default fields (keeps URL clean)
-$('#advancedForm').on('submit', function () {
-    $(this).find('select, input').filter(function () {
-        if (this.type === 'range') return this.value == this.dataset.default;
-        return !this.value;
-    }).prop('disabled', true);
-});
+                function update(e) {
+                    const lo = +$min.attr('min'),
+                        hi = +$min.attr('max');
+
+                    if (dual) {
+                        // prevent handles crossing
+                        if (+$min.val() > +$max.val()) {
+                            if (e && e.target === $min[0]) $min.val($max.val());
+                            else $max.val($min.val());
+                        }
+                        const a = (($min.val() - lo) / (hi - lo)) * 100;
+                        const b = (($max.val() - lo) / (hi - lo)) * 100;
+                        $fill.css({
+                            left: a + '%',
+                            width: (b - a) + '%'
+                        });
+                        $label.text(formatRange($min.val(), fmt) + ' – ' + formatRange($max.val(), fmt));
+                    } else {
+                        const p = (($min.val() - lo) / (hi - lo)) * 100;
+                        $fill.css({
+                            left: '0%',
+                            width: p + '%'
+                        });
+                        $label.text(formatRange($min.val(), fmt) + (+$min.val() > 0 ? '+' : ''));
+                    }
+                }
+
+                $inputs.on('input', update);
+                update();
+            });
+
+            // Don't submit empty / default fields (keeps URL clean)
+            $('#advancedForm').on('submit', function() {
+                $(this).find('select, input').filter(function() {
+                    if (this.type === 'range') return this.value == this.dataset.default;
+                    return !this.value;
+                }).prop('disabled', true);
+            });
         });
     </script>
 
