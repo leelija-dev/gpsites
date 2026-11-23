@@ -8,13 +8,16 @@
     'instagram' => ['fa-instagram', 'Instagram'],
     'youtube' => ['fa-youtube', 'YouTube'],
   ];
-  $footerPosts = \Illuminate\Support\Facades\Cache::remember('footer_latest_posts', 3600, function () {
+  // Read all columns: the live blogs table may not have every column listed in the
+  // migrations (e.g. feature_image_alt), and naming a missing column made this query fail.
+  $footerPosts = \Illuminate\Support\Facades\Cache::remember('footer_latest_posts_v2', 3600, function () {
     try {
       return \App\Models\Blogs::where('status', true)
         ->latest()
         ->limit(3)
-        ->get(['title', 'slug', 'feature_image', 'feature_image_alt', 'created_at']);
+        ->get();
     } catch (\Throwable $e) {
+      \Illuminate\Support\Facades\Log::warning('Footer latest posts query failed: ' . $e->getMessage());
       return collect();
     }
   });
