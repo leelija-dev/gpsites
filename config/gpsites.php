@@ -48,7 +48,8 @@ return [
     ],
 
     // Google Tag Manager container (GA4 is configured inside GTM).
-    // Not loaded when APP_ENV is local or testing. Set GTM_ID= (empty) to disable.
+    // Loads on every environment while set. On a developer machine or staging
+    // server, put GTM_ID= (empty) in .env so test visits stay out of GA4.
     'gtm_id' => env('GTM_ID', 'GTM-K3QH7SPK'),
 
     // Default image for social shares (1200x630 recommended).

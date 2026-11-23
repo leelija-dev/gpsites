@@ -1,8 +1,7 @@
 @php
     $gtmId = config('gpsites.gtm_id');
-    $gtmEnabled = $gtmId && ! app()->environment(['local', 'testing']);
 @endphp
-@if ($gtmEnabled)
+@if ($gtmId)
 <!-- Google Tag Manager -->
 <script>
 window.dataLayer = window.dataLayer || [];
