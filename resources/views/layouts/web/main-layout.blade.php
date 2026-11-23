@@ -45,6 +45,10 @@
     <meta property="og:image" content="{{ $seoImage }}">
     <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
+    @php $xHandle = trim((string) parse_url(config('gpsites.social.x', ''), PHP_URL_PATH), '/'); @endphp
+    @if ($xHandle)
+    <meta name="twitter:site" content="{{ '@' . $xHandle }}">
+    @endif
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
     <meta name="twitter:image" content="{{ $seoImage }}">
