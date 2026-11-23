@@ -122,4 +122,33 @@
         });
     }, 500);
 </script>
+{{-- Conversion event for Google Tag Manager / GA4 (read-only; GA4 de-duplicates on transaction_id) --}}
+@php
+    $gtmConversion = null;
+    if (!empty($order) && !empty($order->transaction_id)) {
+        $gtmConversion = [
+            'event' => 'purchase',
+            'ecommerce' => [
+                'transaction_id' => (string) $order->transaction_id,
+                'value' => (float) $order->amount,
+                'currency' => config('app.currency_code', 'USD'),
+                'items' => [[
+                    'item_id' => (string) ($order->plan->id ?? ''),
+                    'item_name' => (string) ($order->plan->name ?? 'Plan'),
+                    'price' => (float) $order->amount,
+                    'quantity' => 1,
+                ]],
+            ],
+        ];
+    } elseif (session()->has('trial_completed')) {
+        $gtmConversion = ['event' => 'trial_started'];
+    }
+@endphp
+@if ($gtmConversion)
+<script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({!! json_encode($gtmConversion, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES) !!});
+</script>
+@endif
 @endsection

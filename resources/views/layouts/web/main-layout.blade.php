@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('partials.gtm-head')
     @if ($__env->yieldContent('indexing') === 'no')
         <meta name="robots" content="noindex, nofollow">
     @else
@@ -75,6 +76,7 @@
 </head>
 
 <body class=" ">
+    @include('partials.gtm-body')
 
     <!-- ==== NEW WRAPPER ==== -->
    

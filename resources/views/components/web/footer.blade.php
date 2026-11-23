@@ -156,6 +156,7 @@
         method="POST"
         action="{{ route('newsletter.subscribe') }}"
         id="footer-newsletter-form"
+        data-gtm-event="newsletter_signup"
         class="flex items-center smx:flex-row flex-col bg-white smx:rounded-full rounded-[10px] shadow-lg overflow-hidden smx:pe-2 smx:p-0 p-4">
         @csrf
         <input type="hidden" name="source" value="footer">

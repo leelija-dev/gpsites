@@ -47,6 +47,10 @@ return [
         'youtube' => env('GPSITES_YOUTUBE_URL', ''),
     ],
 
+    // Google Tag Manager container (GA4 is configured inside GTM).
+    // Not loaded when APP_ENV is local or testing. Set GTM_ID= (empty) to disable.
+    'gtm_id' => env('GTM_ID', 'GTM-K3QH7SPK'),
+
     // Default image for social shares (1200x630 recommended).
     'og_image' => env('GPSITES_OG_IMAGE', '/images/og-default.png'),
 
