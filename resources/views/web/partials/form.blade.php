@@ -48,7 +48,7 @@ color: #dc2626 !important;
     border-color: #fca5a5 !important;
 }
     </style>
-<form id="contact-us" class="gp-form" method="post" action="{{ route('contact.store') }}" novalidate>
+<form id="contact-us" class="gp-form" method="post" data-gtm-event="generate_lead" action="{{ route('contact.store') }}" novalidate>
     @csrf
 
     <h2>Send us an inquiry</h2>

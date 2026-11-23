@@ -70,7 +70,7 @@
                             </div>
                         @enderror
 
-                        <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-6">
+                        <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-6" data-gtm-event="sign_up_submit">
                             @csrf
 
                             <!-- Name -->

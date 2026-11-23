@@ -224,7 +224,7 @@
                         <p>Find relevant guest posting sites, connect with publishers,<br> and manage your outreach in
                             one place.</p>
                         <div class="gp-actions">
-                            <form method="POST" class="gp-trial-form"
+                            <form method="POST" class="gp-trial-form" data-gtm-event="start_trial_click"
     action="{{ auth()->check() ? route('checkout') : route('start.trial') }}">
     @csrf
     @auth
@@ -650,13 +650,13 @@
             </ul>
 
             @auth
-                <form method="POST" action="{{ route('checkout') }}">
+                <form method="POST" action="{{ route('checkout') }}" data-gtm-event="select_plan" data-gtm-plan-name="{{ $plan->name }}" data-gtm-value="{{ (float) $plan->price }}" data-gtm-currency="{{ config('app.currency_code', 'USD') }}">
                     @csrf
                     <input type="hidden" name="plan" value="{{ $plan->id }}">
                     <button type="submit" class="gp-button {{ $isDark ? 'gp-white' : ($isFeatured ? '' : 'gp-soft') }}">Get Started</button>
                 </form>
             @else
-                <form method="POST" action="{{ route('intent.plan') }}">
+                <form method="POST" action="{{ route('intent.plan') }}" data-gtm-event="select_plan" data-gtm-plan-name="{{ $plan->name }}" data-gtm-value="{{ (float) $plan->price }}" data-gtm-currency="{{ config('app.currency_code', 'USD') }}">
                     @csrf
                     <input type="hidden" name="plan" value="{{ $plan->id }}">
                     <button type="submit" class="gp-button {{ $isDark ? 'gp-white' : ($isFeatured ? '' : 'gp-soft') }}">Get Started</button>
@@ -674,7 +674,7 @@
                         <h3>Try GPSites free for 7 days</h3><small>3 email credits · No credit card required</small>
                     </div>
                     @auth
-                    <form method="POST" action="{{ route('checkout') }}" >
+                    <form method="POST" action="{{ route('checkout') }}" data-gtm-event="start_trial_click">
                         @csrf
                         <input type="hidden" name="plan" value="{{ config('paypal.trial_plan_id') }}">
                         <button
@@ -682,7 +682,7 @@
                         </button>
                     </form>
                     @else
-                    <form method="POST" action="{{ route('start.trial') }}" >
+                    <form method="POST" action="{{ route('start.trial') }}" data-gtm-event="start_trial_click">
                         @csrf
                         <button
                             type="submit" class="gp-button content-end" >Start Free Trial
@@ -710,7 +710,7 @@
                         <h2>Tell us about your outreach goals</h2>
                         <p>Have a question or want to learn more? Send us a message.</p><a class="gp-link"
                             href="mailto:{{ config('gpsites.contact_email') }}">{{ config('gpsites.contact_email') }}</a>
-                        <form id="gp-inquiry" class="gp-form" data-inquiry data-connected="false" method="post"
+                        <form id="gp-inquiry" class="gp-form" data-inquiry data-connected="false" method="post" data-gtm-event="generate_lead"
                             action="{{ route('contact.store') }}">
                             @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
@@ -795,7 +795,7 @@
             <div class="gp-container">
                 <h2>Find your next publisher with GPSites</h2>
                 <p>Discover relevant sites, send your offer and manage the conversation in one place.</p>
-                <div class="gp-actions"><form method="POST" class="gp-trial-form"
+                <div class="gp-actions"><form method="POST" class="gp-trial-form" data-gtm-event="start_trial_click"
     action="{{ auth()->check() ? route('checkout') : route('start.trial') }}">
     @csrf
     @auth
