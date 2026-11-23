@@ -27,7 +27,7 @@ class SendPlanExpirationReminder extends Command
 
         foreach ($orders as $order) {
             
-            $expiryDate = Carbon::parse($order->paid_at)->addDays($order->plan->duration);
+            $expiryDate = Carbon::parse($order->paid_at)->addDays($order->duration ?: $order->plan->duration);
             try{
             if ($expiryDate->isSameDay($threeDaysFromNow)) {
 

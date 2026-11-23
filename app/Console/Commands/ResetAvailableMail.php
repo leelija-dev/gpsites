@@ -40,7 +40,8 @@ class ResetAvailableMail extends Command
                 $plan=Plan::where('id','=',$order_plan->plan_id)->first();
                 if($plan->price == 0 ) continue;
 
-                $expiryDate = Carbon::parse($order_plan->created_at)->addDays($plan->duration);
+                // Use the order's own period (365 days for yearly orders); older orders fall back to the plan.
+                $expiryDate = Carbon::parse($order_plan->created_at)->addDays($order_plan->duration ?: $plan->duration);
                 $isValid = Carbon::now()->lessThanOrEqualTo($expiryDate);
                 if($isValid){
                     MailAvailable::where('order_id','=',$order->order_id)->update([

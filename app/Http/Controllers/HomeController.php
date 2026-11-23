@@ -63,6 +63,25 @@ class HomeController extends Controller
     }
 
     /**
+     * Pricing page (GET /pricing). Same plan query as the homepage.
+     */
+    public function pricingPage()
+    {
+        $plans = Plan::with('features')
+            ->where('is_active', true)
+            ->where('price', '!=', '0')
+            ->where('name', 'NOT LIKE', '%trial%')
+            ->orderBy('price', 'asc')
+            ->get();
+
+        $trialPlan = Plan::where('is_active', true)
+            ->where('name', 'LIKE', '%trial%')
+            ->first();
+
+        return view('web.pricing', compact('plans', 'trialPlan'));
+    }
+
+    /**
      * Free trial landing page (GET /start-trial).
      * The button on this page posts to the existing start.trial route, so the trial flow is unchanged.
      */
@@ -152,6 +171,8 @@ class HomeController extends Controller
 
         // Store plan in session
         session(['intent_plan' => $request->input('plan')]);
+        // Remember monthly/yearly so checkout shows the same price after login.
+        session(['intent_billing' => \App\Models\Plan::normalizeBillingCycle($request->input('billing'))]);
 
         // Force Laravel to remember /checkout as intended URL
         redirect()->setIntendedUrl(route('checkout'));

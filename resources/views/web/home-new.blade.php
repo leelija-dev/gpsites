@@ -624,48 +624,8 @@
         <section class="gp-section " id="pricing">
             <div class="gp-container"><span class="gp-eyebrow">Pricing</span>
                 <h2>Choose the outreach plan that fits your workload</h2>
-                <div class="gp-grid gp-cols-3 gp-plans">
-    @foreach($plans as $index => $plan)
-    @php
-        $isDark     = $index === 1;                       
-        $isFeatured = $loop->last && !$isDark;            
-    @endphp
-
-    <article class="gp-price {{ $isDark ? 'gp-dark' : '' }} {{ $isFeatured ? 'gp-featured' : '' }}">
-        @if($isFeatured)
-            <span class="gp-ribbon">Most popular</span>
-        @endif
-
-        <h3>{{ $plan->name }}</h3>
-
-        <div class="gp-price-value">${{ number_format($plan->price) }}<small> / {{ $plan->duration == 30 ? null : ($plan->duration == 31 ? null : $plan->duration )}}{{ $plan->duration === 30||$plan->duration === 31 ? 'Month' : 'days' }}</small></div>
-
-        <span class="gp-mail-pill">{{ $plan->mail_available ?? '0' }} Mail/day</span>
-
-        @if($plan->features && $plan->features->count() > 0)
-            <ul>
-                @foreach($plan->features->where('is_active', true) as $feature)
-                    <li>{{ $feature->feature }}</li>
-                @endforeach
-            </ul>
-
-            @auth
-                <form method="POST" action="{{ route('checkout') }}" data-gtm-event="select_plan" data-gtm-plan-name="{{ $plan->name }}" data-gtm-value="{{ (float) $plan->price }}" data-gtm-currency="{{ config('app.currency_code', 'USD') }}">
-                    @csrf
-                    <input type="hidden" name="plan" value="{{ $plan->id }}">
-                    <button type="submit" class="gp-button {{ $isDark ? 'gp-white' : ($isFeatured ? '' : 'gp-soft') }}">Get Started</button>
-                </form>
-            @else
-                <form method="POST" action="{{ route('intent.plan') }}" data-gtm-event="select_plan" data-gtm-plan-name="{{ $plan->name }}" data-gtm-value="{{ (float) $plan->price }}" data-gtm-currency="{{ config('app.currency_code', 'USD') }}">
-                    @csrf
-                    <input type="hidden" name="plan" value="{{ $plan->id }}">
-                    <button type="submit" class="gp-button {{ $isDark ? 'gp-white' : ($isFeatured ? '' : 'gp-soft') }}">Get Started</button>
-                </form>
-            @endauth
-        @endif
-    </article>
-    @endforeach
-</div>
+                @include('web.partials.pricing-plans', ['plans' => $plans])
+                <p class="gp-note" style="margin-top:14px">Plans cover publisher access and outreach. Placement fees are agreed with each site and paid to the publisher after your post goes live. <a class="gp-link" href="{{ route('pricing') }}">See full pricing details</a></p>
                 <div class="gp-trial-bar"><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H5v20h14V7l-5-5Z M14 2v6h5 M8 12h8 M8 16h6" />

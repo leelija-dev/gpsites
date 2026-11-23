@@ -157,6 +157,18 @@
                             @endunless
                         </div>
 
+                        @unless($trialMode)
+                        @php $billingCycle = $billingCycle ?? 'monthly'; $yearlyDiscount = $yearlyDiscount ?? 20; @endphp
+                        <div id="billing-cycle-switch" class="flex items-center gap-2 mb-4 text-sm" role="group" aria-label="Billing period">
+                            <button type="button" data-billing="monthly"
+                                class="billing-cycle-btn px-3 py-1.5 rounded-full border {{ $billingCycle === 'monthly' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300' }}"
+                                aria-pressed="{{ $billingCycle === 'monthly' ? 'true' : 'false' }}">Monthly</button>
+                            <button type="button" data-billing="yearly"
+                                class="billing-cycle-btn px-3 py-1.5 rounded-full border {{ $billingCycle === 'yearly' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300' }}"
+                                aria-pressed="{{ $billingCycle === 'yearly' ? 'true' : 'false' }}">Yearly <span class="font-semibold">(save {{ rtrim(rtrim(number_format($yearlyDiscount, 2), '0'), '.') }}%)</span></button>
+                        </div>
+                        @endunless
+
                         <div id="selected-package-wrapper" class="space-y-6">
 
                         </div>
@@ -409,8 +421,14 @@
                     </div>
 
                     <h3 class="text-xl font-semibold">{{ $plan->name }}</h3>
-                    <p class="text-4xl font-bold mt-2">${{ number_format($plan->price) }}<span class="text-base font-medium">/month</span></p>
-                    <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed Annually</p>
+                    @php $planCycle = $plan->billing_cycle ?? 'monthly'; @endphp
+                    @if ($planCycle === 'yearly')
+                    <p class="text-4xl font-bold mt-2">${{ number_format((float) $plan->checkout_price, 2) }}<span class="text-base font-medium">/year</span></p>
+                    <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed yearly · ${{ number_format((float) $plan->monthly_equivalent, 2) }}/month</p>
+                    @else
+                    <p class="text-4xl font-bold mt-2">${{ number_format((float) $plan->price) }}<span class="text-base font-medium">/month</span></p>
+                    <p class="{{ $isHighlighted ? 'text-purple-200' : 'text-gray-500' }} text-sm mb-4">Billed monthly</p>
+                    @endif
                     <span class="inline-block {{ $isHighlighted ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700' }} text-xs px-3 py-1 rounded-full mb-6">
                         Up to {{ $index + 1 }} Platforms
                     </span>
@@ -426,7 +444,7 @@
                     <a href="#" class="btn-{{ $isHighlighted ? 'secondary' : 'primary' }} package-get-started rounded-full w-full block"
                         data-package-id="{{ $plan->id }}"
                         data-package-name="{{ $plan->name }}"
-                        data-package-price="{{ $plan->price }}">Get Started</a>
+                        data-package-price="{{ $plan->checkout_price ?? $plan->price }}">Get Started</a>
                 </div>
             </div>
             @endforeach
@@ -447,6 +465,9 @@
         // Pass plan data from PHP to JavaScript
         const planData = @json($planModel ?? null);
         const trialMode = @json($trialMode ?? false);
+        // Monthly or yearly. Display only: the server recalculates the amount when the order is created.
+        const billingCycle = @json($billingCycle ?? 'monthly');
+        const billingLabel = billingCycle === 'yearly' ? 'Billed yearly (365 days)' : 'Billed monthly (30 days)';
 
         // Global country mapping for converting codes to names
         let countryCodeToName = {};
@@ -1271,6 +1292,7 @@
                             },
                             body: JSON.stringify({
                                 plan_id: selectedPackage.id,
+                                billing_cycle: billingCycle,
                                 billing_info: getBillingInfo()
                             })
                         })
@@ -1474,7 +1496,7 @@
                         ${pkg.name}
                       </p>
                       <p class="text-xs text-gray-500 mt-1">
-                        $${pkg.price.toLocaleString()}
+                        ${trialMode ? '$' + pkg.price.toLocaleString() : billingLabel}
                       </p>
                     </div>
                   </div>
@@ -1510,6 +1532,18 @@
 
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+            });
+        });
+
+        // Monthly / Yearly switch: reload checkout for the selected plan so prices come from the server
+        document.querySelectorAll('.billing-cycle-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cycle = this.dataset.billing;
+                if (cycle === billingCycle) return;
+                const row = selectedWrapper ? selectedWrapper.querySelector('[data-package-id]') : null;
+                const planId = row ? row.dataset.packageId : (planData ? planData.id : '');
+                if (!planId) return;
+                window.location.href = '{{ url('/checkout') }}/' + encodeURIComponent(planId) + '?billing=' + encodeURIComponent(cycle);
             });
         });
 
@@ -1657,7 +1691,7 @@
             const autoSelectedPackage = {
                 id: planData.id.toString(),
                 name: planData.name,
-                price: parseFloat(planData.price)
+                price: parseFloat(planData.checkout_price ?? planData.price)
             };
             replacePackage(autoSelectedPackage);
         }
