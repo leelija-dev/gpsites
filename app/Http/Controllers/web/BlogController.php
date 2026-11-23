@@ -1392,6 +1392,15 @@ $niches = array_values(array_filter(
         ));
     }
 
+    /** Customer stops automatic follow-ups for one conversation. */
+    public function stopFollowups($id)
+    {
+        $thread = UserMailHistory::where('user_id', Auth::id())->findOrFail($id);
+        $thread->stopFollowups('user_stopped');
+
+        return back()->with('success', 'Automatic follow-ups stopped for this conversation.');
+    }
+
     public function conversation($id)
 {
     $thread = UserMailHistory::with('messages')

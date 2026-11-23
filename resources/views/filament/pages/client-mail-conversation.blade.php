@@ -248,7 +248,7 @@
             @forelse ($messages as $message)
                 @php
                     $time   = $message->sent_at ?? $message->created_at;
-                    $isUser = in_array($message->direction, ['initial', 'user_reply']);
+                    $isUser = in_array($message->direction, ['initial', 'user_reply', 'follow_up']);
                     $day    = $time->format('Y-m-d');
                     $name   = $isUser ? ($customer?->name ?? 'Customer') : ($message->from_name ?: $message->from_email);
                     $letter = strtoupper(mb_substr((string) $name, 0, 1)) ?: '?';

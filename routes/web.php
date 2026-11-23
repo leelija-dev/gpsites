@@ -120,6 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/billing',[OrderController::class,'billing'])->name('order-billing');
     //contact routes
     Route::get('/mail-history/{id}', [BlogController::class, 'conversation'])->name('mail.conversation');
+    Route::post('/mail-history/{id}/stop-followups', [BlogController::class, 'stopFollowups'])->name('mail.stop-followups');
 });
 
 // Authenticated routes (require authentication only)
