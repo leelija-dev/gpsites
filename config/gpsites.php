@@ -37,11 +37,12 @@ return [
 
     'parent_company' => 'Leelija',
 
-    // Social profiles. Empty values are not shown in the footer or schema.
+    // Social profiles, shown in the footer and in the Organization "sameAs" schema.
+    // Empty values are hidden. Any of these can still be overridden in .env.
     'social' => [
-        'linkedin' => env('GPSITES_LINKEDIN_URL', ''),
-        'x' => env('GPSITES_X_URL', ''),
-        'facebook' => env('GPSITES_FACEBOOK_URL', ''),
+        'linkedin' => env('GPSITES_LINKEDIN_URL', 'https://www.linkedin.com/company/gpsites-io/'),
+        'x' => env('GPSITES_X_URL', 'https://x.com/GpsitesIO'),
+        'facebook' => env('GPSITES_FACEBOOK_URL', 'https://www.facebook.com/gpsites.io'),
         'instagram' => env('GPSITES_INSTAGRAM_URL', ''),
         'youtube' => env('GPSITES_YOUTUBE_URL', ''),
     ],
