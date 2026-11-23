@@ -20,7 +20,7 @@ class SitemapController extends Controller
 
             // Public marketing pages. No <lastmod>: these have no reliable edit date,
             // and a fake "today" value teaches Google to ignore the field.
-            foreach (['home', 'about', 'all-blogs.index', 'contact', 'privacy-policy', 'terms-of-service'] as $name) {
+            foreach (['home', 'about', 'all-blogs.index', 'contact', 'privacy-policy', 'terms-of-service', 'start-trial.page'] as $name) {
                 $urls[] = ['loc' => route($name)];
             }
 

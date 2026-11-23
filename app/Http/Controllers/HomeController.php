@@ -62,6 +62,26 @@ class HomeController extends Controller
         return view('web.home-new', compact('plans', 'niches_data', 'faqs', 'trialPlan'));
     }
 
+    /**
+     * Free trial landing page (GET /start-trial).
+     * The button on this page posts to the existing start.trial route, so the trial flow is unchanged.
+     */
+    public function trialPage()
+    {
+        $plans = Plan::with('features')
+            ->where('is_active', true)
+            ->where('price', '!=', '0')
+            ->where('name', 'NOT LIKE', '%trial%')
+            ->orderBy('price', 'asc')
+            ->get();
+
+        $trialPlan = Plan::where('is_active', true)
+            ->where('name', 'LIKE', '%trial%')
+            ->first();
+
+        return view('web.start-trial', compact('plans', 'trialPlan'));
+    }
+
     public function startTrial(Request $request)
     {
         $user = Auth::user();
