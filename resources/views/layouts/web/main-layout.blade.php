@@ -92,6 +92,7 @@
             <x-web.footer />
 
     @yield('scripts')
+    @stack('scripts-after')
 
     {{-- SweetAlert2 is loaded once, inside the footer component. GSAP was removed: no page used it. --}}
 

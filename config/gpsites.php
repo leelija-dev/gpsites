@@ -47,6 +47,9 @@ return [
         'youtube' => env('GPSITES_YOUTUBE_URL', ''),
     ],
 
+    // Discount (in percent) for paying yearly instead of monthly.
+    'yearly_discount_percent' => env('GPSITES_YEARLY_DISCOUNT', 20),
+
     // Google Tag Manager container (GA4 is configured inside GTM).
     // Loads on every environment while set. On a developer machine or staging
     // server, put GTM_ID= (empty) in .env so test visits stay out of GA4.

@@ -87,7 +87,7 @@
         @foreach ([
           ['How it works', url('/#how-it-works')],
           ['Features', url('/#features')],
-          ['Pricing', url('/#pricing')],
+          ['Pricing', route('pricing')],
           ['Free trial', route('start-trial.page')],
           ['FAQs', url('/#faq')],
           ['Blog', route('all-blogs.index')],

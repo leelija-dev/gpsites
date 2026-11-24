@@ -14,6 +14,7 @@ class PlanOrder extends Model
         'paypal_order_id',
         'amount',
         'duration',
+        'billing_cycle',
         'currency',
         'status',
         'billing_info',

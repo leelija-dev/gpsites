@@ -91,7 +91,25 @@ class CheckoutController extends Controller
             $planModel = Plan::with('features')->findOrFail($plan);
         }
 
-        return view('web.checkout', compact('planModel', 'allPlans', 'trialMode'));
+        // Billing cycle: ?billing=yearly / POST billing, or the choice saved before login. Monthly is the default.
+        $billingInput = $request->input('billing', session('intent_billing'));
+        session()->forget('intent_billing');
+        $billingCycle = $trialMode ? Plan::BILLING_MONTHLY : Plan::normalizeBillingCycle($billingInput);
+
+        // Display prices for the chosen cycle. The amount actually charged is recalculated in createOrder().
+        $annotate = function (Plan $p) use ($billingCycle) {
+            $cycle = $p->supportsYearly() ? $billingCycle : Plan::BILLING_MONTHLY;
+            $p->setAttribute('billing_cycle', $cycle);
+            $p->setAttribute('checkout_price', $p->priceFor($cycle));
+            $p->setAttribute('monthly_equivalent', $p->monthlyEquivalentFor($cycle));
+        };
+        $allPlans->each($annotate);
+        if ($planModel) {
+            $annotate($planModel);
+        }
+        $yearlyDiscount = Plan::yearlyDiscountPercent();
+
+        return view('web.checkout', compact('planModel', 'allPlans', 'trialMode', 'billingCycle', 'yearlyDiscount'));
     }
 
     /**
@@ -105,18 +123,28 @@ class CheckoutController extends Controller
         try {
             $request->validate([
                 'plan_id' => 'required|string',
-                'billing_info' => 'required|array'
+                'billing_info' => 'required|array',
+                'billing_cycle' => 'nullable|string|in:monthly,yearly',
             ]);
 
             // Get plan details from database
             $plan = Plan::findOrFail($request->plan_id);
-            $expiryDate = Carbon::parse(now())->addDays($plan->duration ?? 0);
+
+            // Price and access period are always calculated here, never taken from the browser.
+            $billingCycle = $plan->supportsYearly()
+                ? Plan::normalizeBillingCycle($request->input('billing_cycle'))
+                : Plan::BILLING_MONTHLY;
+            $amount = $plan->priceFor($billingCycle);
+            $duration = $plan->durationFor($billingCycle);
+
+            $expiryDate = Carbon::parse(now())->addDays($duration);
             // Create order record in database
             $order = PlanOrder::create([
                 'user_id' => Auth::id(),
                 'plan_id' => $plan->id,
-                'amount' => $plan->price,
-                'duration'=> $plan->duration,
+                'amount' => $amount,
+                'duration'=> $duration,
+                'billing_cycle' => $billingCycle,
                 'expire_at'=>$expiryDate,
                 'currency' => config('app.currency'),
                 'status' => 'pending',
@@ -132,10 +160,10 @@ class CheckoutController extends Controller
                 "purchase_units" => [[
                     "reference_id" => $order->id,
                     "amount" => [
-                        "value" => number_format($plan->price, 2, '.', ''), // Keep original amount
+                        "value" => number_format($amount, 2, '.', ''), // Monthly price, or yearly price after the discount
                         "currency_code" => "USD" // Force USD for PayPal
                     ],
-                    "description" => "Package: " . $plan->name
+                    "description" => "Package: " . $plan->name . ($billingCycle === Plan::BILLING_YEARLY ? ' (yearly)' : '')
                 ]],
                 "application_context" => [
                     "cancel_url" => route('checkout.cancel'),
@@ -381,7 +409,7 @@ class CheckoutController extends Controller
                     $amount="{$order->currency}{$order->amount}";
                     $app_name = config('app.name');
                     $support_mail = config('mail.admin_email');
-                    $userBody=$this->orderUserMail($order->user->name,$plan->name,$plan->duration,$order->transaction_id,$plan->mail_available,$amount,$order->paid_at,$app_name,$support_mail);
+                    $userBody=$this->orderUserMail($order->user->name,$plan->name,($order->duration ?: $plan->duration),$order->transaction_id,$plan->mail_available,$amount,$order->paid_at,$app_name,$support_mail);
                     if ($userEmail != null) {
                         Mail::html($userBody, function ($message) use ($userEmail, $userSubject) {
                             $message->to($userEmail)
@@ -410,7 +438,7 @@ class CheckoutController extends Controller
                     $user = Auth::user();
                     $user->update([
                         'plan_id' => $order->plan_id,
-                        'plan_expires_at' => now()->addDays($order->plan->duration),
+                        'plan_expires_at' => now()->addDays($order->duration ?: $order->plan->duration),
                         'mail_available' => $order->mail_available
                     ]);
 

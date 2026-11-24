@@ -29,6 +29,7 @@ use App\Http\Controllers\web\BlogOrderController;
 // ... existing routes ...
 
 Route::get('/start-trial', [HomeController::class, 'trialPage'])->name('start-trial.page');
+Route::get('/pricing', [HomeController::class, 'pricingPage'])->name('pricing');
 Route::post('/start-trial', [HomeController::class, 'startTrial'])->name('start.trial');
 
 Route::get('/',[HomeController::class,'index'])->name('home');
