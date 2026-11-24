@@ -84,7 +84,7 @@
         @forelse($messages as $message)
             @php
                 $time   = $message->sent_at ?? $message->created_at;
-                $isMine = in_array($message->direction, ['initial', 'user_reply']);
+                $isMine = in_array($message->direction, ['initial', 'user_reply', 'follow_up']);
                 $day    = $time->format('Y-m-d');
             @endphp
 
@@ -107,7 +107,7 @@
 
                     <p class="text-xs font-semibold mb-1"
                        style="color: {{ $isMine ? '#15803d' : '#2563eb' }};">
-                        {{ $isMine ? 'You' : ($message->from_name ?: $message->from_email) }}
+                        {{ $isMine ? 'You' : ($message->from_name ?: $message->from_email) }}@if($message->direction === 'follow_up') <span style="font-weight:400;color:#6a717c;">· automatic follow-up</span>@endif
                     </p>
 
                     <div class="break-words">{!! $message->body_html !!}</div>
@@ -124,6 +124,8 @@
             <p class="text-sm text-gray-500 text-center">No messages yet.</p>
         @endforelse
     </div>
+
+    @include('web.partials.followup-status', ['thread' => $mail])
 </div>
 
 
