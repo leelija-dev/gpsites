@@ -24,7 +24,7 @@ class SitemapController extends Controller
                 $urls[] = ['loc' => route($name)];
             }
 
-            $posts = Blogs::where('status', true)->get(['slug', 'updated_at', 'created_at']);
+            $posts = Blogs::published()->get(['slug', 'updated_at', 'created_at']);
             $latestPost = $posts->max(fn ($p) => $p->updated_at ?? $p->created_at);
             if ($latestPost) {
                 // The blog index changes whenever a post does.
@@ -40,7 +40,7 @@ class SitemapController extends Controller
 
             // Category archives only when they hold at least one published post.
             $categories = BlogCategory::where('status', true)
-                ->whereIn('id', Blogs::where('status', true)->select('category'))
+                ->whereIn('id', Blogs::published()->select('category'))
                 ->get(['slug']);
             foreach ($categories as $category) {
                 $urls[] = ['loc' => route('blog.category', $category->slug)];

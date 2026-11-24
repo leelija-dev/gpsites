@@ -48,6 +48,13 @@ class BlogsTable
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+                TextColumn::make('published_at')
+                    ->label('Publish At')
+                    ->dateTime('d M Y, h:i A')
+                    ->badge()
+                    ->color(fn ($record) => $record->isScheduled() ? 'warning' : ($record->status ? 'success' : 'gray'))
+                    ->description(fn ($record) => $record->isScheduled() ? 'Scheduled' : ($record->status ? 'Live' : 'Draft'))
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->searchable()
