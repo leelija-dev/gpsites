@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    // Claude blog connector (routes/ai.php). Token: at least 32 random characters.
+    'claude_mcp' => [
+        'token' => env('CLAUDE_MCP_TOKEN'),
+        'author_id' => env('CLAUDE_MCP_AUTHOR_ID'),
+    ],
+
 ];

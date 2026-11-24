@@ -14,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TagsInput;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Section;
 
 class BlogForm
@@ -207,6 +208,13 @@ class BlogForm
                     ->default(true)
                     ->formatStateUsing(fn($state) => (bool) $state)
                     ->dehydrateStateUsing(fn($state) => $state ? 1 : 0)
+                    ->columnSpanFull(),
+
+                DateTimePicker::make('published_at')
+                    ->label('Publish date & time (IST)')
+                    ->seconds(false)
+                    ->native(false)
+                    ->helperText('With Status on, the post goes live at this time. Leave empty to publish now. A future time schedules the post.')
                     ->columnSpanFull(),
 
             ]);
