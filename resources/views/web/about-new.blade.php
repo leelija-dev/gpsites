@@ -1,7 +1,7 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'About GPSites | Link Building Marketplace by Leelija')
-@section('description', 'Meet GPSites, a link building marketplace and outreach automation platform backed by parent company Leelija. Learn about our mission and publisher network.')
+@section('description', 'GPSites, by Leelija, is a link building marketplace with done-for-you outreach: we contact site owners, negotiate prices and audit every site every six months.')
 @section('keywords', 'about gpsites')
 @section('indexing', 'yes')
 
@@ -65,8 +65,8 @@
                         <blockquote>More time for the<br>decisions that matter.</blockquote>
                     </div>
                     <div>
-                        <p>Finding suitable websites, locating contacts, discussing terms and tracking conversations takes time.</p>
-                        <p>Our team maintains publisher details and negotiates prices. GPSites helps you build a shortlist, send offers and manage the next steps—while you choose the publishers and content that fit your goals.</p>
+                        <p>Finding suitable websites, tracking down the real owner, agreeing terms and chasing replies can take weeks for a handful of links.</p>
+                        <p>So our outreach team does that part. We contact site owners and editors, get them to agree to guest posts or link insertions, negotiate the minimum price and collect each site's publishing guidelines. You choose the sites and the content that fit your goals, and skip the outreach headache.</p>
                     </div>
                 </div>
                 <div class="gp-grid gp-cols-2 ">
@@ -111,48 +111,7 @@
                 </div>
             </div>
         </section>
-        <section class="gp-section ">
-            <div class="gp-container">
-                <h2 class="gp-underline">How we work with publishers</h2>
-                <p>Our publisher network is supported by manual outreach and ongoing relationships.</p>
-                <div class="gp-grid gp-cols-4 ">
-                    <article class="gp-card "><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="m22 2-7 20-4-9-9-4 20-7ZM11 13 22 2" />
-                            </svg></span>
-                        <div>
-                            <h3>Contact site owners</h3>
-                            <p>We reach out to relevant websites and introduce opportunities.</p>
-                        </div>
-                    </article>
-                    <article class="gp-card "><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H5v20h14V7l-5-5Z M14 2v6h5 M8 12h8 M8 16h6" />
-                            </svg></span>
-                        <div>
-                            <h3>Maintain contact details</h3>
-                            <p>We keep publisher information up to date.</p>
-                        </div>
-                    </article>
-                    <article class="gp-card "><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 3h9l9 9-9 9-9-9V3Z" />
-                                <circle cx="8" cy="8" r="1" />
-                            </svg></span>
-                        <div>
-                            <h3>Negotiate placement prices</h3>
-                            <p>We discuss terms and negotiate pricing directly with publishers.</p>
-                        </div>
-                    </article>
-                    <article class="gp-card "><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 8a9 9 0 0 0-16-3L2 8m0-6v6h6M3 16a9 9 0 0 0 16 3l3-3m0 6v-6h-6" />
-                            </svg></span>
-                        <div>
-                            <h3>Review every six months</h3>
-                            <p>We regularly update details, pricing and availability.</p>
-                        </div>
-                    </article>
-                </div>
-                <div class="gp-note">ⓘ &nbsp; Explore guest posts, link insertions and press releases. Review each publisher’s audience, content and terms.</div>
-            </div>
-        </section>
+        @include('web.partials.service-groundwork', ['headingClass' => 'gp-underline'])
         <section class="gp-section gp-tint">
             <div class="gp-container">
                 <h2 class="gp-underline">What GPSites helps you do</h2>
@@ -172,8 +131,8 @@
                                     <path d="m3 6 9 7 9-7" />
                                 </svg></span>
                             <div>
-                                <h3>Send your own offers</h3>
-                                <p>Reach selected publishers with individual campaign emails.</p>
+                                <h3>Send offers or order</h3>
+                                <p>Send single or bulk offers to verified owner emails, or order through GPSites.</p>
                             </div>
                         </article>
                         <article class="gp-card gp-horizontal"><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -182,7 +141,7 @@
                                 </svg></span>
                             <div>
                                 <h3>Use negotiated prices</h3>
-                                <p>Agency members can view prices and place direct orders.</p>
+                                <p>Agency members see our negotiated prices and order at them.</p>
                             </div>
                         </article>
                         <article class="gp-card gp-horizontal"><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -197,6 +156,8 @@
                 </div><a class="gp-link" href="{{ $homeUrl ?? url('/') }}">Explore the GPSites platform →</a>
             </div>
         </section>
+        @include('web.partials.buying-options', ['headingClass' => 'gp-underline'])
+
         <section class="gp-section ">
             <div class="gp-container">
                 <h2 class="gp-underline">Who we help</h2>
@@ -271,15 +232,15 @@
                     </details>
                     <details>
                         <summary>What is GPSites?</summary>
-                        <div>A link building marketplace and outreach automation platform for finding publishers, sending offers and managing orders.</div>
+                        <div>A link building marketplace with done-for-you publisher outreach. We contact and vet the sites; you pick them and send offers or order.</div>
                     </details>
                     <details>
                         <summary>Is GPSites a marketplace or an outreach tool?</summary>
-                        <div>It combines both functions. Agency members can also view negotiated prices and place direct orders.</div>
+                        <div>Both. Our team does the publisher outreach and negotiation, and the platform lets you send offers, order through us and manage every conversation. Agency members can also see our negotiated prices and order at them.</div>
                     </details>
                     <details>
                         <summary>How do you maintain publisher information?</summary>
-                        <div>Our team contacts site owners, maintains contact details, negotiates prices and reviews the site list every six months.</div>
+                        <div>Our team contacts site owners and editors, verifies that each contact email is the owner's or editor's own, negotiates the minimum price and collects publishing guidelines. We only list sites with stable, permanent traffic and strong metrics, and every site is audited every six months.</div>
                     </details>
                     <details>
                         <summary>Where is the GPSites team based?</summary>
