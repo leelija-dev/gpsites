@@ -1,19 +1,19 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'Link Building Marketplace & Outreach Tool | GPSites')
-@section('description', 'Find guest posting sites, filter by niche, DA, DR and traffic, and manage outreach with GPSites. Agency plans include access to negotiated publisher prices.')
+@section('description', 'Our team contacts site owners, negotiates the minimum price and collects guidelines. You pick vetted guest post and link insertion sites and send offers or order.')
 @section('indexing', 'yes')
 
 @php
     // Homepage FAQ: one source for the visible accordion and the FAQPage structured data.
     $mailLimits = $plans->map(fn ($p) => $p->name . ' allows up to ' . number_format((int) $p->mail_available) . ' emails per day')->implode(', ');
     $homeFaqs = [
-        ['q' => 'What is GPSites?', 'a' => 'GPSites is a link building marketplace and outreach automation tool for SEO agencies, marketers and businesses. It helps you find publishers, filter sites by niche and metrics, send custom offers, and manage outreach and orders. Agency members can also see negotiated prices and place direct orders.'],
+        ['q' => 'What is GPSites?', 'a' => 'GPSites is a link building marketplace with done-for-you publisher outreach. Our team contacts site owners and editors, gets them to agree to guest posts or link insertions, negotiates the minimum price and collects each site\'s publishing guidelines. You pick sites by niche and metrics, then send offers to the owner or order through us. Agency members also see our negotiated prices and can order at them.'],
         ['q' => 'How can I find guest posting sites on GPSites?', 'a' => 'Use the site filters to select your niche, Domain Authority (DA), Domain Rating (DR) and traffic requirements. Review the matching sites and choose the publishers you want to approach. Your subscription determines how much of the site collection you can access.'],
-        ['q' => 'What is the difference between sending an offer and placing an order?', 'a' => 'An offer lets you propose your own terms to a publisher. With the Agency plan, you can also view previously negotiated prices and submit a direct order at the displayed price. You can still send a custom offer if you prefer.'],
+        ['q' => 'What is the difference between sending an offer and placing an order?', 'a' => 'An offer goes straight to the site owner\'s or editor\'s verified email with your own price, and you pay the owner directly once the post is live. Any plan can also order through GPSites: our team handles the placement at our own order price, which is different from the negotiated price, and you pay after you get the live URL. Agency members can also see our negotiated prices and order at those prices.'],
         ['q' => 'Which placement types are available?', 'a' => 'The network includes sites offering guest posts, link insertions and press release placements. Availability depends on the publisher. Review the site\'s requirements and confirm the terms for the placement you want.'],
         ['q' => 'What does the outreach automation tool handle?', 'a' => 'GPSites supports bulk outreach, individual campaign emails to selected publishers, automatic follow-ups and offer or order management. You remain responsible for choosing relevant sites and preparing suitable offers and content.'],
-        ['q' => 'How does GPSites maintain its publisher network?', 'a' => 'Our team contacts site owners manually, maintains publisher contact details and negotiates placement prices. We review the site list every six months and continue developing new publisher relationships.'],
+        ['q' => 'How does GPSites maintain its publisher network?', 'a' => 'Our outreach team contacts site owners and editors by hand, confirms they accept guest posts or link insertions, negotiates the minimum price and collects their publishing guidelines. We only list sites with stable, permanent traffic and strong metrics, every contact email is verified as the owner\'s or editor\'s own, and every site is audited every six months.'],
         ['q' => 'How many emails can I send?', 'a' => ($mailLimits ? $mailLimits . '. ' : '') . 'The free 7-day trial includes 3 email credits. Choose a plan that matches your intended outreach workload.'],
         ['q' => 'Can my team use GPSites together?', 'a' => 'Yes. Starter, Pro and Agency include unlimited team members, so colleagues can take part in your outreach work without paying per seat.'],
         ['q' => 'Is GP Sites the same as GPSites?', 'a' => 'Yes. If you are looking for GP Sites at gpsites.io, GPSites is the brand name of this publisher marketplace and outreach platform.'],
@@ -221,8 +221,7 @@
                 <div class="gp-split">
                     <div><span class="gp-eyebrow">Publisher discovery & outreach</span>
                         <h1><span>Link Building</span><br>Marketplace &amp;<br>Outreach Automation Tool</h1>
-                        <p>Find relevant guest posting sites, connect with publishers,<br> and manage your outreach in
-                            one place.</p>
+                        <p>Our team contacts site owners, negotiates the minimum price and collects every site's guidelines. You pick the sites and send offers or order. No outreach headache.</p>
                         <div class="gp-actions">
                             <form method="POST" class="gp-trial-form" data-gtm-event="start_trial_click"
     action="{{ auth()->check() ? route('checkout') : route('start.trial') }}">
@@ -268,8 +267,8 @@
                                 <path d="m22 2-7 20-4-9-9-4 20-7ZM11 13 22 2" />
                             </svg></span>
                         <div>
-                            <h3>Manual publisher outreach</h3>
-                            <p>Send personalized, targeted offers.</p>
+                            <h3>Done-for-you outreach</h3>
+                            <p>Owners contacted and prices negotiated for you.</p>
                         </div>
                     </article>
                     <article class="gp-card "><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24"
@@ -416,7 +415,7 @@
                             </svg></span>
                         <div>
                             <h3><b class="gp-purple">02</b><br>Choose your approach</h3>
-                            <p>Send custom offers or place direct orders (Agency).</p>
+                            <p>Send an offer to the owner or order through GPSites.</p>
                         </div>
                     </article>
                     <article class="gp-card gp-step"><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24"
@@ -442,7 +441,9 @@
                 </div>
             </div>
         </section>
-        <section class="gp-section gp-tint" id="features">
+        @include('web.partials.service-groundwork', ['tint' => true])
+
+        <section class="gp-section" id="features">
             <div class="gp-container"><span class="gp-eyebrow">Features</span>
                 <h2>Less repetitive work. More focused outreach.</h2>
                 <div class="gp-grid gp-cols-3 ">
@@ -497,7 +498,7 @@
                             </svg></span>
                         <div>
                             <h3>View negotiated prices</h3>
-                            <p>Agency members can see publisher prices and place direct orders.</p>
+                            <p>Agency members see our negotiated prices and order at them.</p>
                         </div>
                     </article>
                     <article class="gp-card gp-horizontal"><span class="gp-icon"><svg aria-hidden="true"
@@ -518,8 +519,7 @@
                 <div class="gp-split">
                     <div><span class="gp-eyebrow">Pricing flexibility</span>
                         <h2>Your offer. Or a negotiated price.</h2>
-                        <p>Send custom offers on every plan. Agency members can also view negotiated publisher prices
-                            and place direct orders.</p>
+                        <p>Send your own offer to the site owner on every plan, or order through GPSites. Agency members also see the minimum prices we negotiated and can order at them.</p>
                             @if(Auth::id())
                             <a class="gp-button gp-white" href="{{route('dashboard')}}">Explore
                             Agency</a>
@@ -621,11 +621,13 @@
                 </div>
             </div>
         </section>
+        @include('web.partials.buying-options', ['tint' => true])
+
         <section class="gp-section " id="pricing">
             <div class="gp-container"><span class="gp-eyebrow">Pricing</span>
                 <h2>Choose the outreach plan that fits your workload</h2>
                 @include('web.partials.pricing-plans', ['plans' => $plans])
-                <p class="gp-note" style="margin-top:14px">Plans cover publisher access and outreach. Placement fees are agreed with each site and paid to the publisher after your post goes live. <a class="gp-link" href="{{ route('pricing') }}">See full pricing details</a></p>
+                <p class="gp-note" style="margin-top:14px">Plans cover publisher access and outreach. Placement fees are separate, and you only pay once your post is live. <a class="gp-link" href="{{ route('pricing') }}">See full pricing details</a></p>
                 <div class="gp-trial-bar"><span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H5v20h14V7l-5-5Z M14 2v6h5 M8 12h8 M8 16h6" />

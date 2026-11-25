@@ -1,7 +1,7 @@
 @extends('layouts.web.main-layout')
 
 @section('title', 'GPSites Pricing: Guest Post & Link Insertion Outreach Plans')
-@section('description', 'Compare GPSites plans for guest post and link insertion outreach. Vetted publishers, negotiated prices and no placement markup. Pay monthly or save 20% yearly.')
+@section('description', 'Compare GPSites plans for guest post and link insertion outreach. Done-for-you outreach, verified owner emails, offers or orders. Pay monthly or save 20% yearly.')
 @section('indexing', 'yes')
 
 @php
@@ -21,15 +21,17 @@
 
     $pricingFaqs = [
         ['q' => 'Is the placement price included in my GPSites plan?',
-         'a' => 'No. Your plan pays for access to our vetted publisher network, the negotiated details we collect and the tools to send offers. The placement price for each guest post or link insertion is separate. You agree it with the site and pay the site owner or editor directly once your post is live.'],
-        ['q' => 'How do I pay publishers for a guest post or link insertion?',
-         'a' => 'After the site publishes your post, the owner or editor sends you an invoice and you pay them directly. GPSites does not add a markup to placement prices. Every message with the publisher is kept in your GPSites portal and sent by email, so you can follow the deal from either place.'],
+         'a' => 'No. Your plan pays for our done-for-you outreach, access to the vetted site list and the tools to send offers and orders. The placement price for each guest post or link insertion is separate, and you only pay it once your post is live.'],
+        ['q' => 'How do I pay for a guest post or link insertion?',
+         'a' => 'It depends on how you bought it. If you sent an offer, the site owner or editor invoices you after your post is live and you pay them directly, with no markup from GPSites. If you ordered through GPSites, you pay after you receive the live URL. Every message is kept in your GPSites portal and sent by email.'],
         ['q' => 'Who writes the guest post content?',
          'a' => 'Each site owner decides. Some publishers accept your article, others prefer to write it themselves. You confirm the details with the owner before anything goes live, and the publishing guidelines our team collected help you get it right the first time.'],
-        ['q' => 'What is the difference between an offer and a direct order?',
-         'a' => 'On every plan you can send offers, to one site or in bulk, and propose your own price. Agency members can also see the prices our team has already negotiated with each site and place a direct order at that price, or still send an offer if they prefer.'],
+        ['q' => 'What is the difference between an offer and an order?',
+         'a' => 'An offer goes straight to the site owner\'s or editor\'s verified email with your own price, to one site or in bulk. An order is placed with GPSites and our team handles it with the site. Every plan can do both. Orders on Starter and Pro use our order price, which is different from the negotiated price. Agency members see our negotiated prices and order at those prices.'],
         ['q' => 'Can Starter and Pro members see negotiated prices?',
-         'a' => 'No. Negotiated publisher prices and direct orders are part of the Agency plan. Starter and Pro members see the up-to-date site list for their plan and contact publishers with single or bulk offers.'],
+         'a' => 'No. Our negotiated prices, and ordering at those prices, are part of the Agency plan. Starter and Pro members always see the latest sites available on their plan, can send single or bulk offers to owner-verified emails, and can order through GPSites at our order price, paying after they get the live URL.'],
+        ['q' => 'How do you choose which sites to list?',
+         'a' => 'We only list sites with stable, permanent traffic and strong metrics whose owner or editor has agreed to guest posts or link insertions. Each contact email is verified as the owner\'s or editor\'s own, and every site is audited every six months. Sites that stop meeting these rules are removed.'],
         ['q' => 'How much does yearly billing save?',
          'a' => "Paying yearly costs 12 months of your plan minus {$discountLabel}%. You pay once and get 365 days of access, with the same daily email allowance as the monthly plan."],
         ['q' => 'Do plans renew automatically?',
@@ -39,7 +41,7 @@
         ['q' => 'Is there a free trial?',
          'a' => "Yes. The free trial lasts {$trialDays} days and includes {$trialCredits} email credits. No credit card is needed, and each account can use one trial."],
         ['q' => 'How are payments processed?',
-         'a' => 'Plan payments are processed securely through PayPal in US dollars. Publisher invoices for placements are settled directly between you and the site owner.'],
+         'a' => 'Plan payments are processed securely through PayPal in US dollars. Placement payments are separate: offers are settled directly with the site owner against their invoice, and orders through GPSites are paid after you receive the live URL.'],
         ['q' => 'Does GPSites guarantee rankings?',
          'a' => 'No one can honestly guarantee rankings. We help you reach relevant sites with steady traffic and strong metrics, and publishers decide whether to accept each offer. Results depend on your site, your content and your competition.'],
     ];
@@ -134,7 +136,7 @@
             </nav>
             <span class="gp-eyebrow">Pricing</span>
             <h1>GPSites pricing for guest post and link insertion outreach</h1>
-            <p>Your plan gives you a publisher network our team has already contacted, vetted and negotiated with. You choose the sites and send offers. Placements are paid to the publisher directly, with no markup from us.</p>
+            <p>Your plan gives you a publisher network our team has already contacted, vetted and negotiated with. You choose the sites, then send an offer to the owner or order through us. Either way, you pay for a placement only once it's live.</p>
             <ul class="gp-facts">
                 @if ($fromPrice)<li>Plans from {{ $fromPrice }}/month</li>@endif
                 <li>Save {{ $discountLabel }}% with yearly billing</li>
@@ -148,7 +150,7 @@
     <section class="gp-section" id="plans" style="padding-top:0">
         <div class="gp-container">
             @include('web.partials.pricing-plans', ['plans' => $plans])
-            <p class="gp-note" style="text-align:left">Prices are in US dollars. Yearly plans are paid once and give 365 days of access with the same daily email allowance. Placement fees are agreed with each publisher and paid to them separately.</p>
+            <p class="gp-note" style="text-align:left">Prices are in US dollars. Yearly plans are paid once and give 365 days of access with the same daily email allowance. Placement fees are separate from your plan and paid only after your post is live.</p>
         </div>
     </section>
 
@@ -159,13 +161,14 @@
                 <span class="gp-eyebrow">What you're paying for</span>
                 <h2>We do the outreach groundwork, so you don't have to</h2>
                 <p>Finding a site, tracking down the right editor and agreeing a fair price can take weeks of emails. Our outreach team does that part continuously, before you ever log in.</p>
-                <p>By the time a site appears in GPSites, someone on our team has already spoken to its owner or editor.</p>
+                <p>By the time a site appears in GPSites, someone on our team has already spoken to its owner or editor and verified their email. No outreach headache for you.</p>
             </div>
             <div class="gp-grid" style="gap:12px">
                 <article class="gp-card"><h3>Publishers contacted for you</h3><p>We reach out to blog owners and editors directly and agree whether they accept guest posts, link insertions or both.</p></article>
                 <article class="gp-card"><h3>Minimum prices negotiated</h3><p>When a site agrees, we negotiate the lowest price we can get and record it.</p></article>
                 <article class="gp-card"><h3>Publishing guidelines collected</h3><p>Word counts, link rules and topic limits are gathered upfront, so your offer fits the site.</p></article>
-                <article class="gp-card"><h3>Quality sites only</h3><p>We focus on sites with steady, permanent traffic and strong metrics across almost every niche, and review the list every six months.</p></article>
+                <article class="gp-card"><h3>Owner-verified emails</h3><p>Every contact email is the site owner's or editor's own, so your offer reaches the person who decides.</p></article>
+                <article class="gp-card"><h3>Quality sites only, audited every six months</h3><p>We only list sites with stable, permanent traffic and strong metrics, across almost every niche. Every site is audited every six months and removed if it slips.</p></article>
             </div>
         </div>
     </section>
@@ -176,7 +179,7 @@
         <div class="gp-container">
             <span class="gp-eyebrow">Compare plans</span>
             <h2>Starter, Pro and Agency side by side</h2>
-            <p>All plans let you contact publishers with single or bulk offers and see the latest sites available on your plan. Agency adds our negotiated prices and direct ordering.</p>
+            <p>Every plan sees the latest sites available on that plan, sends single or bulk offers to owner-verified emails and can order through GPSites. Agency adds our negotiated prices and ordering at those prices.</p>
             <div class="gp-table-panel gp-scroll" style="background:#fff">
                 <table class="gp-compare">
                     <thead>
@@ -201,6 +204,14 @@
                         <tr>
                             <th scope="row">Send offers (single or bulk)</th>
                             @foreach ($plans as $p)<td class="gp-yes">✓</td>@endforeach
+                        </tr>
+                        <tr>
+                            <th scope="row">Order through GPSites (pay after live URL)</th>
+                            @foreach ($plans as $p)<td class="gp-yes">✓</td>@endforeach
+                        </tr>
+                        <tr>
+                            <th scope="row">See and order at negotiated prices</th>
+                            @foreach ($plans as $p)@if ($loop->last)<td class="gp-yes" aria-label="Included">✓</td>@else<td class="gp-no" aria-label="Not included">–</td>@endif @endforeach
                         </tr>
                         @foreach ($featureNames as $name)
                             <tr>
@@ -227,17 +238,18 @@
             <div>
                 <span class="gp-eyebrow">Placement costs</span>
                 <h2>How you pay for guest posts and link insertions</h2>
-                <p>Your GPSites plan and your placement costs are separate. The plan pays for access and outreach. Each placement is a deal between you and the publisher, and you pay them only after your post is live.</p>
-                <p class="gp-stat">Buying direct matters. BuzzStream's 2026 study of about 500,000 sites found a guest post costs $295 on average when bought directly from the site, compared with $461 through a vendor. <a class="gp-link" href="https://www.buzzstream.com/blog/guest-post-costs/" target="_blank" rel="noopener">Read the study</a></p>
+                <p>Your GPSites plan and your placement costs are separate. The plan pays for access and outreach. However you buy a placement, you pay for it only after your post is live.</p>
             </div>
             <ol class="gp-steps-list">
-                <li><b>Choose a site and make your move</b>Send an offer with your own price on any plan. Agency members can also place a direct order at our negotiated price.</li>
+                <li><b>Choose a site and make your move</b>Send an offer with your own price, or order through GPSites. Agency members can also order at our negotiated price.</li>
                 <li><b>Agree the details with the publisher</b>The owner confirms the terms, the publishing guidelines and who writes the article.</li>
                 <li><b>Your post goes live</b>The publisher publishes the guest post or adds your link to an existing article.</li>
-                <li><b>Pay the publisher's invoice</b>The site owner or editor invoices you and you pay them directly. Every message is kept in your portal and sent by email.</li>
+                <li><b>Pay once it's live</b>For offers, the site owner or editor invoices you and you pay them directly. For orders through GPSites, you pay after you receive the live URL. Every message is kept in your portal and sent by email.</li>
             </ol>
         </div>
     </section>
+
+    @include('web.partials.buying-options')
 
     {{-- Which plan --}}
     <section class="gp-section">
@@ -251,7 +263,7 @@
                         @if ($loop->first)
                             <p>For freelancers, site owners and small businesses running a few campaigns a month. {{ number_format((int) $p->mail_available) }} outreach emails a day is plenty for focused, personal pitches.</p>
                         @elseif ($loop->last)
-                            <p>For agencies and teams that buy placements regularly. You see our negotiated prices, order directly at those prices and get the highest daily email allowance.</p>
+                            <p>For agencies and teams that buy placements regularly. You see our negotiated prices, order at those prices and get the highest daily email allowance.</p>
                         @else
                             <p>For growing teams and in-house marketers with more pages to promote. More daily emails and wider publisher access than Starter.</p>
                         @endif

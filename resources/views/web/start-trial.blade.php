@@ -25,9 +25,11 @@
         ['q' => 'Which niches can I search during the trial?',
          'a' => 'You can filter publishers across around 30 niches, including technology, finance, health, business, education, real estate, lifestyle, food and fashion. Combine a niche with minimum DA, DR and traffic to narrow the list.'],
         ['q' => 'Will publishers accept every offer I send?',
-         'a' => 'Not always. Publishers decide whether to accept an offer, and many have their own content guidelines. Relevant sites, a clear proposal and a fair price give you the best chance of a reply.'],
+         'a' => 'Not always. Publishers decide whether to accept an offer. That is why we collect each site\'s publishing guidelines in advance and show you the details before you pitch. Relevant sites, a clear proposal and a fair price give you the best chance of a yes.'],
+        ['q' => 'What does the GPSites team do before a site is listed?',
+         'a' => 'Our outreach team contacts the site owner or editor, gets their agreement to guest posts or link insertions, negotiates the minimum price and collects their publishing guidelines. We only list sites with stable, permanent traffic and strong metrics, contact emails are verified as the owner\'s or editor\'s own, and every site is audited every six months.'],
         ['q' => 'Is the trial right for agencies?',
-         'a' => 'Yes. Agencies use the trial to check publisher quality in their clients\' niches before committing. The Agency plan adds negotiated publisher prices and direct ordering once you upgrade.'],
+         'a' => 'Yes. Agencies use the trial to check publisher quality in their clients\' niches before committing. Every paid plan can send offers and order through GPSites, and the Agency plan adds our negotiated prices with ordering at those prices.'],
     ];
 
     $trialSchema = [
@@ -104,7 +106,7 @@
                 </nav>
                 <span class="gp-eyebrow">Free {{ $trialDays }}-day trial</span>
                 <h1>Try GPSites free for {{ $trialDays }} days</h1>
-                <p>Search real publisher websites by niche, DA, DR and traffic, check the details that matter, and send your first outreach offers. You'll know within a week whether GPSites fits the way you build links.</p>
+                <p>Our team has already contacted the site owners, negotiated the minimum price and collected each site's guidelines. You search real publisher websites by niche, DA, DR and traffic and send your first offers. You'll know within a week whether GPSites fits the way you build links.</p>
 
                 @if ($trialAlreadyUsed)
                     <div class="gp-used">You have already used your free trial on this account. Pick a plan to keep finding publishers and sending offers.</div>
@@ -159,7 +161,7 @@
                 <article class="gp-card">
                     <span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
                     <h3>{{ ucfirst($creditsLabel) }}</h3>
-                    <p>Send personalised offers to publishers directly from GPSites, using contact details our team keeps up to date.</p>
+                    <p>Send personalised offers straight to each site owner's or editor's verified email, directly from GPSites.</p>
                 </article>
                 <article class="gp-card">
                     <span class="gp-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>
@@ -170,8 +172,10 @@
         </div>
     </section>
 
+    @include('web.partials.service-groundwork', ['tint' => true])
+
     {{-- How it works --}}
-    <section class="gp-section gp-tint" id="how-it-works">
+    <section class="gp-section" id="how-it-works">
         <div class="gp-container">
             <span class="gp-eyebrow">How it works</span>
             <h2>Start your trial in under two minutes</h2>
@@ -251,6 +255,8 @@
     @endif
 
     {{-- FAQ --}}
+    @include('web.partials.buying-options')
+
     <section class="gp-section" id="faq">
         <div class="gp-container">
             <span class="gp-eyebrow">FAQ</span>
