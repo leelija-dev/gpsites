@@ -1,12 +1,63 @@
+# robots.txt for https://gpsites.io
+#
+# Search engines and AI assistants are welcome to crawl the public site
+# (homepage, pricing, free trial, about, contact, blog). Only account,
+# checkout, admin and app pages are kept out, because they are private
+# and have no value in search results or AI answers.
+#
+# Every crawler named below follows the same rules as "*". They are listed
+# by name so it is clear that AI search and AI assistant crawlers are allowed.
+
+# Search engines
 User-agent: *
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: DuckDuckBot
+User-agent: YandexBot
+User-agent: Applebot
+
+# OpenAI (ChatGPT search, ChatGPT browsing, model training)
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+
+# Anthropic (Claude search, Claude browsing, model training)
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+
+# Perplexity
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+
+# Google Gemini and AI Overviews, Apple Intelligence
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: Applebot-Extended
+
+# Microsoft Copilot, Meta AI, Amazon, Mistral, DuckDuckGo AI, Cohere, You.com
+User-agent: msnbot
+User-agent: meta-externalagent
+User-agent: Meta-ExternalFetcher
+User-agent: Amazonbot
+User-agent: MistralAI-User
+User-agent: DuckAssistBot
+User-agent: cohere-ai
+User-agent: YouBot
+
+# Open datasets used by many AI models
+User-agent: CCBot
+
 Allow: /
 
-# Account, checkout and app pages: no search value
+# Account, checkout and app pages: private, no search value
 Disallow: /login
 Disallow: /register
 Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /verify-email
+Disallow: /confirm-password
 Disallow: /checkout
 Disallow: /dashboard
 Disallow: /profile
@@ -15,6 +66,13 @@ Disallow: /billing
 Disallow: /mail-history
 Disallow: /mail/
 Disallow: /viewMail/
+Disallow: /campaign
+Disallow: /offer
+Disallow: /order/
+Disallow: /post-orders
+Disallow: /mailtemp
+Disallow: /admin
+
 # The logged-in publisher finder (/blog). Blog posts live at /blog/{slug} and stay crawlable.
 Disallow: /blog$
 Disallow: /blog?
